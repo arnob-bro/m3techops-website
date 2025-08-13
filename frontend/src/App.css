@@ -1,42 +1,482 @@
-#root {
-  max-width: 1280px;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ===== Violet + Teal Fusion Palette ===== */
+  
+  --color-primary: #0e0d1b;
+  --color-secondary: #1b1b2f;
+  --color-accent: #5a189a;
+  --color-accent-light: #00b4d8;
+  --color-text: rgba(255, 255, 255, 0.92);
+  --color-text-secondary: rgba(200, 210, 220, 0.75);
+  --color-border: rgba(90, 24, 154, 0.25);
+  --color-primary-rgb: 14, 13, 27;
+  --color-secondary-rgb: 27, 27, 47;
+  --color-accent-rgb: 90, 24, 154;
+  --color-accent-light-rgb: 0, 180, 216;
+ 
+
+  /* ===== Midnight Ocean Palette ===== */
+  /*
+  --color-primary: #0a0f1e;
+  --color-secondary: #152238;
+  --color-accent: #0077b6;
+  --color-accent-light: #00b4d8;
+  --color-text: rgba(255, 255, 255, 0.88);
+  --color-text-secondary: rgba(180, 200, 220, 0.7);
+  --color-border: rgba(0, 119, 182, 0.3);
+  --color-primary-rgb: 10, 15, 30;
+  --color-secondary-rgb: 21, 34, 56;
+  --color-accent-rgb: 0, 119, 182;
+  --color-accent-light-rgb: 0, 180, 216;
+  */
+
+  /* ===== Cyber Tech Palette (ACTIVE) ===== */
+  /* --color-primary: #0d0d0d;
+  --color-secondary: #1a1a2e;
+  --color-accent: #00f5d4;
+  --color-accent-light: #00bbf9;
+  --color-text: rgba(255, 255, 255, 0.87);
+  --color-text-secondary: rgba(200, 200, 200, 0.8);
+  --color-border: rgba(0, 245, 212, 0.3);
+  --color-primary-rgb: 13, 13, 13;
+  --color-secondary-rgb: 26, 26, 46;
+  --color-accent-rgb: 0, 245, 212;
+  --color-accent-light-rgb: 0, 187, 249; */
+
+  /* ===== Neon Synthwave Palette ===== */
+  /*
+  --color-primary: #0a0a0f;
+  --color-secondary: #1a0f2e;
+  --color-accent: #ff006e;
+  --color-accent-light: #8338ec;
+  --color-text: rgba(255, 255, 255, 0.9);
+  --color-text-secondary: rgba(220, 180, 255, 0.75);
+  --color-border: rgba(255, 0, 110, 0.3);
+  --color-primary-rgb: 10, 10, 15;
+  --color-secondary-rgb: 26, 15, 46;
+  --color-accent-rgb: 255, 0, 110;
+  --color-accent-light-rgb: 131, 56, 236;
+  */
+
+  /* ===== Forest Emerald Palette ===== */
+  /*
+  --color-primary: #0f1419;
+  --color-secondary: #1e2d24;
+  --color-accent: #10b981;
+  --color-accent-light: #34d399;
+  --color-text: rgba(255, 255, 255, 0.88);
+  --color-text-secondary: rgba(200, 230, 210, 0.75);
+  --color-border: rgba(16, 185, 129, 0.25);
+  --color-primary-rgb: 15, 20, 25;
+  --color-secondary-rgb: 30, 45, 36;
+  --color-accent-rgb: 16, 185, 129;
+  --color-accent-light-rgb: 52, 211, 153;
+  */
+
+  /* ===== Sunset Orange Palette ===== */
+  /*
+  --color-primary: #1a0f0a;
+  --color-secondary: #2d1b0f;
+  --color-accent: #f97316;
+  --color-accent-light: #fb923c;
+  --color-text: rgba(255, 255, 255, 0.9);
+  --color-text-secondary: rgba(255, 220, 180, 0.8);
+  --color-border: rgba(249, 115, 22, 0.3);
+  --color-primary-rgb: 26, 15, 10;
+  --color-secondary-rgb: 45, 27, 15;
+  --color-accent-rgb: 249, 115, 22;
+  --color-accent-light-rgb: 251, 146, 60;
+  */
+
+  /* ===== Royal Purple Palette ===== */
+  /*
+  --color-primary: #0f0a1a;
+  --color-secondary: #1e1430;
+  --color-accent: #7c3aed;
+  --color-accent-light: #a855f7;
+  --color-text: rgba(255, 255, 255, 0.9);
+  --color-text-secondary: rgba(220, 200, 255, 0.75);
+  --color-border: rgba(124, 58, 237, 0.25);
+  --color-primary-rgb: 15, 10, 26;
+  --color-secondary-rgb: 30, 20, 48;
+  --color-accent-rgb: 124, 58, 237;
+  --color-accent-light-rgb: 168, 85, 247;
+  */
+
+  /* ===== Arctic Blue Palette ===== */
+  /*
+  --color-primary: #0a141f;
+  --color-secondary: #162535;
+  --color-accent: #0ea5e9;
+  --color-accent-light: #38bdf8;
+  --color-text: rgba(255, 255, 255, 0.88);
+  --color-text-secondary: rgba(180, 220, 255, 0.7);
+  --color-border: rgba(14, 165, 233, 0.3);
+  --color-primary-rgb: 10, 20, 31;
+  --color-secondary-rgb: 22, 37, 53;
+  --color-accent-rgb: 14, 165, 233;
+  --color-accent-light-rgb: 56, 189, 248;
+  */
+
+  /* ===== Rose Gold Palette ===== */
+  /*
+  --color-primary: #1a0f14;
+  --color-secondary: #2d1b24;
+  --color-accent: #e11d48;
+  --color-accent-light: #f43f5e;
+  --color-text: rgba(255, 255, 255, 0.9);
+  --color-text-secondary: rgba(255, 200, 220, 0.8);
+  --color-border: rgba(225, 29, 72, 0.25);
+  --color-primary-rgb: 26, 15, 20;
+  --color-secondary-rgb: 45, 27, 36;
+  --color-accent-rgb: 225, 29, 72;
+  --color-accent-light-rgb: 244, 63, 94;
+  */
+
+  /* ===== Electric Lime Palette ===== */
+  /*
+  --color-primary: #0f1a0a;
+  --color-secondary: #1a2d14;
+  --color-accent: #84cc16;
+  --color-accent-light: #a3e635;
+  --color-text: rgba(255, 255, 255, 0.88);
+  --color-text-secondary: rgba(220, 255, 180, 0.75);
+  --color-border: rgba(132, 204, 22, 0.3);
+  --color-primary-rgb: 15, 26, 10;
+  --color-secondary-rgb: 26, 45, 20;
+  --color-accent-rgb: 132, 204, 22;
+  --color-accent-light-rgb: 163, 230, 53;
+  */
+
+  /* ===== Deep Space Palette ===== */
+  /*
+  --color-primary: #050510;
+  --color-secondary: #0f0f23;
+  --color-accent: #6366f1;
+  --color-accent-light: #818cf8;
+  --color-text: rgba(255, 255, 255, 0.85);
+  --color-text-secondary: rgba(200, 200, 255, 0.7);
+  --color-border: rgba(99, 102, 241, 0.25);
+  --color-primary-rgb: 5, 5, 16;
+  --color-secondary-rgb: 15, 15, 35;
+  --color-accent-rgb: 99, 102, 241;
+  --color-accent-light-rgb: 129, 140, 248;
+  */
+
+  /* ===== Amber Glow Palette ===== */
+  /*
+  --color-primary: #1a1000;
+  --color-secondary: #2d1f00;
+  --color-accent: #f59e0b;
+  --color-accent-light: #fbbf24;
+  --color-text: rgba(255, 255, 255, 0.9);
+  --color-text-secondary: rgba(255, 240, 180, 0.8);
+  --color-border: rgba(245, 158, 11, 0.3);
+  --color-primary-rgb: 26, 16, 0;
+  --color-secondary-rgb: 45, 31, 0;
+  --color-accent-rgb: 245, 158, 11;
+  --color-accent-light-rgb: 251, 191, 36;
+  */
+
+  /* ===== Matrix Green Palette ===== */
+  /*
+  --color-primary: #0a0f0a;
+  --color-secondary: #0f1a0f;
+  --color-accent: #00ff41;
+  --color-accent-light: #39ff14;
+  --color-text: rgba(255, 255, 255, 0.85);
+  --color-text-secondary: rgba(180, 255, 180, 0.8);
+  --color-border: rgba(0, 255, 65, 0.3);
+  --color-primary-rgb: 10, 15, 10;
+  --color-secondary-rgb: 15, 26, 15;
+  --color-accent-rgb: 0, 255, 65;
+  --color-accent-light-rgb: 57, 255, 20;
+  */
+
+  /* ===== Cosmic Teal Palette ===== */
+  /*
+  --color-primary: #0a1114;
+  --color-secondary: #142026;
+  --color-accent: #14b8a6;
+  --color-accent-light: #20d0bf;
+  --color-text: rgba(255, 255, 255, 0.88);
+  --color-text-secondary: rgba(180, 255, 240, 0.75);
+  --color-border: rgba(20, 184, 166, 0.25);
+  --color-primary-rgb: 10, 17, 20;
+  --color-secondary-rgb: 20, 32, 38;
+  --color-accent-rgb: 20, 184, 166;
+  --color-accent-light-rgb: 32, 208, 191;
+  */
+
+  --gradient-angle: 0deg;
+
+  --font-primary: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-secondary: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
+  --container-width: 1200px;
+  --border-radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --section-padding: 8rem;
+  --header-height: 80px;
+}
+
+@keyframes gradientRotation {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  background: linear-gradient(
+    var(--gradient-angle),
+    var(--color-primary) 0%,
+    var(--color-secondary) 50%,
+    var(--color-primary) 100%
+  );
+  background-attachment: fixed;
+  background-size: 400% 400%;
+  animation: gradientRotation 15s linear infinite;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-primary);
+  color: var(--color-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(var(--color-primary-rgb), 0.2) 10%,
+    rgba(var(--color-primary-rgb), 0.7) 90%,
+    transparent 100%
+  );
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin-bottom: 1.25rem;
+}
+
+h3 {
+  font-size: clamp(1.75rem, 3vw, 2.2rem);
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--color-accent-light);
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: var(--container-width);
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem;
+}
+
+section {
+  padding: var(--section-padding) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+  color: white;
+  box-shadow: 0 4px 15px rgba(var(--color-accent-rgb), 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--color-accent-rgb), 0.4);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Utility classes */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-center {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.section-header {
+  margin-bottom: 4rem;
+  text-align: center;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.section-subtitle {
+  font-size: 1.25rem;
+  color: var(--color-text-secondary);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.7;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
   }
 }
 
-.card {
-  padding: 2em;
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.4;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+/* Media queries */
+@media (max-width: 1024px) {
+  :root {
+    --section-padding: 6rem;
+  }
+  
+  .section-header {
+    margin-bottom: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --section-padding: 4rem;
+    --header-height: 70px;
+  }
+  
+  .container {
+    padding: 0 1.5rem;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --section-padding: 3rem;
+  }
+  
+  .container {
+    padding: 0 1rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  p {
+    font-size: 1rem;
+  }
 }
