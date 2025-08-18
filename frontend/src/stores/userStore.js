@@ -43,24 +43,25 @@ const useUserStore = create(
         set({ isLoading: true, error: null });
         
         try {
-          if (!window.posAPI || !window.posAPI.login) {
-            throw new Error("POS API not available");
-          }
+          // if (!window.posAPI || !window.posAPI.login) {
+          //   throw new Error("POS API not available");
+          // }
 
-          const result = await window.posAPI.login(identifier, password);
-          console.log(result);
+          // const result = await window.posAPI.login(identifier, password);
+          // console.log(result);
           
-          if (result.success) {
+          if (/*result.success*/1) {
             set({
-              user: result.user,
-              accessToken: result.tokens?.accessToken || '',
-              permissions: result.permissions || [],
-              permissionCodes: result.permissionCodes || [],
+              // user: result.user,
+              user: {name:"debug user"},
+              // accessToken: result.tokens?.accessToken || '',
+              // permissions: result.permissions || [],
+              // permissionCodes: result.permissionCodes || [],
               isAuthenticated: true,
               isLoading: false,
               error: null
             });
-            console.log(result);
+            // console.log(result);
             return { success: true, user: result.user };
           } else {
             set({

@@ -14,7 +14,7 @@ import useUserStore from '../../stores/userStore';
 const ProtectedRoute = ({ 
   children, 
   requiredPermission, 
-  fallbackPath = '/sales-interface',
+  fallbackPath ,
   fallbackComponent = null 
 }) => {
   // Get authentication state and permission checking from userStore
@@ -22,7 +22,9 @@ const ProtectedRoute = ({
 
   // Check if user is authenticated
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/admin-login" replace />;
+  }else{
+
   }
 
   // If no permission required, render children

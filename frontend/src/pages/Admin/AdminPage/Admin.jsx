@@ -20,7 +20,7 @@ const Admin = () => {
     { id: 'portfolio', icon: <FiBriefcase />, label: 'Portfolio Items', path: '/admin/manage-portfolio' },
     { id: 'blog', icon: <FiFileText />, label: 'Blog Posts', path: '/admin/manage-blog' },
     { id: 'messages', icon: <FiMail />, label: 'Contact Messages', path: '/admin/manage-messages' },
-    { id: 'payslips', icon: <FiDollarSign />, label: 'Create Pay-slips', path: '/admin/payslips' },
+    { id: 'payslips', icon: <FiDollarSign />, label: 'Create Pay-slips', path: '/admin/pay-slip-generator' },
     { id: 'scheduler', icon: <FiCalendar />, label: 'Free Time Scheduler', path: '/admin/scheduler' },
   ];
 

@@ -1,0 +1,429 @@
+/* Payslip Generator Scoped CSS */
+.payslip-generator {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --light-color: #ecf0f1;
+    --dark-color: #2c3e50;
+    --border-color: #bdc3c7;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.payslip-generator * {
+    box-sizing: border-box;
+}
+
+.payslip-generator body {
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.payslip-generator .app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.payslip-generator .app-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.payslip-generator .app-header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.payslip-generator .app-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.payslip-generator .content-container {
+    display: flex;
+    flex: 1;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+@media (max-width: 992px) {
+    .payslip-generator .content-container {
+        flex-direction: column;
+    }
+}
+
+.payslip-generator .form-section,
+.payslip-generator .preview-section {
+    flex: 1;
+}
+
+.payslip-generator .preview-section h2 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.payslip-generator .form-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    color: #333;
+}
+
+.payslip-generator .form-card h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.payslip-generator .form-group {
+    margin-bottom: 1.2rem;
+}
+
+.payslip-generator .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.payslip-generator .form-group input,
+.payslip-generator .form-group select,
+.payslip-generator .form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    color: #333;
+    background-color: #fff;
+}
+
+.payslip-generator .form-group input:focus,
+.payslip-generator .form-group select:focus,
+.payslip-generator .form-group textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.payslip-generator .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.payslip-generator .form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.payslip-generator .form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.payslip-generator .file-input {
+    padding: 0.5rem;
+}
+
+.payslip-generator .read-only {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.payslip-generator .generate-btn {
+    background: linear-gradient(135deg, var(--secondary-color), #1a5f9e);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
+}
+
+.payslip-generator .generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(52, 152, 219, 0.4);
+}
+
+.payslip-generator .preview-container {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: auto;
+    color: #333;
+}
+
+.payslip-generator .payslip-container {
+    width: 21cm;
+    min-height: 29.7cm;
+    background: white;
+    padding: 1.5cm;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    color: #333;
+}
+
+.payslip-generator .payslip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.payslip-generator .company-logo {
+    margin-bottom: 1rem;
+    width: 120px;
+    height: 120px;
+    /* display: flex; */
+    align-items: left;
+    /* justify-content: center;  */
+}
+
+.payslip-generator .company-logo img {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+}
+
+.payslip-generator .company-info-container {
+    width: 100%;
+    text-align: center;
+}
+
+.payslip-generator .company-info {
+    margin-bottom: 1rem;
+}
+
+.payslip-generator .company-info h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.payslip-generator .company-address {
+    font-size: 0.9rem;
+    color: #555;
+    white-space: pre-line;
+}
+
+.payslip-generator .reference-info {
+    text-align: left;
+    margin-top: 0.5rem;
+}
+
+.payslip-generator .reference-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.payslip-generator .reference-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.payslip-generator .payslip-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.payslip-generator .payslip-title h2 {
+    font-size: 1.6rem;
+    color: var(--primary-color);
+    text-decoration: underline;
+    padding-bottom: 0.5rem;
+}
+
+.payslip-generator .employee-info,
+.payslip-generator .payment-info {
+    margin-bottom: 1.5rem;
+}
+
+.payslip-generator .info-item,
+.payslip-generator .payment-item {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.payslip-generator .info-label,
+.payslip-generator .payment-label {
+    width: 120px;
+    font-weight: 600;
+}
+
+.payslip-generator .info-value,
+.payslip-generator .payment-value {
+    flex: 1;
+}
+
+.payslip-generator .payment-value {
+    text-align: right;
+}
+
+.payslip-generator .net-pay {
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-bottom: 2px solid var(--dark-color);
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.payslip-generator .payment-mode {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.payslip-generator .mode-label {
+    font-weight: 600;
+    margin-right: 1rem;
+}
+
+.payslip-generator .mode-options {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.payslip-generator .mode-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.payslip-generator .mode-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.payslip-generator .mode-checkbox.checked {
+    background-color: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+}
+
+.payslip-generator .bank-details,
+.payslip-generator .bkash-details {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+.payslip-generator .bank-details h3,
+.payslip-generator .bkash-details h3 {
+    margin-bottom: 0.8rem;
+    color: var(--primary-color);
+}
+
+.payslip-generator .bank-grid,
+.payslip-generator .bkash-info {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0.5rem;
+}
+
+.payslip-generator .signature-section {
+    display: flex;
+    justify-content: flex-end; /* Better than "right" */
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+
+.payslip-generator .signature {
+    width: 45%;
+    text-align: center;
+}
+
+.payslip-generator .signature.authorized {
+    text-align: left; /* Align text to right */
+    padding-right: 2rem; /* Add some spacing from right edge */
+}
+
+.payslip-generator .signature-line {
+    width: 300px; /* Fixed width for signature line */
+    height: 1px;
+    background: var(--dark-color);
+    margin: 1rem 0 0 auto; /* Top right bottom left */
+    margin-right: 0; /* Ensure it aligns right */
+}
+
+.payslip-generator .footer-notes {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: #777;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.8rem;
+    white-space: pre-line;
+}
+.footer-notes p {
+    font-size: inherit;
+    color: #777;
+    line-height: 0%;
+  }
+
+.payslip-generator .note-hint {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.3rem;
+}
+
+.payslip-generator .logo-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.payslip-generator .reset-logo-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.payslip-generator .reset-logo-btn:hover {
+    background-color: #c0392b;
+}
+
+@media print {
+    .payslip-generator .app-header,
+    .payslip-generator .form-section,
+    .payslip-generator .preview-section h2 {
+        display: none;
+    }
+    .payslip-generator .preview-section,
+    .payslip-generator .preview-container,
+    .payslip-generator .payslip-container {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        box-shadow: none;
+    }
+}

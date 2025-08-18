@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiLock, FiMail, FiUser } from 'react-icons/fi';
 import './Login.css';
+import useUserStore from "../../../stores/userStore";
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { login} = useUserStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +19,7 @@ const Login = () => {
     
     try {
       console.log('Logging in with:', { email, password });
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const result = await login(email, password);
     } catch (err) {
       setError('Invalid credentials. Please try again.');
     } finally {
@@ -98,6 +100,7 @@ const Login = () => {
             type="submit" 
             className="login-button"
             disabled={loading}
+            onClick={handleSubmit}
           >
             {loading ? (
               <span className="spinner"></span>
