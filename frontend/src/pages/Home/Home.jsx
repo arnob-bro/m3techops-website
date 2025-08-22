@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './Home.css';
 
-// Icons
+
 import { FiArrowRight, FiCheck, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaReact, FaNodeJs, FaAws, FaDatabase, FaPython, FaLaptopCode } from 'react-icons/fa';
 
@@ -12,7 +12,7 @@ const Home = () => {
     document.title = "M3 TECHOPS | Innovative Digital Solutions";
   }, []);
 
-  // Services data
+  
   const services = [
     {
       id: 'web-development',
@@ -51,7 +51,7 @@ const Home = () => {
     },
   ];
 
-  // Projects data
+ 
   const projects = [
     {
       title: "E-commerce Platform",
@@ -79,7 +79,7 @@ const Home = () => {
     }
   ];
 
-  // Testimonials data
+
   const testimonials = [
     {
       name: "Sarah Johnson",
@@ -113,7 +113,7 @@ const Home = () => {
     }
   ];
 
-  // Animation variants
+ 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -201,7 +201,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* Hero Section - Unchanged as requested */}
+      
       <section className="home-hero">
         <div className="home-hero-bg"></div>
         <div className="container">
@@ -366,7 +366,7 @@ const Home = () => {
         variants={fadeInUp}
         viewport={{ once: true, margin: "-100px" }}
       >
-        Our <span className="accent">Expertise</span>
+        <span className="accent">Our Expertise</span>
       </motion.h2>
       <motion.p 
         className="section-subtitle"
@@ -435,7 +435,7 @@ const Home = () => {
               variants={fadeInUp}
               viewport={{ once: true, margin: "-100px" }}
             >
-              Featured <span className="accent">Projects</span>
+              <span className="accent">Featured Projects</span>
             </motion.h2>
             <motion.p 
               className="section-subtitle"
@@ -497,7 +497,7 @@ const Home = () => {
               variants={fadeInUp}
               viewport={{ once: true, margin: "-100px" }}
             >
-              What Our <span className="accent">Clients Say</span>
+              <span className="accent">What Our Clients Say</span>
             </motion.h2>
             <motion.p 
               className="section-subtitle"
@@ -599,3 +599,9 @@ const Home = () => {
 };
 
 export default Home;
+
+
+
+
+
+

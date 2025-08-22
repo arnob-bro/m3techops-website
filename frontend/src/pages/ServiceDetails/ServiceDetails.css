@@ -178,7 +178,7 @@
     font-weight: 800;
     background: linear-gradient(
       135deg,
-      white 0%,
+      var(--color-home-header-text) 0%,
       var(--color-text) 50%,
       var(--color-text-secondary) 100%
     );
@@ -277,7 +277,7 @@
   .servicedetails-technologies-section h2 {
     font-size: 2rem;
     margin-bottom: 2rem;
-    color: white;
+    color: var(--color-text);
     position: relative;
     display: inline-block;
     font-weight: 700;
@@ -410,6 +410,7 @@
     align-items: flex-start;
     position: relative;
     transition: all 0.3s ease;
+    color: var;
   }
   
   .servicedetails-process-step:hover {
@@ -486,7 +487,7 @@
   }
   
   .servicedetails-step-content h4 {
-    color: white;
+    color: var(--color-text-secondary);
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;

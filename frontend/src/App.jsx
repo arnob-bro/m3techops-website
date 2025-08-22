@@ -21,6 +21,8 @@ import ManageServices from "./pages/Admin/ManageServices/ManageServices";
 import ManagePortfolio from "./pages/Admin/ManagePortfolio/ManagePortfolio";
 import ManageBlog from "./pages/Admin/ManageBlogs/ManageBlogs";
 import PaySlipGenerator from "./pages/Admin/PaySlipGenerator/PaySlipGenerator";
+import ManageContact from "./pages/Admin/ManageContact/ManageContact";
+import Scheduler from "./pages/Admin/Scheduler/Scheduler";
 
 // Components
 import ProtectedRoute from "./components/PermissionComponents/ProtectedRoute";
@@ -64,6 +66,9 @@ function App() {
           <Route path="manage-portfolio" element={<ManagePortfolio />} />
           <Route path="manage-blog" element={<ManageBlog />} />
           <Route path="pay-slip-generator" element={<PaySlipGenerator />} />
+          <Route path="manage-messages" element={<ManageContact />} />
+          <Route path="scheduler" element={<Scheduler />} />
+          
         </Route>
 
         {/* Public routes wrapped in MainLayout */}

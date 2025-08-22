@@ -20,7 +20,7 @@
 
 
    /* dark  */
-   --color-primary: #000000; 
+   /* --color-primary: #000000; 
    --color-secondary: #111111; 
    --color-form-background: #8ab7d5; 
    --color-accent: #1CB0A2;
@@ -34,6 +34,70 @@
    --color-accent-rgb: 28, 176, 162;
    --color-accent-light-rgb: 6, 126, 204;
    --color-accent-warm-rgb: 251, 146, 39;
+   --color-home-header-text: #ffffff; */
+
+
+
+
+
+
+
+   /* --color-primary: #ffffff;
+   --color-secondary: #f8f9fa;
+   --color-form-background: #e9f5fe;
+   --color-accent: #16A99E;        
+   --color-accent-light: #0885CF;  
+   --color-accent-warm: #F88F24;   
+   --color-text: #2D3748;          
+   --color-text-secondary: #4A5568;
+   --color-border: #E2E8F0;
+   --color-primary-rgb: 255, 255, 255;
+   --color-secondary-rgb: 248, 249, 250;
+   --color-accent-rgb: 22, 169, 158;
+   --color-accent-light-rgb: 8, 133, 207;
+   --color-accent-warm-rgb: 248, 143, 36;
+   --color-home-header-text: #2D3748; */
+
+
+
+
+
+   /* Light Theme Colors */
+  --color-primary: #ffffff;
+  --color-secondary: #f8f9fa;
+  --color-form-background: #e9f5fe;
+  --color-accent: #16A99E;        
+  --color-accent-light: #0885CF;  
+  --color-accent-warm: #F88F24;   
+  --color-text: #2D3748;          
+  --color-text-secondary: #4A5568;
+  --color-border: #E2E8F0;
+  --color-primary-rgb: 255, 255, 255;
+  --color-secondary-rgb: 248, 249, 250;
+  --color-accent-rgb: 22, 169, 158;
+  --color-accent-rgb-darker: 18, 140, 131;
+  --color-accent-light-rgb: 8, 133, 207;
+  --color-accent-warm-rgb: 248, 143, 36;
+  --color-home-header-text: #2D3748;
+
+  /* Additional variables for consistency */
+  --font-primary: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-secondary: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --container-width: 1200px;
+  --border-radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --section-padding: 8rem;
+  --header-height: 80px;
+
+
+
+
+
+
+
+
+
+
 
 
 /* 

@@ -1,11 +1,11 @@
 /* Footer.css */
 .footer {
-  background: linear-gradient(
+  /* background: linear-gradient(
     135deg,
     rgba(var(--color-secondary-rgb), 0.95) 0%,
     rgba(var(--color-primary-rgb), 0.98) 50%,
     rgba(27, 27, 47, 0.95) 100%
-  );
+  ); */
   color: var(--color-text);
   padding: 4rem 0 0;
   position: relative;
@@ -138,7 +138,7 @@
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: white;
+  color:var(--color-text);
 }
 
 .footer-links-list {
@@ -219,7 +219,7 @@
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(16, 4, 4, 0.08);
   padding: 2rem 0;
   display: flex;
   justify-content: space-between;

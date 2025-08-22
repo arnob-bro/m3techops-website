@@ -43,7 +43,7 @@
   .blog-hero h1 {
     font-size: 3rem;
     margin-bottom: 1.5rem;
-    color: white;
+    color: var(--color-home-header-text);
   }
   
   .blog-hero p {
@@ -155,7 +155,7 @@
   .blog-title {
     font-size: 1.25rem;
     margin-bottom: 1rem;
-    color: white;
+    color: var(--color-text);
     transition: var(--transition);
   }
   
