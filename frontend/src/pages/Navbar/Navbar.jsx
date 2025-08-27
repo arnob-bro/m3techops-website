@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import './Navbar.css';
 import logo from '../../assets/images/m3logo.png';
@@ -11,6 +11,7 @@ const Navbar = () => {
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const mobileMenuRef = useRef(null);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,6 +63,13 @@ const Navbar = () => {
     setMobileMenuOpen(false);
   };
 
+  const isActiveLink = (path) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
+
   const serviceItems = [
     { name: 'Web Development', id: 'web-development' },
     { name: 'Mobile App Development', id: 'mobile-development' },
@@ -107,32 +115,97 @@ const Navbar = () => {
         </div>
 
         <div 
-          className={`navbar-links ${mobileMenuOpen ? 'active' : ''}`}
+          className={`navbar-sidebar ${mobileMenuOpen ? 'active' : ''}`}
           ref={mobileMenuRef}
         >
-          {navLinks.map((link, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * index }}
+          <div className="sidebar-content">
+            {navLinks.map((link, index) => (
+              <div key={index} className="sidebar-link-container">
+                {link.dropdown ? (
+                  <div 
+                    className="sidebar-link-wrapper"
+                    ref={dropdownRef}
+                  >
+                    <div 
+                      className={`sidebar-link ${isActiveLink('/services') ? 'active' : ''}`}
+                      onClick={toggleServicesDropdown}
+                    >
+                      {link.name}
+                      <svg
+                        width="12"
+                        height="8"
+                        viewBox="0 0 12 8"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`dropdown-icon ${servicesDropdownOpen ? 'open' : ''}`}
+                      >
+                        <path
+                          d="M1 1.5L6 6.5L11 1.5"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+
+                    <AnimatePresence>
+                      {servicesDropdownOpen && (
+                        <motion.div
+                          className="sidebar-dropdown"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {serviceItems.map((service, i) => (
+                            <Link
+                              key={i}
+                              to={`/services/${service.id}`}
+                              className={`sidebar-dropdown-item ${isActiveLink(`/services/${service.id}`) ? 'active' : ''}`}
+                              onClick={closeAllMenus}
+                            >
+                              {service.name}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ) : (
+                  <Link 
+                    to={link.path} 
+                    className={`sidebar-link ${isActiveLink(link.path) ? 'active' : ''}`}
+                    onClick={closeAllMenus}
+                  >
+                    {link.name}
+                  </Link>
+                )}
+              </div>
+            ))}
+            
+            <Link 
+              to="/contact" 
+              className="sidebar-cta"
+              onClick={closeAllMenus}
             >
+              Get Started
+            </Link>
+          </div>
+        </div>
+
+        <div className="navbar-links">
+          {navLinks.map((link, index) => (
+            <div key={index} className="navbar-link-container">
               {link.dropdown ? (
                 <div 
                   className="navbar-link-container"
                   ref={dropdownRef}
-                  onMouseEnter={!mobileMenuOpen ? () => setServicesDropdownOpen(true) : undefined}
-                  onMouseLeave={!mobileMenuOpen ? () => setServicesDropdownOpen(false) : undefined}
+                  onMouseEnter={() => setServicesDropdownOpen(true)}
+                  onMouseLeave={() => setServicesDropdownOpen(false)}
                 >
                   <div 
-                    className="navbar-link dropdown-trigger"
-                    onClick={() => {
-                      if (mobileMenuOpen) {
-                        toggleServicesDropdown();
-                      } else {
-                        setServicesDropdownOpen(true);
-                      }
-                    }}
+                    className={`navbar-link dropdown-trigger ${isActiveLink('/services') ? 'active' : ''}`}
                   >
                     {link.name}
                     <svg
@@ -156,7 +229,7 @@ const Navbar = () => {
                   <AnimatePresence>
                     {servicesDropdownOpen && (
                       <motion.div
-                        className={`services-dropdown ${mobileMenuOpen ? 'mobile' : ''}`}
+                        className="services-dropdown"
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
@@ -166,11 +239,8 @@ const Navbar = () => {
                           <Link
                             key={i}
                             to={`/services/${service.id}`}
-                            className="dropdown-item"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              closeAllMenus();
-                            }}
+                            className={`dropdown-item ${isActiveLink(`/services/${service.id}`) ? 'active' : ''}`}
+                            onClick={closeAllMenus}
                           >
                             {service.name}
                           </Link>
@@ -182,28 +252,20 @@ const Navbar = () => {
               ) : (
                 <Link 
                   to={link.path} 
-                  className="navbar-link"
-                  onClick={closeAllMenus}
+                  className={`navbar-link ${isActiveLink(link.path) ? 'active' : ''}`}
                 >
                   {link.name}
                 </Link>
               )}
-            </motion.div>
+            </div>
           ))}
           
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+          <Link 
+            to="/contact" 
+            className={`navbar-cta ${isActiveLink('/contact') ? 'active' : ''}`}
           >
-            <Link 
-              to="/login" 
-              className="navbar-cta"
-              onClick={closeAllMenus}
-            >
-              Get Started
-            </Link>
-          </motion.div>
+            Get Started
+          </Link>
         </div>
       </div>
     </motion.nav>

@@ -1,17 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import './Admin.css';
 import { FiMenu, FiX, FiHome, FiSettings, FiFileText, FiBriefcase, FiMail, FiDollarSign, FiCalendar } from 'react-icons/fi';
 
 const Admin = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const location = useLocation();
   
   // Extract the active tab from the current URL path
   const activeTab = location.pathname.split('/').pop() || 'dashboard';
 
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      
+      // Auto-close sidebar on mobile when resizing to desktop
+      if (!mobile && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [sidebarOpen]);
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
   };
 
   const navItems = [
@@ -25,7 +47,19 @@ const Admin = () => {
   ];
 
   return (
-    <div className={`admin-container ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+    <div className={`admin-container ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'} ${isMobile ? 'mobile-view' : ''}`}>
+      {/* Mobile menu button */}
+      {isMobile && (
+        <button className="mobile-menu-button" onClick={toggleSidebar}>
+          <FiMenu />
+        </button>
+      )}
+      
+      {/* Sidebar overlay for mobile */}
+      {isMobile && sidebarOpen && (
+        <div className="sidebar-overlay" onClick={closeSidebar}></div>
+      )}
+
       {/* Sidebar */}
       <div className="admin-sidebar">
         <div className="sidebar-header">
@@ -41,10 +75,11 @@ const Admin = () => {
               <li 
                 key={item.id} 
                 className={activeTab === item.id ? 'active' : ''}
+                onClick={closeSidebar}
               >
                 <Link to={item.path} className="nav-link">
                   <span className="nav-icon">{item.icon}</span>
-                  {sidebarOpen && <span className="nav-label">{item.label}</span>}
+                  {(!isMobile || sidebarOpen) && <span className="nav-label">{item.label}</span>}
                 </Link>
               </li>
             ))}

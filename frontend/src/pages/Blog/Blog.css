@@ -152,14 +152,14 @@
     color: var(--color-text-secondary);
   }
   
-  .blog-title {
+  .blog-title-header {
     font-size: 1.25rem;
     margin-bottom: 1rem;
     color: var(--color-text);
     transition: var(--transition);
   }
   
-  .blog-card:hover .blog-title {
+  .blog-card:hover .blog-title-header{
     color: var(--color-accent);
   }
   
@@ -185,7 +185,7 @@
   
   .blog-card:hover .blog-read-more {
     color: var(--color-accent-light);
-    transform: translateX(5px);
+    transform: translateX(10px);
   }
   
   .blog-card:hover .blog-read-more svg {

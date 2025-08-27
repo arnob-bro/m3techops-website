@@ -172,7 +172,7 @@ const Blog = () => {
                           <span className="blog-date">{blog.date}</span>
                           <span className="blog-read-time">{blog.readTime}</span>
                         </div>
-                        <h3 className="blog-title">{blog.title}</h3>
+                        <h3 className="blog-title-header">{blog.title}</h3>
                         <p className="blog-excerpt">{blog.excerpt}</p>
                         <div className="blog-read-more">
                           Read Article
