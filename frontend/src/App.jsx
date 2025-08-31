@@ -13,6 +13,9 @@ import ContactUs from "./pages/ContactUs/ContactUs";
 import AboutUs from "./pages/AboutUs/AboutUs";
 import Navbar from "./pages/Navbar/Navbar";
 import Footer from "./pages/Footer/Footer";
+import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy/CookiePolicy";
+import TermsOfService from "./pages/TermsOfService/TermsOfService";
 
 // Admin pages
 import Login from "./pages/Admin/LoginPage/Login";
@@ -82,6 +85,11 @@ function App() {
           <Route path="/blog/:id" element={<BlogDetails />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/cookies" element={<CookiePolicy />} />
+          
+
         </Route>
 
         {/* Catch-all 404 route */}

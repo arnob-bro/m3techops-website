@@ -17,6 +17,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+  
 }
 
 /* Loading States */
@@ -136,6 +137,7 @@
 }
 
 .blog-meta {
+  
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -144,7 +146,7 @@
   font-size: 0.95rem;
 }
 
-.blog-category {
+.blog-details-category {
   background: rgba(var(--color-accent-rgb), 0.9);
   color: white;
   padding: 0.25rem 0.75rem;

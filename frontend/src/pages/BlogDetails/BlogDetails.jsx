@@ -332,7 +332,7 @@ const BlogDetails = () => {
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             <div className="blog-meta">
-              <span className="blog-category">{blog.category}</span>
+              <span className="blog-details-category">{blog.category}</span>
               <span className="blog-date">{blog.date}</span>
               <span className="blog-read-time">{blog.readTime}</span>
             </div>
