@@ -1,18 +1,42 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Home.css';
-
 import { FiArrowRight, FiCheck, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaReact, FaNodeJs, FaAws, FaDatabase, FaPython, FaLaptopCode } from 'react-icons/fa';
 
 const Home = () => {
-  const location = useLocation();
+  const servicesRef = useRef(null);
+  const projectsRef = useRef(null);
   
   useEffect(() => {
     document.title = "M3 TECHOPS | Innovative Digital Solutions";
+    
+    // Animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate');
+        }
+      });
+    }, observerOptions);
+    
+    // Observe all sections
+    document.querySelectorAll('.home-services, .home-projects, .home-testimonials, .home-cta')
+      .forEach(section => observer.observe(section));
+      
+    return () => observer.disconnect();
+  }, []);
+
+  // Scroll to top when navigating
+  const handleLinkClick = () => {
     window.scrollTo(0, 0);
-  }, [location]);
+  };
 
   const services = [
     {
@@ -199,7 +223,18 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      
+      {/* Background Texture Elements */}
+      <div className="background-texture">
+        <div className="texture-circle texture-circle-1"></div>
+        <div className="texture-circle texture-circle-2"></div>
+        <div className="texture-circle texture-circle-3"></div>
+        <div className="texture-circle texture-circle-4"></div>
+        <div className="texture-circle texture-circle-5"></div>
+        <div className="texture-dots"></div>
+        <div className="texture-grid"></div>
+      </div>
+
+      {/* Hero Section */}
       <section className="home-hero">
         <div className="home-hero-bg"></div>
         <div className="container">
@@ -228,10 +263,10 @@ const Home = () => {
                 className="home-hero-cta-container"
                 variants={itemVariants}
               >
-                <Link to="/contact" className="btn btn-primary">
+                <Link to="/contact" className="btn btn-primary" onClick={handleLinkClick}>
                   Get Started <FiArrowRight />
                 </Link>
-                <Link to="/projects" className="btn btn-outline">
+                <Link to="/projects" className="btn btn-outline" onClick={handleLinkClick}>
                   View Our Work
                 </Link>
               </motion.div>
@@ -354,7 +389,7 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section className="home-services">
+      <section className="home-services" ref={servicesRef}>
         <div className="container">
           <div className="section-header">
             <motion.h2 
@@ -413,7 +448,7 @@ const Home = () => {
                     </motion.li>
                   ))}
                 </ul>
-                <Link to={`/services/${service.id}`} className="home-service-link">
+                <Link to={`/services/${service.id}`} className="home-service-link" onClick={handleLinkClick}>
                   Learn More <FiArrowRight />
                 </Link>
               </motion.div>
@@ -423,7 +458,7 @@ const Home = () => {
       </section>
 
       {/* Projects Section */}
-      <section className="home-projects">
+      <section className="home-projects" ref={projectsRef}>
         <div className="container">
           <div className="section-header">
             <motion.h2 
@@ -472,7 +507,7 @@ const Home = () => {
                       <span className="project-category">{project.category}</span>
                       <h3 className="project-title">{project.title}</h3>
                       <p className="project-description">{project.description}</p>
-                      <Link to="/projects" className="project-link">
+                      <Link to="/projects" className="project-link" onClick={handleLinkClick}>
                         View Project <FiArrowRight />
                       </Link>
                     </div>
@@ -533,6 +568,7 @@ const Home = () => {
                     y: -5,
                     boxShadow: "0 15px 30px rgba(0, 0, 0, 0.25)"
                   }}
+                  style={{ '--index': index }}
                 >
                   <div className="testimonial-content">
                     <p className="testimonial-text">{testimonial.content}</p>
@@ -581,10 +617,10 @@ const Home = () => {
                 Let's discuss how we can help transform your business with innovative digital solutions.
               </p>
               <div className="home-cta-buttons">
-                <Link to="/contact" className="btn btn-primary">
+                <Link to="/contact" className="btn btn-primary" onClick={handleLinkClick}>
                   Start Your Project
                 </Link>
-                <Link to="/services" className="btn btn-outline">
+                <Link to="/services" className="btn btn-outline" onClick={handleLinkClick}>
                   Explore Services
                 </Link>
               </div>

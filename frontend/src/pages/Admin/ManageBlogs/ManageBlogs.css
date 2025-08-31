@@ -655,3 +655,34 @@
       width: 100%;
     }
   }
+
+
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+    }
+  
+    .edit-icon,
+    .delete-icon {
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s ease;
+    }
+  
+    .edit-icon {
+      color: #3b82f6;
+    }
+  
+    .edit-icon:hover {
+      color: #2563eb;
+      transform: scale(1.2);
+    }
+  
+    .delete-icon {
+      color: #ef4444;
+    }
+  
+    .delete-icon:hover {
+      color: #dc2626;
+      transform: scale(1.2);
+    }

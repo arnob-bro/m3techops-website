@@ -641,3 +641,36 @@
       order: -1;
     }
   }
+
+
+
+
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+    }
+  
+    .view-icon,
+    .delete-icon {
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.2s ease;
+    }
+  
+    .view-icon {
+      color: #3b82f6;
+    }
+  
+    .view-icon:hover {
+      color: #2563eb;
+      transform: scale(1.2);
+    }
+  
+    .delete-icon {
+      color: #ef4444;
+    }
+  
+    .delete-icon:hover {
+      color: #dc2626;
+      transform: scale(1.2);
+    }

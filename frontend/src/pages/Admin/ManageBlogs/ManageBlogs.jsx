@@ -283,23 +283,19 @@ const ManageBlog = () => {
                     </button>
                   </td>
                   <td>
-                    <div className="action-buttons">
-                      <button 
-                        onClick={() => openEditModal(post)} 
-                        className="edit-btn"
-                        aria-label="Edit post"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button 
-                        onClick={() => deletePost(post.id)} 
-                        className="delete-btn"
-                        aria-label="Delete post"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  </td>
+  <div className="action-buttons">
+    <FaEdit 
+      onClick={() => openEditModal(post)} 
+      className="edit-icon"
+      aria-label="Edit post"
+    />
+    <FaTrash 
+      onClick={() => deletePost(post.id)} 
+      className="delete-icon"
+      aria-label="Delete post"
+    />
+  </div>
+</td>
                 </tr>
               ))
             ) : (

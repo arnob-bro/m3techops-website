@@ -26,6 +26,7 @@ import ManageBlog from "./pages/Admin/ManageBlogs/ManageBlogs";
 import PaySlipGenerator from "./pages/Admin/PaySlipGenerator/PaySlipGenerator";
 import ManageContact from "./pages/Admin/ManageContact/ManageContact";
 import Scheduler from "./pages/Admin/Scheduler/Scheduler";
+import ManageEmployee from "./pages/Admin/ManageEmployee/ManageEmployee";
 
 // Components
 import ProtectedRoute from "./components/PermissionComponents/ProtectedRoute";
@@ -71,6 +72,8 @@ function App() {
           <Route path="pay-slip-generator" element={<PaySlipGenerator />} />
           <Route path="manage-messages" element={<ManageContact />} />
           <Route path="scheduler" element={<Scheduler />} />
+          <Route path="employee-management" element={<ManageEmployee />} />
+          
           
         </Route>
 
