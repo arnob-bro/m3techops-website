@@ -18,9 +18,6 @@
   --admin-sidebar-hover: #475569;
   --admin-sidebar-active: #1CB0A2;
 
-
-
-
   --admin-pages-primary: #f8fafc;
   --admin-pages-secondary: #ffffff;
   --admin-pages-accent: #1CB0A2;
@@ -39,16 +36,22 @@
   --admin-pages-warning: #f59e0b;
   --admin-pages-error: #ef4444;
   --admin-pages-inactive: #f3f4f6;
-
+  --admin-details-button:#067ECC;
+  --admin-delete-button:#ef4444;
 }
 
-/* ===== Admin Container ===== */
+/* ===== Base Styles ===== */
+* {
+  box-sizing: border-box;
+}
+
 .admin-container {
   display: flex;
   min-height: 100vh;
   background-color: var(--admin-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 /* ===== Sidebar Styles ===== */
@@ -205,48 +208,39 @@
   margin-left: 80px;
 }
 
-/* ===== Responsive Design ===== */
-@media (max-width: 1024px) {
-  .admin-sidebar {
-    width: 280px;
-    transform: translateX(-100%);
-  }
-
-  .sidebar-open .admin-sidebar {
-    transform: translateX(0);
-  }
-
-  .admin-content {
-    margin-left: 0;
-  }
-
-  .sidebar-closed .admin-content {
-    margin-left: 0;
-  }
-
-  .sidebar-header {
-    padding: 20px;
-  }
+/* ===== Mobile Menu Button ===== */
+.mobile-menu-button {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 900;
+  background: var(--admin-secondary);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 10px var(--admin-shadow);
+  color: var(--admin-text-primary);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .admin-sidebar {
-    width: 100%;
-  }
+.mobile-menu-button:hover {
+  background: var(--admin-hover);
+  transform: scale(1.05);
+}
 
-  .sidebar-header h3 {
-    font-size: 18px;
-  }
-
-  .nav-link {
-    padding: 14px 20px;
-    font-size: 14px;
-  }
-
-  .nav-icon {
-    font-size: 18px;
-    margin-right: 14px;
-  }
+/* ===== Mobile Overlay ===== */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
 /* ===== Scroll Styles ===== */
@@ -290,3 +284,184 @@
 .sidebar-nav li:nth-child(5) { animation-delay: 0.3s; }
 .sidebar-nav li:nth-child(6) { animation-delay: 0.35s; }
 .sidebar-nav li:nth-child(7) { animation-delay: 0.4s; }
+
+/* ===== Responsive Design ===== */
+
+/* Tablets and smaller screens */
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    width: 280px;
+    transform: translateX(-100%);
+  }
+  
+  .sidebar-open .admin-sidebar {
+    transform: translateX(0);
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .admin-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .sidebar-closed .admin-content {
+    margin-left: 0;
+  }
+  
+  .sidebar-header {
+    padding: 20px 16px;
+  }
+  
+  .mobile-menu-button {
+    display: block;
+  }
+  
+  .sidebar-open .sidebar-overlay {
+    display: block;
+  }
+  
+  /* Adjust sidebar when open on mobile */
+  .sidebar-open .admin-sidebar {
+    width: 280px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 100%;
+    max-width: 320px;
+  }
+  
+  .sidebar-header {
+    padding: 18px 16px;
+    min-height: 70px;
+  }
+  
+  .sidebar-header h3 {
+    font-size: 18px;
+  }
+  
+  .nav-link {
+    padding: 16px 20px;
+    font-size: 16px; /* Slightly larger for touch */
+  }
+  
+  .nav-icon {
+    font-size: 22px;
+    margin-right: 16px;
+    width: 26px;
+    height: 26px;
+  }
+  
+  .sidebar-nav li {
+    margin: 6px 12px;
+  }
+  
+  /* Ensure content area has proper padding on mobile */
+  .admin-content {
+    padding: 20px 15px;
+    padding-top: 70px; /* Account for mobile menu button */
+  }
+  
+  .mobile-menu-button {
+    top: 15px;
+    left: 15px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .admin-sidebar {
+    max-width: 280px;
+  }
+  
+  .sidebar-header {
+    padding: 16px 14px;
+    min-height: 65px;
+  }
+  
+  .sidebar-header h3 {
+    font-size: 16px;
+  }
+  
+  .nav-link {
+    padding: 14px 16px;
+  }
+  
+  .nav-icon {
+    font-size: 20px;
+    margin-right: 14px;
+  }
+  
+  .sidebar-toggle {
+    padding: 6px;
+    font-size: 18px;
+  }
+  
+  .admin-content {
+    padding: 15px 12px;
+    padding-top: 65px;
+  }
+  
+  .mobile-menu-button {
+    top: 12px;
+    left: 12px;
+    padding: 8px;
+  }
+}
+
+/* Very small devices */
+@media (max-width: 360px) {
+  .admin-sidebar {
+    max-width: 100%;
+    border-radius: 0;
+  }
+  
+  .sidebar-nav li {
+    margin: 4px 8px;
+  }
+  
+  .nav-link {
+    padding: 12px 14px;
+  }
+  
+  .nav-icon {
+    margin-right: 12px;
+  }
+}
+
+/* High-resolution displays */
+@media (min-width: 1400px) {
+  .admin-sidebar {
+    width: 300px;
+  }
+  
+  .sidebar-closed .admin-sidebar {
+    width: 90px;
+  }
+  
+  .admin-content {
+    margin-left: 300px;
+  }
+  
+  .sidebar-closed .admin-content {
+    margin-left: 90px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .admin-sidebar {
+    display: none;
+  }
+  
+  .admin-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .mobile-menu-button {
+    display: none;
+  }
+}

@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
+
+
   /* ===== Violet + Teal Fusion Palette ===== */
   
   /* --color-primary: #0e0d1b;
@@ -17,10 +19,8 @@
 
 
 
-
-
-   /* dark  */
-   --color-primary: #000000; 
+   /* dark n green*/
+   /* --color-primary: #000000; 
    --color-secondary: #111111; 
    --color-form-background: #8ab7d5; 
    --color-accent: #1CB0A2;
@@ -34,298 +34,44 @@
    --color-accent-rgb: 28, 176, 162;
    --color-accent-light-rgb: 6, 126, 204;
    --color-accent-warm-rgb: 251, 146, 39;
+   --color-home-header-text: #ffffff; */
 
 
-/* 
-  --color-primary: #ffffff; 
-  --color-secondary: #FFF7F0; 
-  --color-accent: #FB9227; 
-  --color-accent-light: #FFC98B;
-  --color-accent-cool: #067ECC;
-  --color-accent-cool-light: #5FB7E5; 
-  --color-text: rgba(20, 20, 20, 0.92);
-  --color-text-secondary: rgba(20, 20, 20, 0.65);
-  --color-border: rgba(251, 146, 39, 0.25);
+
+
+
+   /* Light Theme Colors */
+  --color-primary: #ffffff;
+  --color-secondary: #f8f9fa;
+  --color-form-background: #e9f5fe;
+  --color-accent: #16A99E;        
+  --color-accent-light: #0885CF;  
+  --color-accent-warm: #F88F24;   
+  --color-text: #2D3748;          
+  --color-text-secondary: #4A5568;
+  --color-border: #E2E8F0;
   --color-primary-rgb: 255, 255, 255;
-  --color-secondary-rgb: 255, 247, 240;
-  --color-accent-rgb: 251, 146, 39;
-  --color-accent-light-rgb: 255, 201, 139;
-  --color-accent-cool-rgb: 6, 126, 204;
-  --color-accent-cool-light-rgb: 95, 183, 229; */
-  
+  --color-secondary-rgb: 248, 249, 250;
+  --color-accent-rgb: 22, 169, 158;
+  --color-accent-rgb-darker: 18, 140, 131;
+  --color-accent-light-rgb: 8, 133, 207;
+  --color-accent-warm-rgb: 248, 143, 36;
+  --color-home-header-text: #2D3748;
 
- 
-
-/* ligher violet */
-/* --color-primary: #151052;
-  --color-secondary: #4326a9;
-  --color-accent: #1a0f61;
-  --color-accent-light: #00b4d8;
-  --color-text: rgba(255, 255, 255, 0.92);
-  --color-text-secondary: rgba(200, 210, 220, 0.75);
-  --color-border: rgba(90, 24, 154, 0.25);
-  --color-primary-rgb: 14, 13, 27;
-  --color-secondary-rgb: 28, 18, 64;
-  --color-accent-rgb: 90, 24, 154;
-  --color-accent-light-rgb: 0, 180, 216;  */
-
-
-
- /*logo colors */
-
-  /* --color-primary: #ffffff;
---color-secondary: #F5F5F2;
---color-accent: #067ECC; 
---color-accent-light: #1CB0A2; 
---color-accent-warm: #FB9227; 
---color-text: rgba(20, 20, 20, 0.92);
---color-text-secondary: rgba(20, 20, 20, 0.65);
---color-border: rgba(0, 0, 0, 0.08);
---color-primary-rgb: 255, 255, 255;
---color-secondary-rgb: 245, 245, 242;
---color-accent-rgb: 6, 126, 204;
---color-accent-light-rgb: 28, 176, 162;
---color-accent-warm-rgb: 251, 146, 39; */
-
-
-  
-
-
-  /*logo colors */
-
-  /* --color-primary: #FFFFFF;
-  --color-secondary: #E8E8E0; 
-  --color-accent: #1CB0A2; 
-  --color-accent-light: #067ECC; 
-  --color-accent-warm: #FB9227; 
-  --color-text-secondary: rgba(15, 15, 15, 0.6);
-  --color-border: rgba(0, 0, 0, 0.06);
-  --color-primary-rgb: 255, 255, 255;
-  --color-secondary-rgb: 232, 232, 224;
-  --color-accent-rgb: 28, 176, 162;
-  --color-accent-light-rgb: 6, 126, 204;
-  --color-accent-warm-rgb: 251, 146, 39;
-   */
-
-
-
-   /*logo colors */
-
-  /* --color-primary: #000000;
-  --color-secondary: #000000; 
-  --color-accent: #1CB0A2; 
-  --color-accent-light: #067ECC; 
-  --color-accent-warm: #FB9227; 
-  --color-text-secondary: rgba(15, 15, 15, 0.6);
-  --color-border: rgba(0, 0, 0, 0.06);
-  --color-primary-rgb: 255, 255, 255;
-  --color-secondary-rgb: 232, 232, 224;
-  --color-accent-rgb: 28, 176, 162;
-  --color-accent-light-rgb: 6, 126, 204;
-  --color-accent-warm-rgb: 251, 146, 39;
-   */
-  
+  /* Additional variables for consistency */
+  --font-primary: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-secondary: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --container-width: 1200px;
+  --border-radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --section-padding: 8rem;
+  --header-height: 80px;
 
 
 
 
 
-  
-   
-  
 
-  /* ===== Midnight Ocean Palette ===== */
-  
-  /* --color-primary: #0a0f1e;
-  --color-secondary: #152238;
-  --color-accent: #0077b6;
-  --color-accent-light: #00b4d8;
-  --color-text: rgba(255, 255, 255, 0.88);
-  --color-text-secondary: rgba(180, 200, 220, 0.7);
-  --color-border: rgba(0, 119, 182, 0.3);
-  --color-primary-rgb: 10, 15, 30;
-  --color-secondary-rgb: 21, 34, 56;
-  --color-accent-rgb: 0, 119, 182;
-  --color-accent-light-rgb: 0, 180, 216;
-  */
-
-  /* ===== Cyber Tech Palette (ACTIVE) ===== */
-  /* --color-primary: #0d0d0d;
-  --color-secondary: #1a1a2e;
-  --color-accent: #00f5d4;
-  --color-accent-light: #00bbf9;
-  --color-text: rgba(255, 255, 255, 0.87);
-  --color-text-secondary: rgba(200, 200, 200, 0.8);
-  --color-border: rgba(0, 245, 212, 0.3);
-  --color-primary-rgb: 13, 13, 13;
-  --color-secondary-rgb: 26, 26, 46;
-  --color-accent-rgb: 0, 245, 212;
-  --color-accent-light-rgb: 0, 187, 249; */
-
-  /* ===== Neon Synthwave Palette ===== */
-  /*
-  --color-primary: #0a0a0f;
-  --color-secondary: #1a0f2e;
-  --color-accent: #ff006e;
-  --color-accent-light: #8338ec;
-  --color-text: rgba(255, 255, 255, 0.9);
-  --color-text-secondary: rgba(220, 180, 255, 0.75);
-  --color-border: rgba(255, 0, 110, 0.3);
-  --color-primary-rgb: 10, 10, 15;
-  --color-secondary-rgb: 26, 15, 46;
-  --color-accent-rgb: 255, 0, 110;
-  --color-accent-light-rgb: 131, 56, 236;
-  */
-
-  /* ===== Forest Emerald Palette ===== */
-  /*
-  --color-primary: #0f1419;
-  --color-secondary: #1e2d24;
-  --color-accent: #10b981;
-  --color-accent-light: #34d399;
-  --color-text: rgba(255, 255, 255, 0.88);
-  --color-text-secondary: rgba(200, 230, 210, 0.75);
-  --color-border: rgba(16, 185, 129, 0.25);
-  --color-primary-rgb: 15, 20, 25;
-  --color-secondary-rgb: 30, 45, 36;
-  --color-accent-rgb: 16, 185, 129;
-  --color-accent-light-rgb: 52, 211, 153;
-  */
-
-  /* ===== Sunset Orange Palette ===== */
-  /*
-  --color-primary: #1a0f0a;
-  --color-secondary: #2d1b0f;
-  --color-accent: #f97316;
-  --color-accent-light: #fb923c;
-  --color-text: rgba(255, 255, 255, 0.9);
-  --color-text-secondary: rgba(255, 220, 180, 0.8);
-  --color-border: rgba(249, 115, 22, 0.3);
-  --color-primary-rgb: 26, 15, 10;
-  --color-secondary-rgb: 45, 27, 15;
-  --color-accent-rgb: 249, 115, 22;
-  --color-accent-light-rgb: 251, 146, 60;
-  */
-
-  /* ===== Royal Purple Palette ===== */
-  
-  /* --color-primary: #0f0a1a;
-  --color-secondary: #1e1430;
-  --color-accent: #7c3aed;
-  --color-accent-light: #a855f7;
-  --color-text: rgba(255, 255, 255, 0.9);
-  --color-text-secondary: rgba(220, 200, 255, 0.75);
-  --color-border: rgba(124, 58, 237, 0.25);
-  --color-primary-rgb: 15, 10, 26;
-  --color-secondary-rgb: 30, 20, 48;
-  --color-accent-rgb: 124, 58, 237;
-  --color-accent-light-rgb: 168, 85, 247; */
- 
-
-  /* ===== Arctic Blue Palette ===== */
-  /*
-  --color-primary: #0a141f;
-  --color-secondary: #162535;
-  --color-accent: #0ea5e9;
-  --color-accent-light: #38bdf8;
-  --color-text: rgba(255, 255, 255, 0.88);
-  --color-text-secondary: rgba(180, 220, 255, 0.7);
-  --color-border: rgba(14, 165, 233, 0.3);
-  --color-primary-rgb: 10, 20, 31;
-  --color-secondary-rgb: 22, 37, 53;
-  --color-accent-rgb: 14, 165, 233;
-  --color-accent-light-rgb: 56, 189, 248;
-  */
-
-  /* ===== Rose Gold Palette ===== */
-  /*
-  --color-primary: #1a0f14;
-  --color-secondary: #2d1b24;
-  --color-accent: #e11d48;
-  --color-accent-light: #f43f5e;
-  --color-text: rgba(255, 255, 255, 0.9);
-  --color-text-secondary: rgba(255, 200, 220, 0.8);
-  --color-border: rgba(225, 29, 72, 0.25);
-  --color-primary-rgb: 26, 15, 20;
-  --color-secondary-rgb: 45, 27, 36;
-  --color-accent-rgb: 225, 29, 72;
-  --color-accent-light-rgb: 244, 63, 94;
-  */
-
-  /* ===== Electric Lime Palette ===== */
-  /*
-  --color-primary: #0f1a0a;
-  --color-secondary: #1a2d14;
-  --color-accent: #84cc16;
-  --color-accent-light: #a3e635;
-  --color-text: rgba(255, 255, 255, 0.88);
-  --color-text-secondary: rgba(220, 255, 180, 0.75);
-  --color-border: rgba(132, 204, 22, 0.3);
-  --color-primary-rgb: 15, 26, 10;
-  --color-secondary-rgb: 26, 45, 20;
-  --color-accent-rgb: 132, 204, 22;
-  --color-accent-light-rgb: 163, 230, 53;
-  */
-
-  /* ===== Deep Space Palette ===== */
-  
-  /* --color-primary: #050510;
-  --color-secondary: #0f0f23;
-  --color-accent: #6366f1;
-  --color-accent-light: #818cf8;
-  --color-text: rgba(255, 255, 255, 0.85);
-  --color-text-secondary: rgba(200, 200, 255, 0.7);
-  --color-border: rgba(99, 102, 241, 0.25);
-  --color-primary-rgb: 5, 5, 16;
-  --color-secondary-rgb: 15, 15, 35;
-  --color-accent-rgb: 99, 102, 241;
-  --color-accent-light-rgb: 129, 140, 248; */
- 
-
-  /* ===== Amber Glow Palette ===== */
-  /*
-  --color-primary: #1a1000;
-  --color-secondary: #2d1f00;
-  --color-accent: #f59e0b;
-  --color-accent-light: #fbbf24;
-  --color-text: rgba(255, 255, 255, 0.9);
-  --color-text-secondary: rgba(255, 240, 180, 0.8);
-  --color-border: rgba(245, 158, 11, 0.3);
-  --color-primary-rgb: 26, 16, 0;
-  --color-secondary-rgb: 45, 31, 0;
-  --color-accent-rgb: 245, 158, 11;
-  --color-accent-light-rgb: 251, 191, 36;
-  */
-
-  /* ===== Matrix Green Palette ===== */
-  
-  /* --color-primary: #0a0f0a;
-  --color-secondary: #0f1a0f;
-  --color-accent: #00ff41;
-  --color-accent-light: #39ff14;
-  --color-text: rgba(255, 255, 255, 0.85);
-  --color-text-secondary: rgba(180, 255, 180, 0.8);
-  --color-border: rgba(0, 255, 65, 0.3);
-  --color-primary-rgb: 10, 15, 10;
-  --color-secondary-rgb: 15, 26, 15;
-  --color-accent-rgb: 0, 255, 65;
-  --color-accent-light-rgb: 57, 255, 20;
-  */
-
-  /* ===== Cosmic Teal Palette ===== */
-  /*
-  --color-primary: #0a1114;
-  --color-secondary: #142026;
-  --color-accent: #14b8a6;
-  --color-accent-light: #20d0bf;
-  --color-text: rgba(255, 255, 255, 0.88);
-  --color-text-secondary: rgba(180, 255, 240, 0.75);
-  --color-border: rgba(20, 184, 166, 0.25);
-  --color-primary-rgb: 10, 17, 20;
-  --color-secondary-rgb: 20, 32, 38;
-  --color-accent-rgb: 20, 184, 166;
-  --color-accent-light-rgb: 32, 208, 191;
-  */
 
   --gradient-angle: 0deg;
 
@@ -408,7 +154,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 1.5rem;
-  color: white;
+  color: var(--color-text);
 }
 
 h1 {

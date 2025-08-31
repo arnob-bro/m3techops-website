@@ -5,13 +5,13 @@
   background: linear-gradient(
     135deg,
     var(--color-primary) 0%,
-    var(--color-secondary) 50%,
+    var(--color-secondary)5%,
     var(--color-accent) 100%
   );
   color: var(--color-text);
 }
 
-/* Hero Section - Unchanged as requested */
+
 .home-hero {
   position: relative;
   min-height: 100vh;
@@ -56,7 +56,7 @@
   margin-bottom: 1.5rem;
   background: linear-gradient(
     to right,
-    white 0%,
+    var(--color-home-header-text) 0%,
     var(--color-text-secondary) 100%
   );
   -webkit-background-clip: text;
@@ -135,7 +135,7 @@
 .tech-orbit {
   position: absolute;
   border-radius: 50%;
-  border: 1px solid rgba(var(--color-accent-rgb), 0.2);
+  border: 1px solid rgba(var(--color-accent-rgb-darker), 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -231,7 +231,7 @@
   to { transform: rotate(360deg); }
 }
 
-/* Section Styling */
+
 .container {
   width: 100%;
   max-width: 1200px;
@@ -275,7 +275,7 @@
   margin: 0 auto;
 }
 
-/* Services Section */
+
 .home-services {
   position: relative;
   padding: 6rem 0;
@@ -353,7 +353,7 @@
 .home-service-title {
   font-size: 1.25rem;
   margin-bottom: 1rem;
-  color: white;
+  color: var(--color-accent) ;
 }
 
 .home-service-description {
@@ -406,7 +406,7 @@
   transform: translateX(3px);
 }
 
-/* Projects Section */
+
 .home-projects {
   position: relative;
   padding: 6rem 0;
@@ -556,7 +556,7 @@
   transform: translateX(3px);
 }
 
-/* Testimonials Section */
+
 .home-testimonials {
   position: relative;
   padding: 6rem 0;
@@ -694,7 +694,7 @@
   color: var(--color-accent);
 }
 
-/* CTA Section */
+
 .home-cta {
   position: relative;
   padding: 6rem 0;
@@ -742,7 +742,7 @@
 .home-cta-title {
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: white;
+  color: var(--color-text);
 }
 
 .home-cta-text {
@@ -759,7 +759,7 @@
   margin-top: 2rem;
 }
 
-/* Responsive Design */
+
 @media (max-width: 1024px) {
   .home-hero-content {
     flex-direction: column;
@@ -868,7 +868,7 @@
   }
 }
 
-/* Additional Animations */
+
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
