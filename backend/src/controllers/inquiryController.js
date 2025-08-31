@@ -6,6 +6,7 @@ class InquiryController {
       this.makeInquiry = this.makeInquiry.bind(this);
       this.getInquiries = this.getInquiries.bind(this);
       this.replyToInquiry = this.replyToInquiry.bind(this);
+      // this.updateInquiryStatus = this.updateInquiryStatus.bind(this);
     }
   
     async makeInquiry(req, res) {
@@ -121,13 +122,16 @@ class InquiryController {
         const { inquiry_id } = req.params;
         const { replyMessage } = req.body;
   
-        const updatedInquiry = await this.inquiryService.replyToInquiry(inquiry_id, replyMessage);
+        const reply = await this.inquiryService.replyToInquiry(inquiry_id, replyMessage);
   
-        if (!updatedInquiry) {
+        if(reply){
+          await this.inquiryService.updateInquiryStatus(inquiry_id, "Replied");
+        }
+        if (!reply) {
           return res.status(404).json({ error: "Inquiry not found" });
         }
   
-        res.json(updatedInquiry);
+        res.json(reply);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }

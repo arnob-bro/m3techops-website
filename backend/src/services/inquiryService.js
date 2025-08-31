@@ -146,10 +146,37 @@ class InquiryService {
   }
   
 
-
-   
+  async updateInquiryStatus(inquiry_id, status) {
+    try {
+      // Validate status
+      const allowedStatuses = ["Unread", "Read", "Replied"];
+      if (!allowedStatuses.includes(status)) {
+        throw new Error(`Invalid status. Allowed values: ${allowedStatuses.join(", ")}`);
+      }
   
+      // Update the inquiry
+      const result = await this.db.query(
+        `UPDATE inquiries 
+         SET status = $1, updated_at = CURRENT_TIMESTAMP
+         WHERE inquiry_id = $2
+         RETURNING inquiry_id, first_name, last_name, email, status`,
+        [status, inquiry_id]
+      );
   
+      if (result.rows.length === 0) {
+        throw new Error("Inquiry not found");
+      }
+  
+      return {
+        success: true,
+        message: `Inquiry status updated to "${status}"`,
+        inquiry: result.rows[0],
+      };
+    } catch (err) {
+      console.error("Error updating inquiry status:", err.message);
+      throw new Error("Failed to update inquiry status");
+    }
+  }
   
 
 }

@@ -80,7 +80,8 @@ CREATE TABLE inquiries (
     country VARCHAR(30),
     message TEXT NOT NULL,
     status VARCHAR(20) CHECK (status IN ('Unread','Read','Replied')) DEFAULT 'Unread',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 10. Blogs
