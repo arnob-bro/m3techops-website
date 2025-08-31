@@ -361,23 +361,19 @@ const ManageContact = () => {
                     </span>
                   </td>
                   <td>
-                    <div className="action-buttons">
-                      <button 
-                        onClick={() => viewMessage(message)} 
-                        className="view-btn"
-                        aria-label="View message"
-                      >
-                        <FiEye />
-                      </button>
-                      <button 
-                        onClick={() => deleteMessage(message.id)} 
-                        className="delete-btn"
-                        aria-label="Delete message"
-                      >
-                        <FiTrash2 />
-                      </button>
-                    </div>
-                  </td>
+  <div className="action-buttons">
+    <FiEye 
+      onClick={() => viewMessage(message)} 
+      className="view-icon"
+      aria-label="View message"
+    />
+    <FiTrash2 
+      onClick={() => deleteMessage(message.id)} 
+      className="delete-icon"
+      aria-label="Delete message"
+    />
+  </div>
+</td>
                 </tr>
               ))
             ) : (
