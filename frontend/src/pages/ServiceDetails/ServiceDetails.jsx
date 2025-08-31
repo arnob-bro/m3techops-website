@@ -244,12 +244,6 @@ const ServiceDetails = () => {
     <div className="servicedetails-page">
       <section className="servicedetails-header">
         <div className="container">
-          {/* <Link to="/services" className="servicedetails-back-link">
-            <FiArrowLeft /> Back to Services
-          </Link> */}
-
-          
-          
           <motion.div 
             className="servicedetails-intro"
             initial="hidden"

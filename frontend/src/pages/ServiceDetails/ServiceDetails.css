@@ -44,27 +44,6 @@
   z-index: 0;
 }
 
-.servicedetails-back-link {
-  display: inline-flex;
-  align-items: center;
-  color: var(--color-text-secondary);
-  margin-bottom: 3rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 50px;
-  background: rgba(var(--color-primary-rgb), 0.7);
-  border: 1px solid var(--color-border);
-  transition: all 0.3s ease;
-  font-weight: 500;
-  position: relative;
-  z-index: 1;
-}
-
-.servicedetails-back-link:hover {
-  color: var(--color-accent);
-  transform: translateX(-5px);
-  border-color: var(--color-accent);
-}
-
 .servicedetails-intro {
   position: relative;
   z-index: 1;
@@ -72,6 +51,7 @@
   margin: 0 auto;
 }
 
+/* FIXED: Icon centering */
 .servicedetails-icon {
   width: 100px;
   height: 100px;
@@ -84,6 +64,16 @@
   color: var(--color-accent);
   border: 2px solid rgba(var(--color-accent-rgb), 0.2);
   animation: pulse 2s ease-in-out infinite;
+  position: relative;
+  padding: 0;
+}
+
+/* Ensure the SVG icon is properly centered */
+.servicedetails-icon svg {
+  display: block;
+  margin: 0;
+  width: 50px;
+  height: 50px;
 }
 
 @keyframes pulse {
