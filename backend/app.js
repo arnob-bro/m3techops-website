@@ -1,8 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 // const createAuthRouter = require("./routes/authRoutes");
+const createInquiryRouter = require("./src/routes/inquiryRoutes");
 // const AuthController = require("./controllers/authController");
+const InquiryController = require("./src/controllers/inquiryController");
 // const UserService = require("./services/userService");
+const InquiryService = require("./src/services/inquiryService");
 const db = require("./src/config/supabaseClient");
 
 // Controllers
@@ -21,12 +24,16 @@ app.get("/", (req, res) => {
 
 //Dependency injection
 // const userService = new UserService(db);
+const inquiryService = new InquiryService(db);
 
 // const authController = new AuthController(userService);
+const inquiryController = new InquiryController(inquiryService);
 
 // const authRouter = createAuthRouter(authController);
+const inquiryRouter = createInquiryRouter(inquiryController);
 
 // API routes
 // app.use("/auth", authRouter);
+app.use("/inquiry", inquiryRouter);
 
 module.exports = app;
