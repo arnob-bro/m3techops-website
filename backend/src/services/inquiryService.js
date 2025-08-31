@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const {generateInquiryReplyTemplate} = require("../utils/generateInquiryReplyTemplate");
 
 class InquiryService {
   constructor(db) {
@@ -6,7 +7,9 @@ class InquiryService {
 
     // Setup email transporter
     this.transporter = nodemailer.createTransport({
-      service: "Gmail",
+      host: "mail.m3techops.com", 
+      port: 587,
+      secure: false, 
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -108,6 +111,43 @@ class InquiryService {
       throw new Error("Failed to fetch inquiries");
     }
   }
+  
+  async replyToInquiry(inquiry_id, replyMessage) {
+    try {
+      const result = await this.db.query(
+        `SELECT * FROM inquiries WHERE inquiry_id = $1`,
+        [inquiry_id]
+      );
+  
+      if (result.rows.length === 0) throw new Error("Inquiry not found");
+  
+      const inquiry = result.rows[0];
+  
+      const { html, text } = generateInquiryReplyTemplate(inquiry, replyMessage);
+  
+      await this.transporter.sendMail({
+        from: `"M3TechOps Team" <${process.env.EMAIL_USER}>`,
+        to: inquiry.email,
+        subject: "Reply to your inquiry",
+        text,
+        html,
+      });
+  
+      await this.db.query(
+        `UPDATE inquiries SET status = 'Replied' WHERE inquiry_id = $1`,
+        [inquiry_id]
+      );
+  
+      return { success: true, message: "Reply sent successfully." };
+    } catch (err) {
+      console.error("Error in replying to inquiry:", err.message);
+      throw new Error("Failed to send reply");
+    }
+  }
+  
+
+
+   
   
   
   
