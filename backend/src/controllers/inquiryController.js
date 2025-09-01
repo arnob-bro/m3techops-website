@@ -95,27 +95,24 @@ class InquiryController {
 
     async getInquiries(req, res) {
       try {
-
-        const {
+        const { page, limit, email, company, status } = req.query;
+        
+    
+        const inquiries = await this.inquiryService.getInquiries(
           page,
           limit,
-          email,
           company,
-          
-        } = req.query;
-        
-  
-  
-        // then Service ke pass korbo
-        const inquiries = await this.inquiryService.getInquiries(page, limit, company, email);
-
-
-  
-        res.status(201).json(inquiries);
+          email,
+          status
+        );
+    
+        res.status(200).json(inquiries);
       } catch (err) {
+        console.error("Error fetching inquiries:", err);
         res.status(400).json({ error: err.message });
       }
     }
+    
 
     async replyToInquiry (req, res) {
       try {

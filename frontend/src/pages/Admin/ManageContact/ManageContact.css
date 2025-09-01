@@ -517,6 +517,33 @@
     justify-content: flex-end;
     background: var(--admin-pages-secondary);
   }
+  /* Reply Box */
+.reply-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.reply-box label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #0e0e53; /* Primary color */
+}
+
+.reply-box textarea {
+  resize: vertical;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.reply-box textarea:focus {
+  border-color: #22577a; /* Accent color 2 */
+  box-shadow: 0 0 5px rgba(34, 87, 122, 0.3);
+}
   
   .reply-btn {
     background: var(--admin-pages-accent);

@@ -3,14 +3,16 @@ import { motion } from 'framer-motion';
 import { FiMapPin, FiPhone, FiMail, FiSend } from 'react-icons/fi';
 import { FaLinkedin, FaTwitter, FaFacebook, FaInstagram } from 'react-icons/fa';
 import './ContactUs.css';
+import ContactApi from '../../apis/contactApi';
+const contactApi = new ContactApi();
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     company: '',
-    jobTitle: '',
+    job_title: '',
     phone: '',
     country: '',
     message: ''
@@ -29,23 +31,18 @@ const ContactUs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-
+    
     try {
-      // In a real app, you would send this to your backend API
-      // const response = await axios.post('/api/contact', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      setIsSubmitting(true);
+      const response = await contactApi.makeInquiry(formData);
+      console.log(response);
       setSubmitStatus('success');
       setFormData({
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         email: '',
         company: '',
-        jobTitle: '',
+        job_title: '',
         phone: '',
         country: '',
         message: ''
@@ -100,23 +97,23 @@ const ContactUs = () => {
               <form onSubmit={handleSubmit} className="contact-form">
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="firstName">First Name*</label>
+                    <label htmlFor="first_name">First Name*</label>
                     <input
                       type="text"
-                      id="firstName"
-                      name="firstName"
-                      value={formData.firstName}
+                      id="first_name"
+                      name="first_name"
+                      value={formData.first_name}
                       onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="lastName">Last Name*</label>
+                    <label htmlFor="last_name">Last Name*</label>
                     <input
                       type="text"
-                      id="lastName"
-                      name="lastName"
-                      value={formData.lastName}
+                      id="last_name"
+                      name="last_name"
+                      value={formData.last_name}
                       onChange={handleChange}
                       required
                     />
@@ -147,12 +144,12 @@ const ContactUs = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="jobTitle">Job Title</label>
+                    <label htmlFor="job_title">Job Title</label>
                     <input
                       type="text"
-                      id="jobTitle"
-                      name="jobTitle"
-                      value={formData.jobTitle}
+                      id="job_title"
+                      name="job_title"
+                      value={formData.job_title}
                       onChange={handleChange}
                     />
                   </div>

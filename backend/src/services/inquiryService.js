@@ -62,7 +62,7 @@ class InquiryService {
     }
   }
 
-  async getInquiries({ page = 1, limit = 10, company, email }) {
+  async getInquiries( page , limit , company, email, status ) {
     try {
       const offset = (page - 1) * limit;
   
@@ -79,6 +79,11 @@ class InquiryService {
         values.push(`%${email}%`);
         conditions.push(`email ILIKE $${values.length}`);
       }
+      if (status) {
+        values.push(status);
+        conditions.push(`status = $${values.length}`);
+      }
+      
   
       const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   
@@ -100,7 +105,7 @@ class InquiryService {
         success: true,
         inquiries: result.rows,
         pagination: {
-          page,
+          page: page,
           limit,
           total,
           totalPages
