@@ -478,7 +478,7 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
       
       {data.paymentMode === 'Bank' && (
         <div className="bank-details">
-          <h3>Bank Details</h3>
+          <h4>Bank Details</h4>
           <div className="bank-grid">
             <div>Account Holder:</div>
             <div>{data.accountHolder}</div>
@@ -496,7 +496,7 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
       
       {data.paymentMode === 'Bkash' && (
         <div className="bkash-details">
-          <h3>Bkash Details</h3>
+          <h4>Bkash Details</h4>
           <div className="bkash-info">
             <span>Bkash Transaction No.:</span>
             <span>{data.bkashTransaction || 'TRXID___________'}</span>

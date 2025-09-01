@@ -8,16 +8,16 @@ const Footer = () => {
     {
       title: "Services",
       links: [
-        { name: "Web Development", path: "/services" },
-        { name: "Mobile Apps", path: "/services" },
-        { name: "Cloud Solutions", path: "/services" },
-        { name: "AI & Automation", path: "/services" }
+        { name: "Web Development", path: "/services/web-development" },
+        { name: "Mobile Apps", path: "/services/mobile-development" },
+        { name: "Cloud Solutions", path: "/services/cloud-solutions" },
+        { name: "AI & Automation", path: "/services/ai-automation" }
       ]
     },
     {
       title: "Company",
       links: [
-        { name: "About Us", path: "/about" },
+        { name: "About Us", path: "/about-us" },
         { name: "Projects", path: "/projects" },
         { name: "Insights", path: "/blog" },
         { name: "Careers", path: "/careers" }

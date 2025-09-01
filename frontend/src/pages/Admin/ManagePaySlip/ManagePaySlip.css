@@ -1,0 +1,464 @@
+/* ===== Pay Slip Management Styles ===== */
+.MPS-manage-payslip {
+    padding: 32px;
+    background-color: var(--admin-pages-primary);
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ===== Header Section ===== */
+.MPS-payslip-header {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--admin-pages-border-light);
+}
+
+.MPS-payslip-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--admin-pages-text-primary);
+    margin: 0;
+    letter-spacing: -0.025em;
+}
+
+.MPS-payslip-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.MPS-payslip-search {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.MPS-payslip-search input {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 1.5px solid var(--admin-pages-border);
+    border-radius: 12px;
+    font-size: 15px;
+    color: var(--admin-pages-text-primary);
+    background: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.MPS-payslip-search input:focus {
+    outline: none;
+    border-color: var(--admin-pages-accent);
+    box-shadow: 0 0 0 3px rgba(28, 176, 162, 0.08);
+}
+
+.MPS-payslip-search .MPS-search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--admin-pages-text-muted);
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.MPS-payslip-filters {
+    display: flex;
+    gap: 12px;
+}
+
+.MPS-payslip-filters select,
+.MPS-payslip-filters input {
+    padding: 10px 16px;
+    border: 1.5px solid var(--admin-pages-border);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--admin-pages-text-primary);
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.MPS-payslip-filters select:focus,
+.MPS-payslip-filters input:focus {
+    outline: none;
+    border-color: var(--admin-pages-accent);
+    box-shadow: 0 0 0 3px rgba(28, 176, 162, 0.08);
+}
+
+/* ===== Pay Slips Table ===== */
+.MPS-payslip-table-container {
+    overflow-x: auto;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px var(--admin-pages-shadow);
+    background: var(--admin-pages-secondary);
+    border: 1px solid var(--admin-pages-border);
+}
+
+.MPS-payslip-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.MPS-payslip-table th {
+    background: var(--admin-pages-primary);
+    color: var(--admin-pages-text-primary);
+    font-weight: 600;
+    text-align: left;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--admin-pages-border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.MPS-payslip-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--admin-pages-border-light);
+    vertical-align: middle;
+    color: var(--admin-pages-text-primary);
+}
+
+.MPS-payslip-table tr:last-child td {
+    border-bottom: none;
+}
+
+.MPS-payslip-table tr:hover {
+    background: var(--admin-pages-hover);
+}
+
+/* Table Cell Styles */
+.MPS-employee-id {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    color: var(--admin-pages-text-secondary);
+    background: rgba(28, 176, 162, 0.08);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.MPS-employee-name {
+    font-weight: 600;
+    color: var(--admin-pages-text-primary);
+}
+
+.MPS-reference-code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    color: var(--admin-pages-accent);
+    background: rgba(28, 176, 162, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.MPS-payment-month {
+    font-weight: 500;
+    color: var(--admin-pages-text-primary);
+}
+
+.MPS-amount {
+    font-weight: 600;
+    color: var(--admin-pages-text-primary);
+}
+
+/* Status Badges */
+.MPS-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.MPS-status-paid {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--admin-pages-success);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.MPS-status-pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--admin-pages-warning);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.MPS-status-failed {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--admin-pages-error);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Action Icons */
+.MPS-action-icons {
+    display: flex;
+    gap: 16px;
+}
+
+.MPS-view-icon,
+.MPS-download-icon {
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s ease;
+}
+
+.MPS-view-icon {
+    color: #3b82f6;
+}
+
+.MPS-view-icon:hover {
+    color: #2563eb;
+    transform: scale(1.2);
+}
+
+.MPS-download-icon {
+    color: var(--admin-pages-accent);
+}
+
+.MPS-download-icon:hover {
+    color: var(--admin-pages-accent-light);
+    transform: scale(1.2);
+}
+
+/* No Results */
+.MPS-no-results td {
+    text-align: center;
+    padding: 40px;
+    color: var(--admin-pages-text-muted);
+    font-weight: 500;
+}
+
+/* Modal Styles */
+.MPS-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+    animation: MPS-fadeInOverlay 0.3s ease;
+}
+
+.MPS-modal-content {
+    background: var(--admin-pages-primary);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    outline: none;
+    animation: MPS-slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid var(--admin-pages-border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.MPS-modal-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--admin-pages-border);
+    background: linear-gradient(135deg, #ffffff 0%, var(--admin-pages-primary) 100%);
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.MPS-modal-header h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--admin-pages-text-primary);
+    margin: 0;
+    letter-spacing: -0.025em;
+}
+
+.MPS-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--admin-pages-text-primary);
+    transition: all 0.2s ease;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.MPS-modal-close:hover {
+    background: var(--admin-pages-hover);
+    color: var(--admin-pages-accent);
+}
+
+.MPS-modal-body {
+    padding: 24px 32px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.MPS-modal-footer {
+    padding: 20px 32px;
+    border-top: 1px solid var(--admin-pages-border);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.MPS-download-btn {
+    background: var(--admin-pages-accent);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.MPS-download-btn:hover {
+    background: var(--admin-pages-accent-light);
+    transform: translateY(-1px);
+}
+
+/* Pay Slip Details */
+.MPS-payslip-details {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.MPS-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--admin-pages-border-light);
+}
+
+.MPS-detail-row:last-child {
+    border-bottom: none;
+}
+
+.MPS-detail-label {
+    font-weight: 600;
+    color: var(--admin-pages-text-primary);
+}
+
+.MPS-detail-value {
+    color: var(--admin-pages-text-secondary);
+}
+
+.MPS-detail-value.MPS-highlight {
+    color: var(--admin-pages-accent);
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+/* ===== Animations ===== */
+@keyframes MPS-fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes MPS-slideUpModal {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 1024px) {
+    .MPS-payslip-header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .MPS-payslip-search {
+        max-width: 100%;
+    }
+
+    .MPS-payslip-filters {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .MPS-manage-payslip {
+        padding: 24px 16px;
+    }
+
+    .MPS-payslip-header h2 {
+        font-size: 28px;
+    }
+
+    .MPS-payslip-table th,
+    .MPS-payslip-table td {
+        padding: 12px 16px;
+    }
+
+    .MPS-payslip-filters {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .MPS-modal-content {
+        margin: 10px;
+    }
+
+    .MPS-modal-header,
+    .MPS-modal-body,
+    .MPS-modal-footer {
+        padding: 20px;
+    }
+
+    .MPS-detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    .MPS-payslip-header h2 {
+        font-size: 24px;
+    }
+
+    .MPS-action-icons {
+        gap: 12px;
+    }
+
+    .MPS-view-icon,
+    .MPS-download-icon {
+        font-size: 16px;
+    }
+}
