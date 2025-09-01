@@ -1,43 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './Home.css';
+
+
 import { FiArrowRight, FiCheck, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaReact, FaNodeJs, FaAws, FaDatabase, FaPython, FaLaptopCode } from 'react-icons/fa';
 
 const Home = () => {
-  const servicesRef = useRef(null);
-  const projectsRef = useRef(null);
-  
   useEffect(() => {
     document.title = "M3 TECHOPS | Innovative Digital Solutions";
-    
-    // Animation on scroll
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate');
-        }
-      });
-    }, observerOptions);
-    
-    // Observe all sections
-    document.querySelectorAll('.home-services, .home-projects, .home-testimonials, .home-cta')
-      .forEach(section => observer.observe(section));
-      
-    return () => observer.disconnect();
   }, []);
 
-  // Scroll to top when navigating
-  const handleLinkClick = () => {
-    window.scrollTo(0, 0);
-  };
-
+  
   const services = [
     {
       id: 'web-development',
@@ -76,6 +51,7 @@ const Home = () => {
     },
   ];
 
+ 
   const projects = [
     {
       title: "E-commerce Platform",
@@ -102,6 +78,7 @@ const Home = () => {
       image: "https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
     }
   ];
+
 
   const testimonials = [
     {
@@ -136,6 +113,7 @@ const Home = () => {
     }
   ];
 
+ 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -223,18 +201,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* Background Texture Elements */}
-      <div className="background-texture">
-        <div className="texture-circle texture-circle-1"></div>
-        <div className="texture-circle texture-circle-2"></div>
-        <div className="texture-circle texture-circle-3"></div>
-        <div className="texture-circle texture-circle-4"></div>
-        <div className="texture-circle texture-circle-5"></div>
-        <div className="texture-dots"></div>
-        <div className="texture-grid"></div>
-      </div>
-
-      {/* Hero Section */}
+      
       <section className="home-hero">
         <div className="home-hero-bg"></div>
         <div className="container">
@@ -263,10 +230,10 @@ const Home = () => {
                 className="home-hero-cta-container"
                 variants={itemVariants}
               >
-                <Link to="/contact" className="btn btn-primary" onClick={handleLinkClick}>
+                <Link to="/contact" className="btn btn-primary">
                   Get Started <FiArrowRight />
                 </Link>
-                <Link to="/projects" className="btn btn-outline" onClick={handleLinkClick}>
+                <Link to="/projects" className="btn btn-outline">
                   View Our Work
                 </Link>
               </motion.div>
@@ -388,77 +355,77 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="home-services" ref={servicesRef}>
-        <div className="container">
-          <div className="section-header">
-            <motion.h2 
-              className="section-title"
-              initial="hidden"
-              whileInView="visible"
-              variants={fadeInUp}
-              viewport={{ once: true, margin: "-100px" }}
-            >
-              <span className="accent">Our Expertise</span>
-            </motion.h2>
-            <motion.p 
-              className="section-subtitle"
-              initial="hidden"
-              whileInView="visible"
-              variants={fadeInUp}
-              transition={{ delay: 0.1 }}
-              viewport={{ once: true, margin: "-100px" }}
-            >
-              Premium solutions tailored to your business needs
-            </motion.p>
-          </div>
-          
-          <div className="home-services-grid">
-            {services.map((service, index) => (
-              <motion.div
-                key={index}
-                className="home-service-card"
-                initial="hidden"
-                whileInView="visible"
-                variants={fadeInUp}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true, margin: "-50px" }}
-                whileHover={{ 
-                  y: -10,
-                  boxShadow: "0 15px 35px rgba(0, 0, 0, 0.3)"
-                }}
+{/* Services Section */}
+<section className="home-services">
+  <div className="container">
+    <div className="section-header">
+      <motion.h2 
+        className="section-title"
+        initial="hidden"
+        whileInView="visible"
+        variants={fadeInUp}
+        viewport={{ once: true, margin: "-100px" }}
+      >
+        <span className="accent">Our Expertise</span>
+      </motion.h2>
+      <motion.p 
+        className="section-subtitle"
+        initial="hidden"
+        whileInView="visible"
+        variants={fadeInUp}
+        transition={{ delay: 0.1 }}
+        viewport={{ once: true, margin: "-100px" }}
+      >
+        Premium solutions tailored to your business needs
+      </motion.p>
+    </div>
+    
+    <div className="home-services-grid">
+      {services.map((service, index) => (
+        <motion.div
+          key={index}
+          className="home-service-card"
+          initial="hidden"
+          whileInView="visible"
+          variants={fadeInUp}
+          transition={{ delay: index * 0.1 }}
+          viewport={{ once: true, margin: "-50px" }}
+          whileHover={{ 
+            y: -10,
+            boxShadow: "0 15px 35px rgba(0, 0, 0, 0.3)"
+          }}
+        >
+          <motion.div 
+            className="home-service-icon"
+            whileHover={{ scale: 1.1 }}
+          >
+            {service.icon}
+          </motion.div>
+          <h3 className="home-service-title">{service.title}</h3>
+          <p className="home-service-description">{service.description}</p>
+          <ul className="home-service-features">
+            {service.features.map((feature, featureIndex) => (
+              <motion.li 
+                key={featureIndex} 
+                className="home-service-feature"
+                whileHover={{ x: 5 }}
               >
-                <motion.div 
-                  className="home-service-icon"
-                  whileHover={{ scale: 1.1 }}
-                >
-                  {service.icon}
-                </motion.div>
-                <h3 className="home-service-title">{service.title}</h3>
-                <p className="home-service-description">{service.description}</p>
-                <ul className="home-service-features">
-                  {service.features.map((feature, featureIndex) => (
-                    <motion.li 
-                      key={featureIndex} 
-                      className="home-service-feature"
-                      whileHover={{ x: 5 }}
-                    >
-                      <FiCheck className="feature-icon" />
-                      {feature}
-                    </motion.li>
-                  ))}
-                </ul>
-                <Link to={`/services/${service.id}`} className="home-service-link" onClick={handleLinkClick}>
-                  Learn More <FiArrowRight />
-                </Link>
-              </motion.div>
+                <FiCheck className="feature-icon" />
+                {feature}
+              </motion.li>
             ))}
-          </div>
-        </div>
-      </section>
+          </ul>
+          <Link to={`/services/${service.id}`} className="home-service-link">
+            Learn More <FiArrowRight />
+          </Link>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* Projects Section */}
-      <section className="home-projects" ref={projectsRef}>
+      <section className="home-projects">
         <div className="container">
           <div className="section-header">
             <motion.h2 
@@ -507,7 +474,7 @@ const Home = () => {
                       <span className="project-category">{project.category}</span>
                       <h3 className="project-title">{project.title}</h3>
                       <p className="project-description">{project.description}</p>
-                      <Link to="/projects" className="project-link" onClick={handleLinkClick}>
+                      <Link to="/projects" className="project-link">
                         View Project <FiArrowRight />
                       </Link>
                     </div>
@@ -568,7 +535,6 @@ const Home = () => {
                     y: -5,
                     boxShadow: "0 15px 30px rgba(0, 0, 0, 0.25)"
                   }}
-                  style={{ '--index': index }}
                 >
                   <div className="testimonial-content">
                     <p className="testimonial-text">{testimonial.content}</p>
@@ -617,10 +583,10 @@ const Home = () => {
                 Let's discuss how we can help transform your business with innovative digital solutions.
               </p>
               <div className="home-cta-buttons">
-                <Link to="/contact" className="btn btn-primary" onClick={handleLinkClick}>
+                <Link to="/contact" className="btn btn-primary">
                   Start Your Project
                 </Link>
-                <Link to="/services" className="btn btn-outline" onClick={handleLinkClick}>
+                <Link to="/services" className="btn btn-outline">
                   Explore Services
                 </Link>
               </div>

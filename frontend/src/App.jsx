@@ -17,6 +17,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy/CookiePolicy";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 
+
 // Admin pages
 import Login from "./pages/Admin/LoginPage/Login";
 import Admin from "./pages/Admin/AdminPage/Admin";
@@ -27,9 +28,17 @@ import PaySlipGenerator from "./pages/Admin/PaySlipGenerator/PaySlipGenerator";
 import ManageContact from "./pages/Admin/ManageContact/ManageContact";
 import Scheduler from "./pages/Admin/Scheduler/Scheduler";
 import ManageEmployee from "./pages/Admin/ManageEmployee/ManageEmployee";
+import ManageNewsletter from "./pages/Admin/ManageNewsletter/ManageNewsletter";
+import ManagePrivacyPolicy from "./pages/Admin/ManagePrivacyPolicy/ManagePrivacyPolicy";
+import ManageCookiesPolicy from "./pages/Admin/ManageCookiesPolicy/ManageCookiesPolicy";
+import ManageTermsOfService from "./pages/Admin/ManageTermsOfService/ManageTermsOfService";
+import ManagePaySlip from "./pages/Admin/ManagePaySlip/ManagePaySlip";
+import Dashboard from "./pages/Admin/Dashboard/Dashboard";
+
 
 // Components
 import ProtectedRoute from "./components/PermissionComponents/ProtectedRoute";
+
 
 // 404 page (simple fallback)
 const NotFound = () => (
@@ -73,6 +82,15 @@ function App() {
           <Route path="manage-messages" element={<ManageContact />} />
           <Route path="scheduler" element={<Scheduler />} />
           <Route path="employee-management" element={<ManageEmployee />} />
+          <Route path="newsletter-management" element={<ManageNewsletter />} />
+          <Route path="policy-management/privacy" element={<ManagePrivacyPolicy />} />
+          <Route path="policy-management/cookies" element={<ManageCookiesPolicy />} />
+          <Route path="policy-management/terms" element={<ManageTermsOfService />} />
+          <Route path="pay-slip-manager" element={<ManagePaySlip />} />
+          <Route path="" element={<Dashboard />} />
+
+          
+          
           
           
         </Route>
