@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './Home.css';
-
 
 import { FiArrowRight, FiCheck, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaReact, FaNodeJs, FaAws, FaDatabase, FaPython, FaLaptopCode } from 'react-icons/fa';
@@ -10,9 +9,24 @@ import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaReact, FaNodeJs, FaAws, FaData
 const Home = () => {
   useEffect(() => {
     document.title = "M3 TECHOPS | Innovative Digital Solutions";
+    
+    // Scroll to top when navigating from links
+    const handleLinkClick = () => {
+      window.scrollTo(0, 0);
+    };
+    
+    const links = document.querySelectorAll('a[href^="/"]');
+    links.forEach(link => {
+      link.addEventListener('click', handleLinkClick);
+    });
+    
+    return () => {
+      links.forEach(link => {
+        link.removeEventListener('click', handleLinkClick);
+      });
+    };
   }, []);
 
-  
   const services = [
     {
       id: 'web-development',
@@ -51,7 +65,6 @@ const Home = () => {
     },
   ];
 
- 
   const projects = [
     {
       title: "E-commerce Platform",
@@ -78,7 +91,6 @@ const Home = () => {
       image: "https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
     }
   ];
-
 
   const testimonials = [
     {
@@ -113,7 +125,19 @@ const Home = () => {
     }
   ];
 
- 
+  // Auto carousel state
+  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentProjectIndex((prevIndex) => 
+        prevIndex === projects.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 4000);
+    
+    return () => clearInterval(interval);
+  }, [projects.length]);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -126,7 +150,7 @@ const Home = () => {
   };
 
   const itemVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
       y: 50,
       scale: 0.95
@@ -144,7 +168,7 @@ const Home = () => {
   };
 
   const titleVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
       y: 70,
       scale: 0.9
@@ -163,7 +187,7 @@ const Home = () => {
   };
 
   const techVisualVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
       scale: 0.7,
       rotate: -15
@@ -199,9 +223,32 @@ const Home = () => {
     container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   };
 
+  // Enhanced service card animation
+  const serviceCardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      y: -15,
+      scale: 1.03,
+      boxShadow: "0 25px 50px rgba(0, 0, 0, 0.5)",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 15
+      }
+    }
+  };
+
   return (
     <div className="home-container">
-      
+      {/* Hero Section - Unchanged */}
       <section className="home-hero">
         <div className="home-hero-bg"></div>
         <div className="container">
@@ -212,20 +259,20 @@ const Home = () => {
               animate="visible"
               variants={containerVariants}
             >
-              <motion.h1 
+              <motion.h1
                 className="home-hero-title"
                 variants={titleVariants}
               >
                 Transform Your <span className="accent">Digital Presence</span>
               </motion.h1>
-              
-              <motion.p 
+             
+              <motion.p
                 className="home-hero-subtitle"
                 variants={itemVariants}
               >
                 We craft premium digital experiences that drive results and elevate brands with cutting-edge technology solutions.
               </motion.p>
-              
+             
               <motion.div
                 className="home-hero-cta-container"
                 variants={itemVariants}
@@ -247,61 +294,61 @@ const Home = () => {
             >
               <div className="hero-tech-visual">
                 <div className="tech-orbit tech-orbit-1">
-                  <motion.div 
+                  <motion.div
                     className="tech-icon tech-icon-1"
                     whileHover={{ scale: 1.2, rotate: 15 }}
                   >
                     <FaReact />
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     className="tech-icon tech-icon-2"
                     whileHover={{ scale: 1.2, rotate: 15 }}
                   >
                     <FaNodeJs />
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     className="tech-icon tech-icon-3"
                     whileHover={{ scale: 1.2, rotate: 15 }}
                   >
                     <FaAws />
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     className="tech-icon tech-icon-4"
                     whileHover={{ scale: 1.2, rotate: 15 }}
                   >
                     <FaDatabase />
                   </motion.div>
                 </div>
-                
+               
                 <div className="tech-orbit tech-orbit-2">
-                  <motion.div 
+                  <motion.div
                     className="tech-icon tech-icon-5"
                     whileHover={{ scale: 1.2, rotate: 15 }}
                   >
                     <FaCode />
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     className="tech-icon tech-icon-6"
                     whileHover={{ scale: 1.2, rotate: 15 }}
                   >
                     <FaMobileAlt />
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     className="tech-icon tech-icon-9"
                     whileHover={{ scale: 1.2, rotate: 15 }}
                   >
                     <FaPython />
                   </motion.div>
                 </div>
-                
+               
                 <div className="tech-orbit tech-orbit-3">
-                  <motion.div 
+                  <motion.div
                     className="tech-icon tech-icon-7"
                     whileHover={{ scale: 1.2, rotate: 15 }}
                   >
                     <FaCloud />
                   </motion.div>
-                  <motion.div 
+                  <motion.div
                     className="tech-icon tech-icon-8"
                     whileHover={{ scale: 1.2, rotate: 15 }}
                   >
@@ -309,7 +356,7 @@ const Home = () => {
                   </motion.div>
                 </div>
 
-                <motion.div 
+                <motion.div
                   className="tech-center"
                   animate={{
                     scale: [1, 1.1, 1],
@@ -330,11 +377,11 @@ const Home = () => {
 
                 <div className="floating-particles">
                   {[...Array(8)].map((_, i) => (
-                    <motion.div 
-                      key={i} 
+                    <motion.div
+                      key={i}
                       className={`particle particle-${i + 1}`}
                       initial={{ opacity: 0, scale: 0 }}
-                      animate={{ 
+                      animate={{
                         opacity: [0, 1, 0],
                         scale: [0, 1.2, 0],
                         y: [0, -50, -100],
@@ -355,80 +402,82 @@ const Home = () => {
         </div>
       </section>
 
-{/* Services Section */}
-<section className="home-services">
-  <div className="container">
-    <div className="section-header">
-      <motion.h2 
-        className="section-title"
-        initial="hidden"
-        whileInView="visible"
-        variants={fadeInUp}
-        viewport={{ once: true, margin: "-100px" }}
-      >
-        <span className="accent">Our Expertise</span>
-      </motion.h2>
-      <motion.p 
-        className="section-subtitle"
-        initial="hidden"
-        whileInView="visible"
-        variants={fadeInUp}
-        transition={{ delay: 0.1 }}
-        viewport={{ once: true, margin: "-100px" }}
-      >
-        Premium solutions tailored to your business needs
-      </motion.p>
-    </div>
-    
-    <div className="home-services-grid">
-      {services.map((service, index) => (
-        <motion.div
-          key={index}
-          className="home-service-card"
-          initial="hidden"
-          whileInView="visible"
-          variants={fadeInUp}
-          transition={{ delay: index * 0.1 }}
-          viewport={{ once: true, margin: "-50px" }}
-          whileHover={{ 
-            y: -10,
-            boxShadow: "0 15px 35px rgba(0, 0, 0, 0.3)"
-          }}
-        >
-          <motion.div 
-            className="home-service-icon"
-            whileHover={{ scale: 1.1 }}
-          >
-            {service.icon}
-          </motion.div>
-          <h3 className="home-service-title">{service.title}</h3>
-          <p className="home-service-description">{service.description}</p>
-          <ul className="home-service-features">
-            {service.features.map((feature, featureIndex) => (
-              <motion.li 
-                key={featureIndex} 
-                className="home-service-feature"
-                whileHover={{ x: 5 }}
-              >
-                <FiCheck className="feature-icon" />
-                {feature}
-              </motion.li>
-            ))}
-          </ul>
-          <Link to={`/services/${service.id}`} className="home-service-link">
-            Learn More <FiArrowRight />
-          </Link>
-        </motion.div>
-      ))}
-    </div>
-  </div>
-</section>
-
-      {/* Projects Section */}
-      <section className="home-projects">
+      {/* Services Section with Enhanced Animations */}
+      <section className="home-services" id="services">
         <div className="container">
           <div className="section-header">
-            <motion.h2 
+            <motion.h2
+              className="section-title"
+              initial="hidden"
+              whileInView="visible"
+              variants={fadeInUp}
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <span className="accent">Our Expertise</span>
+            </motion.h2>
+            <motion.p
+              className="section-subtitle"
+              initial="hidden"
+              whileInView="visible"
+              variants={fadeInUp}
+              transition={{ delay: 0.1 }}
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              Premium solutions tailored to your business needs
+            </motion.p>
+          </div>
+         
+          <div className="home-services-grid">
+            {services.map((service, index) => (
+              <motion.div
+                key={index}
+                className="home-service-card"
+                initial="hidden"
+                whileInView="visible"
+                variants={serviceCardVariants}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                whileHover="hover"
+              >
+                <motion.div
+                  className="home-service-icon"
+                  whileHover={{ 
+                    scale: 1.2,
+                    rotate: 5,
+                    transition: { type: "spring", stiffness: 300 }
+                  }}
+                >
+                  {service.icon}
+                </motion.div>
+                <h3 className="home-service-title">{service.title}</h3>
+                <p className="home-service-description">{service.description}</p>
+                <ul className="home-service-features">
+                  {service.features.map((feature, featureIndex) => (
+                    <motion.li
+                      key={featureIndex}
+                      className="home-service-feature"
+                      whileHover={{ x: 10 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <FiCheck className="feature-icon" />
+                      {feature}
+                    </motion.li>
+                  ))}
+                </ul>
+                <Link to={`/services/${service.id}`} className="home-service-link">
+                  Learn More <FiArrowRight />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section with Auto Carousel */}
+      <section className="home-projects" id="projects">
+        <div className="container">
+          <div className="section-header">
+            <motion.h2
               className="section-title"
               initial="hidden"
               whileInView="visible"
@@ -437,7 +486,7 @@ const Home = () => {
             >
               <span className="accent">Featured Projects</span>
             </motion.h2>
-            <motion.p 
+            <motion.p
               className="section-subtitle"
               initial="hidden"
               whileInView="visible"
@@ -448,19 +497,24 @@ const Home = () => {
               Showcasing our latest work and success stories
             </motion.p>
           </div>
-          
+         
           <div className="projects-carousel-container">
             <div className="projects-carousel">
               {projects.map((project, index) => (
                 <motion.div
                   key={index}
-                  className="project-slide"
+                  className={`project-slide ${index === currentProjectIndex ? 'active' : ''}`}
                   initial="hidden"
                   whileInView="visible"
                   variants={fadeInUp}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.1,duration: 0.5 }}
                   viewport={{ once: true, margin: "-50px" }}
                   whileHover={{ scale: 1.02 }}
+                  animate={{
+                    opacity: index === currentProjectIndex ? 1 : 0.7,
+                    scale: index === currentProjectIndex ? 1 : 0.95,
+                  }}
+                  
                 >
                   <div className="project-image">
                     <img src={project.image} alt={project.title} />
@@ -482,15 +536,26 @@ const Home = () => {
                 </motion.div>
               ))}
             </div>
+            
+            {/* Carousel Dots */}
+            <div className="carousel-dots">
+              {projects.map((_, index) => (
+                <button
+                  key={index}
+                  className={`dot ${index === currentProjectIndex ? 'active' : ''}`}
+                  onClick={() => setCurrentProjectIndex(index)}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Testimonials Section with Mobile Optimization */}
       <section className="home-testimonials">
         <div className="container">
           <div className="section-header">
-            <motion.h2 
+            <motion.h2
               className="section-title"
               initial="hidden"
               whileInView="visible"
@@ -499,7 +564,7 @@ const Home = () => {
             >
               <span className="accent">What Our Clients Say</span>
             </motion.h2>
-            <motion.p 
+            <motion.p
               className="section-subtitle"
               initial="hidden"
               whileInView="visible"
@@ -510,9 +575,9 @@ const Home = () => {
               Real feedback from businesses we've helped grow
             </motion.p>
           </div>
-          
+         
           <div className="testimonials-container">
-            <motion.button 
+            <motion.button
               className="testimonial-nav-btn testimonial-nav-prev"
               onClick={() => scrollTestimonials('left')}
               whileHover={{ scale: 1.1 }}
@@ -520,7 +585,7 @@ const Home = () => {
             >
               <FiChevronLeft size={24} />
             </motion.button>
-            
+           
             <div className="testimonials-carousel">
               {testimonials.map((testimonial, index) => (
                 <motion.div
@@ -531,7 +596,7 @@ const Home = () => {
                   variants={fadeInUp}
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true, margin: "-50px" }}
-                  whileHover={{ 
+                  whileHover={{
                     y: -5,
                     boxShadow: "0 15px 30px rgba(0, 0, 0, 0.25)"
                   }}
@@ -540,9 +605,9 @@ const Home = () => {
                     <p className="testimonial-text">{testimonial.content}</p>
                   </div>
                   <div className="testimonial-author">
-                    <motion.img 
-                      src={testimonial.avatar} 
-                      alt={testimonial.name} 
+                    <motion.img
+                      src={testimonial.avatar}
+                      alt={testimonial.name}
                       className="testimonial-avatar"
                       whileHover={{ scale: 1.05 }}
                     />
@@ -554,8 +619,8 @@ const Home = () => {
                 </motion.div>
               ))}
             </div>
-            
-            <motion.button 
+           
+            <motion.button
               className="testimonial-nav-btn testimonial-nav-next"
               onClick={() => scrollTestimonials('right')}
               whileHover={{ scale: 1.1 }}
@@ -576,6 +641,10 @@ const Home = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true, margin: "-100px" }}
+            whileHover={{
+              scale: 1.02,
+              transition: { type: "spring", stiffness: 300 }
+            }}
           >
             <div className="home-cta-content">
               <h2 className="home-cta-title">Ready to Get Started?</h2>
