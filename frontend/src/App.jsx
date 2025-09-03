@@ -1,4 +1,6 @@
 import { Routes, Route, Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import useUserStore from "./stores/userStore";
 import "./App.css";
 
 // Public pages
@@ -60,6 +62,19 @@ const MainLayout = () => (
 );
 
 function App() {
+
+  const initAuth = useUserStore((state) => state.initAuth);
+  const loading = useUserStore((state) => state.loading);
+  const user = useUserStore((state) => state.user);
+
+  useEffect(() => {
+    if(user)
+    initAuth(); //  refresh access token + fetch user
+  }, [initAuth]);
+
+  if (loading) return <p>Loading...</p>; // wait until auth is checked
+
+
   return (
     <div className="app">
       <Routes>

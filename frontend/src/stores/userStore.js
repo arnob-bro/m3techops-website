@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import authApi from '../apis/authApi';
+
 
 const useUserStore = create(
   persist(
@@ -22,7 +24,7 @@ const useUserStore = create(
         });
       },
 
-      setToken: (token) => {
+      setAccessToken: (token) => {
         set({ accessToken: token });
       },
 
@@ -39,22 +41,19 @@ const useUserStore = create(
       },
 
       // Login action
-      login: async (identifier, password) => {
+      login: async (email, password) => {
         set({ isLoading: true, error: null });
         
         try {
-          // if (!window.posAPI || !window.posAPI.login) {
-          //   throw new Error("POS API not available");
-          // }
-
-          // const result = await window.posAPI.login(identifier, password);
+        
+          const result = await authApi.login(email, password);
           // console.log(result);
           
-          if (/*result.success*/1) {
+          if (result.success) {
+            // setAccessToken(res.data.accessToken); // store in memory
             set({
-              // user: result.user,
-              user: {name:"debug user"},
-              // accessToken: result.tokens?.accessToken || '',
+              user: result.user,
+              accessToken: result.accessToken,
               // permissions: result.permissions || [],
               // permissionCodes: result.permissionCodes || [],
               isAuthenticated: true,
@@ -85,13 +84,13 @@ const useUserStore = create(
         set({ isLoading: true });
         
         try {
-          const { user, accessToken } = get();
+          const { user } = get();
           
-          // Call logout API if available
-          if (window.posAPI && window.posAPI.logout && user?.id) {
-            const result = await window.posAPI.logout(user.id, accessToken);
-            return result;
-          }
+          
+          const result = await authApi.logout();
+          // setAccessToken(null);
+          return result;
+          
           // If no API, treat as success
           return { success: true, message: 'Logout successful (no API)' };
         } catch (error) {
@@ -102,11 +101,54 @@ const useUserStore = create(
           set({
             user: null,
             accessToken: null,
-            permissions: [],
-            permissionCodes: [],
+            // permissions: [],
+            // permissionCodes: [],
             isAuthenticated: false,
             isLoading: false,
             error: null
+          });
+        }
+      },
+
+      refresh: async () => {
+        try {
+          const result = await authApi.refresh();
+          // setAccessToken(result.accessToken);
+          return true;
+        } catch {
+          set({ 
+            user: null,
+            accessToken: null,
+            // permissions: [],
+            // permissionCodes: [],
+            isAuthenticated: false,
+            isLoading: false,
+            error: null 
+          });
+          return false;
+        }
+      },
+
+      initAuth: async () => {
+        try {
+          const result = await authApi.refresh();
+          set({ accessToken: result.accessToken });
+    
+          // get user info with new token
+          const profile = await authApi.getProfile();
+          set({
+            user: profile.user,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null 
+          });
+        } catch {
+          set({ 
+            user: null, 
+            accessToken: null, 
+            // permissions: [],
+            // permissionCodes: [],
+            loading: false 
           });
         }
       },
