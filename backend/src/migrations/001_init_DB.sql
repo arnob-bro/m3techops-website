@@ -1,3 +1,7 @@
+
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
 -- 1. Roles
 CREATE TABLE roles (
   id BIGSERIAL PRIMARY KEY,
@@ -20,10 +24,10 @@ CREATE TABLE role_permissions (
 
 -- 4. Users (custom ID as VARCHAR)
 CREATE TABLE users (
-    user_id VARCHAR(20) PRIMARY KEY, -- e.g., "USR001"
+    user_id VARCHAR(20) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     role_id BIGINT NOT NULL REFERENCES roles(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
