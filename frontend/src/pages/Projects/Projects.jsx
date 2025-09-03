@@ -80,6 +80,8 @@ const projects = [
   // ... other projects remain the same
 ];
 
+
+
 const Projects = () => {
   const [filter, setFilter] = useState('All');
   const [filteredProjects, setFilteredProjects] = useState(projects);
@@ -125,6 +127,8 @@ const Projects = () => {
     show: { opacity: 1, transition: { duration: 0.8 } }
   };
 
+
+  
   return (
     <div className="projects-page-project">
       <motion.div 
@@ -190,13 +194,19 @@ const Projects = () => {
                         <span key={index} className="tag-project">{tag}</span>
                       ))}
                     </div>
-                    <Link 
-                      to={`/projects/${project.id}`} 
-                      className="project-link-project"
-                      state={{ project }} // Passing project data via state
-                    >
-                      View Case Study <span>→</span>
-                    </Link>
+                   <Link 
+  to={`/projects/${project.id}`} 
+  className="project-link-project"
+  state={{ project }}
+  onClick={() => {
+    // Small delay to ensure navigation happens first
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  }}
+>
+  View Case Study <span>→</span>
+</Link>
                   </div>
                 </motion.div>
               ))}

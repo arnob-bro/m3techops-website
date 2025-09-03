@@ -16,6 +16,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+  cursor: default;
 }
 
 /* Enhanced Hero Section - Light Theme */
@@ -75,6 +76,44 @@
   width: 50px;
   height: 50px;
 }
+
+
+
+/* copyyyyyyyyyyyyyyyyyyyyyyyyyyy */
+/* FIXED: Icon centering */
+.service-details-icon {
+  width: 100px;
+  height: 100px;
+  background: rgba(var(--color-accent-rgb), 0.1);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 2rem;
+  margin-left: 50%;
+  color: var(--color-accent);
+  border: 2px solid rgba(var(--color-accent-rgb), 0.2);
+  animation: pulse 2s ease-in-out infinite;
+  position: relative;
+  padding: 0;
+}
+
+/* Ensure the SVG icon is properly centered */
+.servicedetails-icon svg {
+  display: block;
+  margin: 0;
+  width: 50px;
+  height: 50px;
+}
+
+
+
+
+
+
+
+
+
 
 @keyframes pulse {
   0%, 100% {
@@ -282,6 +321,7 @@
 }
 
 /* Modal Styles */
+/* Modal Styles */
 .servicedetails-modal-overlay {
   position: fixed;
   top: 0;
@@ -314,10 +354,11 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* Modal Close Button - Base Styles */
 .servicedetails-modal-close {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
+  top: 1rem;
+  right: 1rem;
   background: rgba(var(--color-primary-rgb), 0.7);
   border: 1px solid var(--color-border);
   border-radius: 50%;
@@ -335,6 +376,94 @@
   color: var(--color-accent);
   border-color: var(--color-accent);
   transform: rotate(90deg);
+}
+
+.servicedetails-modal-close .close-icon {
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+  display: block;
+}
+
+/* Tablet screens */
+@media (max-width: 1024px) {
+  .servicedetails-modal-close {
+    width: 36px;
+    height: 36px;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .servicedetails-modal-close .close-icon {
+    font-size: 20px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 768px) {
+  .servicedetails-modal-close {
+    width: 32px;
+    height: 32px;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .servicedetails-modal-close .close-icon {
+    font-size: 18px;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .servicedetails-modal-close {
+    width: 28px;
+    height: 28px;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .servicedetails-modal-close .close-icon {
+    font-size: 16px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .servicedetails-modal-close {
+    width: 24px;
+    height: 24px;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .servicedetails-modal-close .close-icon {
+    font-size: 14px;
+  }
+}
+
+/* Touch-friendly sizing for mobile */
+@media (max-width: 768px) and (pointer: coarse) {
+  .servicedetails-modal-close {
+    width: 36px;
+    height: 36px;
+    /* Ensure minimum touch target size for accessibility */
+    min-width: 36px;
+    min-height: 36px;
+    
+  }
+}
+
+/* Hover effects adjustment for touch devices */
+@media (hover: none) {
+  .servicedetails-modal-close:hover {
+    transform: none;
+  }
+
+  .servicedetails-modal-close:active {
+    transform: scale(0.95);
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
 }
 
 .servicedetails-modal-content h2 {

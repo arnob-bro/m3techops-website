@@ -67,6 +67,7 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    padding-bottom: 0.5rem;
   }
   
   .cookie-hero-subtitle {
