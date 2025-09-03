@@ -246,6 +246,17 @@ const Home = () => {
     }
   };
 
+  const scrollToServices = (e) => {
+  e.preventDefault();
+  const servicesSection = document.getElementById('services');
+  if (servicesSection) {
+    servicesSection.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
+};
+
   return (
     <div className="home-container">
       {/* Hero Section - Unchanged */}
@@ -465,7 +476,7 @@ const Home = () => {
                   ))}
                 </ul>
                 <Link to={`/services/${service.id}`} className="home-service-link">
-                  Learn More <FiArrowRight />
+                  Learn More 
                 </Link>
               </motion.div>
             ))}
@@ -500,21 +511,16 @@ const Home = () => {
          
           <div className="projects-carousel-container">
             <div className="projects-carousel">
-              {projects.map((project, index) => (
+              {[...projects, ...projects].map((project, index) => (
                 <motion.div
                   key={index}
-                  className={`project-slide ${index === currentProjectIndex ? 'active' : ''}`}
+                  className="project-slide"
                   initial="hidden"
                   whileInView="visible"
                   variants={fadeInUp}
-                  transition={{ delay: index * 0.1,duration: 0.5 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
                   viewport={{ once: true, margin: "-50px" }}
                   whileHover={{ scale: 1.02 }}
-                  animate={{
-                    opacity: index === currentProjectIndex ? 1 : 0.7,
-                    scale: index === currentProjectIndex ? 1 : 0.95,
-                  }}
-                  
                 >
                   <div className="project-image">
                     <img src={project.image} alt={project.title} />
@@ -529,7 +535,7 @@ const Home = () => {
                       <h3 className="project-title">{project.title}</h3>
                       <p className="project-description">{project.description}</p>
                       <Link to="/projects" className="project-link">
-                        View Project <FiArrowRight />
+                        View Project 
                       </Link>
                     </div>
                   </div>
@@ -655,9 +661,9 @@ const Home = () => {
                 <Link to="/contact" className="btn btn-primary">
                   Start Your Project
                 </Link>
-                <Link to="/services" className="btn btn-outline">
+                <button onClick={scrollToServices} className="btn btn-outline">
                   Explore Services
-                </Link>
+                </button>
               </div>
             </div>
           </motion.div>

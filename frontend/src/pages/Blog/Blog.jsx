@@ -162,7 +162,16 @@ const Blog = () => {
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     whileHover={{ y: -5, boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)" }}
                   >
-                    <Link to={`/blog/${blog.id}`} className="blog-card-link">
+                    <Link 
+                      to={`/blog/${blog.id}`} 
+                      className="blog-card-link"
+                      onClick={() => {
+                        // Small delay to ensure navigation happens first
+                        setTimeout(() => {
+                          window.scrollTo(0, 0);
+                        }, 100);
+                      }}
+                    >
                       <div className="blog-card-image">
                         <img src={blog.image} alt={blog.title} />
                         <div className="blog-category">{blog.category}</div>

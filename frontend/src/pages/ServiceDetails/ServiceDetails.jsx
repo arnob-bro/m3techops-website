@@ -251,7 +251,7 @@ const ServiceDetails = () => {
             variants={containerVariants}
           >
             <motion.div 
-              className="servicedetails-icon"
+              className="service-details-icon"
               variants={itemVariants}
             >
               {service.icon}
@@ -379,10 +379,10 @@ const ServiceDetails = () => {
               <motion.button 
                 className="servicedetails-modal-close"
                 onClick={() => setIsModalOpen(false)}
-                whileHover={{ rotate: 90, scale: 1.1 }}
+                // whileHover={{ rotate: 90, scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <FiX size={24} />
+                <span className="close-icon"><FiX/></span>
               </motion.button>
               
               <motion.div

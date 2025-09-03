@@ -134,6 +134,7 @@ body {
     rgba(var(--color-primary-rgb), 0.7) 90%,
     transparent 100%
   );
+  cursor: default;
 }
 
 .app {

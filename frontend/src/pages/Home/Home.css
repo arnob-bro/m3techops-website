@@ -61,6 +61,8 @@
 
 .home-hero-title .accent {
   display: inline-block;
+  
+  padding-bottom: 0.2rem;
   background: linear-gradient(135deg,
       var(--color-accent),
       var(--color-accent-light));
@@ -118,6 +120,8 @@
   min-height: 300px;
 }
 
+
+/* from here */
 .hero-tech-visual {
   position: relative;
   width: 300px;
@@ -173,41 +177,242 @@
   cursor: default;
   /* Set default cursor for tech icons */
 }
+/* Replace your existing tech icon positioning with this mobile-friendly approach */
 
-.tech-icon-1 {
-  transform: rotate(0deg) translateX(150px) rotate(0deg);
+/* Desktop positioning (keep existing) */
+@media (min-width: 769px) {
+  .tech-icon-1 {
+    transform: rotate(0deg) translateX(150px) rotate(0deg);
+  }
+
+  .tech-icon-2 {
+    transform: rotate(90deg) translateX(150px) rotate(-90deg);
+  }
+
+  .tech-icon-3 {
+    transform: rotate(180deg) translateX(150px) rotate(-180deg);
+  }
+
+  .tech-icon-4 {
+    transform: rotate(270deg) translateX(150px) rotate(-270deg);
+  }
+
+  .tech-icon-5 {
+    transform: rotate(0deg) translateX(105px) rotate(0deg);
+  }
+
+  .tech-icon-6 {
+    transform: rotate(180deg) translateX(105px) rotate(-180deg);
+  }
+
+  .tech-icon-9 {
+    transform: rotate(90deg) translateX(105px) rotate(-90deg);
+  }
+
+  .tech-icon-7 {
+    transform: rotate(0deg) translateX(60px) rotate(0deg);
+  }
+
+  .tech-icon-8 {
+    transform: rotate(180deg) translateX(60px) rotate(-180deg);
+  }
 }
 
-.tech-icon-2 {
-  transform: rotate(90deg) translateX(150px) rotate(-90deg);
+/* Mobile positioning using absolute positioning */
+@media (max-width: 768px) {
+  .hero-tech-visual {
+    width: 250px;
+    height: 250px;
+  }
+
+  .tech-icon {
+    width: 35px;
+    height: 35px;
+    transform: none !important;
+    /* Override the complex transforms */
+  }
+
+  /* Outer orbit - 125px radius from center */
+  .tech-icon-1 {
+    top: 0;
+    left: 50%;
+    margin-left: -17.5px;
+    margin-top: -17.5px;
+  }
+
+  .tech-icon-2 {
+    top: 50%;
+    right: 0;
+    margin-right: -17.5px;
+    margin-top: -17.5px;
+  }
+
+  .tech-icon-3 {
+    bottom: 0;
+    left: 50%;
+    margin-left: -17.5px;
+    margin-bottom: -17.5px;
+  }
+
+  .tech-icon-4 {
+    top: 50%;
+    left: 0;
+    margin-left: -17.5px;
+    margin-top: -17.5px;
+  }
+
+  /* Middle orbit */
+  .tech-icon-5 {
+    top: 15%;
+    left: 50%;
+    margin-left: -17.5px;
+    margin-top: -17.5px;
+  }
+
+  .tech-icon-6 {
+    bottom: 15%;
+    left: 50%;
+    margin-left: -17.5px;
+    margin-bottom: -17.5px;
+  }
+
+  .tech-icon-9 {
+    top: 50%;
+    right: 15%;
+    margin-right: -17.5px;
+    margin-top: -17.5px;
+  }
+
+  /* Inner orbit */
+  .tech-icon-7 {
+    top: 30%;
+    left: 50%;
+    margin-left: -17.5px;
+    margin-top: -17.5px;
+  }
+
+  .tech-icon-8 {
+    bottom: 30%;
+    left: 50%;
+    margin-left: -17.5px;
+    margin-bottom: -17.5px;
+  }
+
+  .tech-center {
+    width: 70px;
+    height: 70px;
+    font-size: 1.1rem;
+  }
 }
 
-.tech-icon-3 {
-  transform: rotate(180deg) translateX(150px) rotate(-180deg);
+@media (max-width: 480px) {
+  .hero-tech-visual {
+    width: 200px;
+    height: 200px;
+  }
+
+  .tech-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+
+  /* Adjust margins for smaller icons */
+  .tech-icon-1,
+  .tech-icon-5,
+  .tech-icon-6,
+  .tech-icon-7,
+  .tech-icon-8 {
+    margin-left: -15px;
+  }
+
+  .tech-icon-1,
+  .tech-icon-5,
+  .tech-icon-7 {
+    margin-top: -15px;
+  }
+
+  .tech-icon-3,
+  .tech-icon-6,
+  .tech-icon-8 {
+    margin-bottom: -15px;
+  }
+
+  .tech-icon-2 {
+    margin-right: -15px;
+    margin-top: -15px;
+  }
+
+  .tech-icon-4 {
+    margin-left: -15px;
+    margin-top: -15px;
+  }
+
+  .tech-icon-9 {
+    margin-right: -15px;
+    margin-top: -15px;
+  }
+
+  .tech-center {
+    width: 60px;
+    height: 60px;
+    font-size: 1rem;
+  }
 }
 
-.tech-icon-4 {
-  transform: rotate(270deg) translateX(150px) rotate(-270deg);
-}
+@media (max-width: 375px) {
+  .hero-tech-visual {
+    width: 180px;
+    height: 180px;
+  }
 
-.tech-icon-5 {
-  transform: rotate(0deg) translateX(105px) rotate(0deg);
-}
+  .tech-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
 
-.tech-icon-6 {
-  transform: rotate(180deg) translateX(105px) rotate(-180deg);
-}
+  /* Adjust margins for even smaller icons */
+  .tech-icon-1,
+  .tech-icon-5,
+  .tech-icon-6,
+  .tech-icon-7,
+  .tech-icon-8 {
+    margin-left: -14px;
+  }
 
-.tech-icon-7 {
-  transform: rotate(0deg) translateX(60px) rotate(0deg);
-}
+  .tech-icon-1,
+  .tech-icon-5,
+  .tech-icon-7 {
+    margin-top: -14px;
+  }
 
-.tech-icon-8 {
-  transform: rotate(180deg) translateX(60px) rotate(-180deg);
-}
+  .tech-icon-3,
+  .tech-icon-6,
+  .tech-icon-8 {
+    margin-bottom: -14px;
+  }
 
-.tech-icon-9 {
-  transform: rotate(90deg) translateX(105px) rotate(-90deg);
+  .tech-icon-2 {
+    margin-right: -14px;
+    margin-top: -14px;
+  }
+
+  .tech-icon-4 {
+    margin-left: -14px;
+    margin-top: -14px;
+  }
+
+  .tech-icon-9 {
+    margin-right: -14px;
+    margin-top: -14px;
+  }
+
+  .tech-center {
+    width: 50px;
+    height: 50px;
+    font-size: 0.9rem;
+  }
 }
 
 .tech-center {
@@ -309,6 +514,13 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+
+
+
+
 
 .container {
   width: 100%;
@@ -515,24 +727,21 @@
       rgba(var(--color-primary-rgb), 0.8) 100%);
 }
 
+/* Projects Carousel - Brand Items Style */
 .projects-carousel-container {
   position: relative;
   margin-top: 3rem;
+  overflow: hidden;
+
+  /* carousel blur */
+  mask: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
 }
 
 .projects-carousel {
   display: flex;
   gap: 2rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 1rem;
-  scrollbar-width: none;
-}
-
-.projects-carousel::-webkit-scrollbar {
-  display: none;
+  animation: projectScroll 30s linear infinite;
+  width: max-content;
 }
 
 .project-slide {
@@ -542,18 +751,31 @@
   width: 325px;
   height: 350px;
   flex-shrink: 0;
-  scroll-snap-align: start;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   cursor: pointer;
-  /* Pointer for project slides */
 }
 
-.project-slide.active {
-  transform: scale(1.05);
-  z-index: 2;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+.project-slide:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
 }
 
+@keyframes projectScroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pause animation on hover */
+.projects-carousel-container:hover .projects-carousel {
+  animation-play-state: paused;
+}
+
+/* Keep the rest of your existing project-slide styles */
 .project-image {
   width: 100%;
   height: 100%;
@@ -646,7 +868,6 @@
   transition: all 0.3s ease;
   font-size: 0.9rem;
   cursor: pointer;
-  /* Pointer for project links */
 }
 
 .project-link:hover {
@@ -673,24 +894,23 @@
 }
 
 .dot {
-  width: 12px;
-  height: 12px;
+  width: 6px;
+  height: 8px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(111, 165, 159, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .dot.active {
   background: var(--color-accent);
-  transform: scale(1.2);
+  transform: scale(1);
 }
 
 .dot:hover {
   background: rgba(255, 255, 255, 0.5);
 }
-
 .home-testimonials {
   position: relative;
   padding: 6rem 0;

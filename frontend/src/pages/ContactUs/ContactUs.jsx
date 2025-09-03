@@ -205,7 +205,12 @@ const ContactUs = () => {
                   className="submit-btn"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Sending...' : (
+                  {isSubmitting ? (
+                    <>
+                      <span className="btn-spinner"></span>
+                      Sending...
+                    </>
+                  ) : (
                     <>
                       Send Message <FiSend />
                     </>
