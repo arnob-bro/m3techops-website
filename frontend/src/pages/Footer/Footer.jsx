@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './Footer.css';
-import { FiTwitter, FiGithub, FiLinkedin, FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
+import { FiTwitter, FiGithub, FiLinkedin, FiMail, FiPhone, FiMapPin, FiFacebook } from 'react-icons/fi';
 
 const Footer = () => {
   const footerLinks = [
@@ -36,7 +36,7 @@ const Footer = () => {
 
   const socialLinks = [
     { icon: <FiTwitter />, url: "https://twitter.com/m3techops", label: "Twitter" },
-    { icon: <FiGithub />, url: "https://github.com/m3techops", label: "GitHub" },
+    { icon: <FiFacebook />, url: "https://facebook.com/m3techops", label: "Facebook" },
     { icon: <FiLinkedin />, url: "https://linkedin.com/company/m3techops", label: "LinkedIn" }
   ];
 

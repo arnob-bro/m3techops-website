@@ -1,8 +1,38 @@
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FiCheck, FiArrowRight } from 'react-icons/fi';
+import { FiCheck, FiArrowRight, FiUsers, FiTarget, FiAward, FiGlobe } from 'react-icons/fi';
+import { FaLinkedin, FaTwitter, FaFacebook, FaInstagram } from 'react-icons/fa';
+import CountUp from 'react-countup';
 import './AboutUs.css';
 
 const AboutUs = () => {
+  const [statsInView, setStatsInView] = useState(false);
+  const statsRef = useRef(null);
+
+  useEffect(() => {
+    // Scroll to top on component mount
+    window.scrollTo(0, 0);
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsInView(true);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (statsRef.current) {
+      observer.observe(statsRef.current);
+    }
+
+    return () => {
+      if (statsRef.current) {
+        observer.unobserve(statsRef.current);
+      }
+    };
+  }, []);
+
   const teamMembers = [
     {
       id: 1,
@@ -53,19 +83,23 @@ const AboutUs = () => {
   const values = [
     {
       title: "Innovation",
-      description: "We constantly push boundaries to deliver cutting-edge solutions."
+      description: "We constantly push boundaries to deliver cutting-edge solutions.",
+      icon: <FiGlobe />
     },
     {
       title: "Integrity",
-      description: "Honesty and transparency guide all our business practices."
+      description: "Honesty and transparency guide all our business practices.",
+      icon: <FiTarget />
     },
     {
       title: "Excellence",
-      description: "We strive for perfection in everything we deliver."
+      description: "We strive for perfection in everything we deliver.",
+      icon: <FiAward />
     },
     {
       title: "Collaboration",
-      description: "Great ideas come from teamwork and shared vision."
+      description: "Great ideas come from teamwork and shared vision.",
+      icon: <FiUsers />
     }
   ];
 
@@ -78,233 +112,210 @@ const AboutUs = () => {
     "Ongoing support and maintenance"
   ];
 
-  // Optimized faster animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 10, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.25,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 15 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05
-      }
-    }
-  };
-
   return (
-    <div className="about-page">
+    <div className="AboutUs-AU">
+      {/* Floating Background Elements */}
+      <div className="bg-decoration-AU">
+        <div className="floating-element-AU element-1-AU"></div>
+        <div className="floating-element-AU element-2-AU"></div>
+        <div className="floating-element-AU element-3-AU"></div>
+        <div className="floating-element-AU element-4-AU"></div>
+      </div>
+
       {/* Hero Section */}
-      <section className="about-hero">
-        <div className="container">
+      <section className="about-hero-AU">
+        <div className="container-AU">
           <motion.div
-            className="about-hero-content"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="hero-content-AU"
           >
-            <motion.h1 variants={itemVariants}>About M3 TECHOPS</motion.h1>
-            <motion.p variants={itemVariants}>
-              We're a team of passionate technologists dedicated to transforming businesses through innovative digital solutions.
-            </motion.p>
+            <div className="hero-badge-AU">
+              <span>Our Story</span>
+            </div>
+            <h1>About M3 TECHOPS</h1>
+            <p>We're a team of passionate technologists dedicated to transforming businesses through innovative digital solutions.</p>
+            
           </motion.div>
         </div>
       </section>
 
       {/* Mission Section */}
-      <section className="about-mission">
-        <div className="container">
-          <motion.div
-            className="mission-grid"
-            initial="hidden"
-            whileInView="visible"
-            variants={staggerContainer}
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            <motion.div className="mission-content" variants={fadeInUp}>
+      <section className="about-mission-AU">
+        <div className="container-AU">
+          <div className="mission-grid-AU">
+            <motion.div 
+              className="mission-card-AU"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <div className="card-icon-AU">
+                <FiTarget />
+              </div>
               <h2>Our Mission</h2>
-              <p>
-                To empower businesses of all sizes with technology solutions that drive growth, efficiency, and competitive advantage in an increasingly digital world.
-              </p>
+              <p>To empower businesses of all sizes with technology solutions that drive growth, efficiency, and competitive advantage in an increasingly digital world.</p>
             </motion.div>
 
-            <motion.div className="vision-content" variants={fadeInUp}>
+            <motion.div 
+              className="mission-card-AU"
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <div className="card-icon-AU">
+                <FiGlobe />
+              </div>
               <h2>Our Vision</h2>
-              <p>
-                To be the most trusted partner for digital transformation, recognized for our technical excellence, innovative approach, and unwavering commitment to client success.
-              </p>
+              <p>To be the most trusted partner for digital transformation, recognized for our technical excellence, innovative approach, and unwavering commitment to client success.</p>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Values Section */}
-      <section className="about-values">
-        <div className="container">
+      <section className="about-values-AU">
+        <div className="container-AU">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
-            variants={containerVariants}
-            viewport={{ once: true, margin: "-50px" }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="section-header-AU"
           >
-            <motion.h2 variants={itemVariants} className="section-title">Our Core Values</motion.h2>
-            <motion.p variants={itemVariants} className="section-subtitle">
-              These principles guide everything we do
-            </motion.p>
-
-            <motion.div className="values-grid" variants={staggerContainer}>
-              {values.map((value, index) => (
-                <motion.div
-                  key={index}
-                  className="value-card"
-                  variants={fadeInUp}
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="value-number">{index + 1}</div>
-                  <h3>{value.title}</h3>
-                  <p>{value.description}</p>
-                </motion.div>
-              ))}
-            </motion.div>
+            <h2>Our Core Values</h2>
+            <p>These principles guide everything we do</p>
           </motion.div>
+
+          <div className="values-grid-AU">
+            {values.map((value, index) => (
+              <motion.div
+                key={index}
+                className="value-card-AU"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
+                whileHover={{ y: -5 }}
+                viewport={{ once: true }}
+              >
+                <div className="value-icon-AU">
+                  {value.icon}
+                </div>
+                <h3>{value.title}</h3>
+                <p>{value.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Team Section */}
-      <section className="about-team">
-        <div className="container">
+      <section className="about-team-AU">
+        <div className="container-AU">
           <motion.div
-            initial="hidden"
-            whileInView="visible"
-            variants={containerVariants}
-            viewport={{ once: true, margin: "-50px" }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="section-header-AU"
           >
-            <motion.h2 variants={itemVariants} className="section-title">Meet Our Team</motion.h2>
-            <motion.p variants={itemVariants} className="section-subtitle">
-              The talented individuals behind our success
-            </motion.p>
-
-            <motion.div className="team-grid" variants={staggerContainer}>
-              {teamMembers.map((member) => (
-                <motion.div
-                  key={member.id}
-                  className="team-card"
-                  variants={fadeInUp}
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="team-image">
-                    <img src={member.image} alt={member.name} />
-                    <div className="team-social">
-                      <a href={member.social.linkedin} aria-label={`Connect with ${member.name} on LinkedIn`}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M6 9H2V21H6V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </a>
-                      <a href={member.social.twitter} aria-label={`Follow ${member.name} on Twitter`}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M23 3C22.0424 3.67548 20.9821 4.19211 19.86 4.53C19.2577 3.83751 18.4573 3.34669 17.567 3.12393C16.6767 2.90116 15.7395 2.9572 14.8821 3.28445C14.0247 3.61171 13.2884 4.1944 12.773 4.95372C12.2575 5.71303 11.9877 6.61234 12 7.53V8.53C10.2426 8.57557 8.50127 8.18581 6.93101 7.39545C5.36074 6.60508 4.01032 5.43864 3 4C3 4 -1 13 8 17C5.94053 18.398 3.48716 19.0989 1 19C10 24 21 19 21 7.5C20.9991 7.22145 20.9723 6.94359 20.92 6.67C21.9406 5.66349 22.6608 4.39271 23 3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
-                  <div className="team-info">
-                    <h3>{member.name}</h3>
-                    <p className="team-role">{member.role}</p>
-                    <p className="team-bio">{member.bio}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+            <h2>Meet Our Team</h2>
+            <p>The talented individuals behind our success</p>
           </motion.div>
+
+          <div className="team-grid-AU">
+            {teamMembers.map((member) => (
+              <motion.div
+                key={member.id}
+                className="team-card-AU"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                whileHover={{ y: -5 }}
+                viewport={{ once: true }}
+              >
+                <div className="team-image-AU">
+                  <img src={member.image} alt={member.name} />
+                  <div className="team-social-AU">
+                    <a href={member.social.linkedin} aria-label={`Connect with ${member.name} on LinkedIn`} className="social-link-AU linkedin-AU">
+                      <FaLinkedin />
+                    </a>
+                    <a href={member.social.twitter} aria-label={`Follow ${member.name} on Twitter`} className="social-link-AU twitter-AU">
+                      <FaTwitter />
+                    </a>
+                  </div>
+                </div>
+                <div className="team-info-AU">
+                  <h3>{member.name}</h3>
+                  <p className="team-role-AU">{member.role}</p>
+                  <p className="team-bio-AU">{member.bio}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="about-why">
-        <div className="container">
-          <motion.div
-            className="why-grid"
-            initial="hidden"
-            whileInView="visible"
-            variants={containerVariants}
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            <motion.div className="why-content" variants={fadeInUp}>
-              <h2>Why Choose M3 TECHOPS?</h2>
-              <p>
-                We combine technical expertise with business acumen to deliver solutions that not only work flawlessly but also drive real business results.
-              </p>
+      <section className="about-why-AU">
+        <div className="container-AU">
+          <div className="why-grid-AU">
+            <motion.div 
+              className="why-content-AU"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <div className="section-header-AU">
+                <h2>Why Choose M3 TECHOPS?</h2>
+                <p>We combine technical expertise with business acumen to deliver solutions that not only work flawlessly but also drive real business results.</p>
+              </div>
               
-              <ul className="why-list">
+              <ul className="why-list-AU">
                 {reasons.map((reason, index) => (
                   <motion.li
                     key={index}
-                    variants={fadeInUp}
-                    custom={index}
-                    initial="hidden"
-                    animate="visible"
-                    transition={{ delay: index * 0.05 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                    viewport={{ once: true }}
                   >
-                    <FiCheck className="check-icon" />
+                    <FiCheck className="check-icon-AU" />
                     {reason}
                   </motion.li>
                 ))}
               </ul>
 
               <motion.div
-                className="why-cta"
+                className="why-cta-AU"
                 whileHover={{ x: 3 }}
               >
-                <a href="/contact" className="btn btn-primary">
+                <a href="/contact" className="btn-AU btn-primary-AU">
                   Get in Touch <FiArrowRight />
                 </a>
               </motion.div>
             </motion.div>
 
-            <motion.div className="why-image" variants={fadeInUp}>
-              <div className="image-wrapper">
-                <div className="image-overlay"></div>
+            <motion.div 
+              className="why-image-AU"
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <div className="image-wrapper-AU">
+                <div className="image-overlay-AU"></div>
                 <img 
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
                   alt="Our team working together" 
                 />
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>

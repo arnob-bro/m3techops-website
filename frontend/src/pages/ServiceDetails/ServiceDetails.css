@@ -81,7 +81,7 @@
 
 /* copyyyyyyyyyyyyyyyyyyyyyyyyyyy */
 /* FIXED: Icon centering */
-.service-details-icon {
+.service-details-icon-sd {
   width: 100px;
   height: 100px;
   background: rgba(var(--color-accent-rgb), 0.1);
@@ -90,7 +90,7 @@
   justify-content: center;
   align-items: center;
   margin: 0 auto 2rem;
-  margin-left: 50%;
+  /* margin-left: 50%; */
   color: var(--color-accent);
   border: 2px solid rgba(var(--color-accent-rgb), 0.2);
   animation: pulse 2s ease-in-out infinite;

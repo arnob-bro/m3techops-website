@@ -6,6 +6,9 @@ import './Home.css';
 import { FiArrowRight, FiCheck, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaReact, FaNodeJs, FaAws, FaDatabase, FaPython, FaLaptopCode,  FaRocket, FaSmile, FaUsers, FaGlobe } from 'react-icons/fa';
 import CountUp from 'react-countup';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
+import { useSpring, animated } from '@react-spring/web';
 
 const Home = () => {
   useEffect(() => {
@@ -324,6 +327,7 @@ useEffect(() => {
       <section className="home-hero">
         
         <div className="home-hero-bg"></div>
+
         <div className="container">
           <div className="home-hero-content">
             <motion.div
