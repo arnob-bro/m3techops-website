@@ -53,7 +53,7 @@ const Footer = () => {
             viewport={{ once: true }}
           >
             <Link to="/" className="footer-logo">
-              <span className="footer-logo-text">M3 TECHOPS</span>
+              <span className="footer-logo-text">M³ TECHOPS</span>
             </Link>
             <p className="footer-tagline">
               Innovating for your digital future with cutting-edge technology solutions that drive real business results.
