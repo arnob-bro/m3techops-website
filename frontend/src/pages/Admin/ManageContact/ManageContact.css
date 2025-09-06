@@ -98,19 +98,19 @@
   
   /* Stats */
   .messages-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    display: flex;
+    justify-content: center; /* center the single card */
     margin-bottom: 32px;
   }
   
   .stat-card {
-    background: var(--admin-pages-secondary);
+    width: 200px; /* fixed width */
+    padding: 16px; /* smaller padding */
     border-radius: 16px;
-    padding: 24px;
     display: flex;
     align-items: center;
     gap: 16px;
+    background: var(--admin-pages-secondary);
     box-shadow: 0 4px 6px -1px var(--admin-pages-shadow);
     border: 1px solid var(--admin-pages-border);
     transition: all 0.3s ease;
@@ -122,13 +122,13 @@
   }
   
   .stat-icon {
-    width: 60px;
-    height: 60px;
+    width: 50px; /* slightly smaller icon */
+    height: 50px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 22px;
     color: white;
   }
   
