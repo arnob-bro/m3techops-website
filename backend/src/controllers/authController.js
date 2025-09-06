@@ -86,9 +86,9 @@ class AuthController {
 
           const { email, password } = req.body;
           // check if email is a valid email
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            return res.status(400).json({error: "Invalid email"});
-          }
+        if (!/^(?!.*\.\.)(?!.*\.$)[^\W][\w.+-]{0,63}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/.test(email)) {
+          return res.status(400).json({ error: "Invalid email" });
+        }
           // check if password is at least 6 characters
           if (password.length < 6) {
             return res.status(400).json({error: "Password must be at least 6 characters"});

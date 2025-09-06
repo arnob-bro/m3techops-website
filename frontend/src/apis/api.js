@@ -54,7 +54,7 @@ api.interceptors.response.use(
 
       try {
         const res = await axios.post(
-          "http://localhost:5000/refresh",
+          "http://localhost:5000/auth/refresh",
           {},
           { withCredentials: true }
         );

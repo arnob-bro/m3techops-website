@@ -131,3 +131,23 @@ CREATE TABLE pay_slips (
     status VARCHAR(20) CHECK (status IN ('Generated','Paid','Cancelled')) DEFAULT 'Generated',
     issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 14. Subscribers
+CREATE TABLE subscribers (
+    subscriber_id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(150),
+    status VARCHAR(10) CHECK (status IN ('Active','Inactive')) DEFAULT 'Active',
+    subscribed_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 15. Newsletters
+CREATE TABLE newsletters (
+    newsletter_id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    status VARCHAR(20) CHECK (status IN ('Draft', 'Scheduled', 'Sent', 'Canceled')) DEFAULT 'Draft',
+    scheduled_date TIMESTAMP, -- when it's planned to be sent
+    sent_date TIMESTAMP,      -- actual sent date
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

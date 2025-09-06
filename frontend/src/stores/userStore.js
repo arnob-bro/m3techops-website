@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import authApi from '../apis/authApi';
+import AuthApi from '../apis/authApi';
+
+const authApi = new AuthApi();
 
 
 const useUserStore = create(
@@ -47,7 +49,7 @@ const useUserStore = create(
         try {
         
           const result = await authApi.login(email, password);
-          // console.log(result);
+          console.log(result);
           
           if (result.success) {
             // setAccessToken(res.data.accessToken); // store in memory

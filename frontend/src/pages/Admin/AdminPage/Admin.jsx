@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import './Admin.css';
 import { 
   FiMenu, FiX, FiHome, FiSettings, FiFileText, FiBriefcase, 
   FiMail, FiDollarSign, FiCalendar, FiUsers, FiBook, FiPieChart,
-  FiChevronDown, FiChevronRight, FiPlusCircle
+  FiChevronDown, FiChevronRight, FiPlusCircle, FiLogOut
 } from 'react-icons/fi';
+import useUserStore from "../../../stores/userStore"; // 👈 import your store
 
 const Admin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [openSubmenus, setOpenSubmenus] = useState({});
   const location = useLocation();
-  
+  const navigate = useNavigate();
+  const logout = useUserStore((state) => state.logout); // 👈 grab logout function
+
   // Extract the active tab from the current URL path
   const activeTab = location.pathname.split('/').pop() || 'dashboard';
 
@@ -21,7 +24,6 @@ const Admin = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
       
-      // Auto-close sidebar on mobile when resizing to desktop
       if (!mobile && sidebarOpen) {
         setSidebarOpen(false);
       }
@@ -46,6 +48,11 @@ const Admin = () => {
       ...prev,
       [menuId]: !prev[menuId]
     }));
+  };
+
+  const handleLogout = async () => {
+    await logout(); // clear tokens, cookies and user state
+    navigate("/admin-login"); // redirect to login page
   };
 
   const navItems = [
@@ -73,26 +80,22 @@ const Admin = () => {
     { id: 'scheduler', icon: <FiCalendar />, label: 'Free Time Scheduler', path: '/admin/scheduler' },
   ];
 
-  // Check if any sub-item is active
   const isPolicySubItemActive = navItems
     .find(item => item.id === 'policy')?.subItems
     ?.some(subItem => activeTab === subItem.id);
 
   return (
     <div className={`admin-container ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'} ${isMobile ? 'mobile-view' : ''}`}>
-      {/* Mobile menu button */}
       {isMobile && (
         <button className="mobile-menu-button" onClick={toggleSidebar}>
           <FiMenu />
         </button>
       )}
       
-      {/* Sidebar overlay for mobile */}
       {isMobile && sidebarOpen && (
         <div className="sidebar-overlay" onClick={closeSidebar}></div>
       )}
 
-      {/* Sidebar */}
       <div className="admin-sidebar">
         <div className="sidebar-header">
           <h3>Admin Panel</h3>
@@ -130,7 +133,6 @@ const Admin = () => {
                   </Link>
                 </div>
                 
-                {/* Render sub-items if they exist */}
                 {item.subItems && (!isMobile || sidebarOpen || openSubmenus[item.id]) && (
                   <ul className={`sub-nav ${openSubmenus[item.id] ? 'sub-nav-open' : 'sub-nav-closed'}`}>
                     {item.subItems.map((subItem) => (
@@ -149,10 +151,17 @@ const Admin = () => {
               </li>
             ))}
           </ul>
+
+          {/* 🔴 Logout Button at bottom */}
+          <li className="logout-btn" onClick={handleLogout}>
+            <button className="nav-link logout-button">
+              <span className="nav-icon"><FiLogOut /></span>
+              {(!isMobile || sidebarOpen) && <span className="nav-label">Logout</span>}
+            </button>
+          </li>
         </nav>
       </div>
 
-      {/* Main Content */}
       <div className="admin-content">
         <Outlet />
       </div>

@@ -1,26 +1,47 @@
 import { useState, useEffect } from 'react';
 import { 
   FaSearch, FaPlus, FaEdit, FaTrash, FaEnvelope, 
-  FaCalendarAlt, FaCheckCircle, FaTimesCircle, FaPaperPlane 
+  FaCalendarAlt, FaCheckCircle, FaTimesCircle, FaPaperPlane
 } from 'react-icons/fa';
+import {
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import Modal from 'react-modal';
 import './ManageNewsletter.css';
+import NewsLetterApi from '../../../apis/newsLetterApi';
+
+const newsLetterApi = new NewsLetterApi();
 
 const ManageNewsletter = () => {
   const [subscribers, setSubscribers] = useState([]);
+  const [totalSubscribers, setTotalSubscribers] = useState(0);
   const [newsletters, setNewsletters] = useState([]);
+  const [searchEmail, setSearchEmail] = useState("");
   const [isSubscriberModalOpen, setIsSubscriberModalOpen] = useState(false);
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
   const [currentSubscriber, setCurrentSubscriber] = useState(null);
   const [currentNewsletter, setCurrentNewsletter] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
+  // const [searchTerm, setSearchTerm] = useState('');
+  // const [subscribersStatusFilter, setSubscribersStatusFilter] = useState('');
+  const [subscriberPage, setSubscriberPage] = useState(1);
+  const [subscriberTotalPages, setSubscriberTotalPages] = useState(1);
+  const [subscriberSearch, setSubscriberSearch] = useState('');
+  const [subscriberStatusFilter, setSubscriberStatusFilter] = useState('');
+
+  const [newsletterPage, setNewsletterPage] = useState(1);
+  const [newsletterTotalPages, setNewsletterTotalPages] = useState(1);
+  const [newsletterSearch, setNewsletterSearch] = useState('');
+  const [newsletterStatusFilter, setNewsletterStatusFilter] = useState('');
+
   const [activeTab, setActiveTab] = useState('subscribers');
   const [formData, setFormData] = useState({
     email: '',
     name: '',
     status: 'active',
-    subscribedAt: new Date().toISOString().split('T')[0]
+    subscribed_date: new Date().toISOString().split('T')[0]
   });
   const [newsletterFormData, setNewsletterFormData] = useState({
     subject: '',
@@ -28,82 +49,72 @@ const ManageNewsletter = () => {
     scheduledFor: '',
     status: 'draft'
   });
+  const subscribersPerPage = 10;
+
+  const fetchSubscribers = async () => {
+    try {
+      const result = await newsLetterApi.getSubscribers({
+        page: subscriberPage,
+        limit: subscribersPerPage,
+        email: subscriberSearch,
+        status: subscriberStatusFilter,
+      });
+  
+      setSubscribers(result.subscribers || []);
+      setSubscriberTotalPages(result.pagination?.totalPages || 1);
+      setTotalSubscribers(result.pagination?.total || 0);
+    } catch (err) {
+      console.error("Failed to fetch subscribers", err);
+      setSubscribers([]);
+      setSubscriberTotalPages(1);
+      setTotalSubscribers(0);
+    }
+  };
 
   useEffect(() => {
     Modal.setAppElement('#root');
     
-    // Fetch mock data
-    const mockSubscribers = [
-      {
-        id: '1',
-        email: 'john.doe@example.com',
-        name: 'John Doe',
-        status: 'active',
-        subscribedAt: '2023-05-15'
-      },
-      {
-        id: '2',
-        email: 'sarah.johnson@example.com',
-        name: 'Sarah Johnson',
-        status: 'active',
-        subscribedAt: '2023-06-22'
-      },
-      {
-        id: '3',
-        email: 'michael.chen@example.com',
-        name: 'Michael Chen',
-        status: 'inactive',
-        subscribedAt: '2023-02-10',
-        unsubscribedAt: '2023-08-15'
-      },
-      {
-        id: '4',
-        email: 'emma.williams@example.com',
-        name: 'Emma Williams',
-        status: 'active',
-        subscribedAt: '2023-01-05'
-      },
-      {
-        id: '5',
-        email: 'david.kim@example.com',
-        name: 'David Kim',
-        status: 'active',
-        subscribedAt: '2023-07-30'
-      }
-    ];
+    fetchSubscribers();
 
-    const mockNewsletters = [
-      {
-        id: '1',
-        subject: 'Weekly Tech Insights - August Edition',
-        content: 'This week we explore the latest in AI advancements and cloud computing trends...',
-        status: 'sent',
-        sentAt: '2023-08-15',
-        openRate: '42%',
-        clickRate: '18%'
-      },
-      {
-        id: '2',
-        subject: 'New Service Offerings - Cloud Solutions',
-        content: 'We are excited to announce our new cloud infrastructure services designed for...',
-        status: 'scheduled',
-        scheduledFor: '2023-09-01',
-        openRate: '0%',
-        clickRate: '0%'
-      },
-      {
-        id: '3',
-        subject: 'Q2 Company Updates & Achievements',
-        content: 'As we wrap up the second quarter, we wanted to share some of our major milestones...',
-        status: 'draft',
-        openRate: '0%',
-        clickRate: '0%'
-      }
-    ];
+  },  [subscriberPage, subscriberSearch, subscriberStatusFilter]);
 
-    setSubscribers(mockSubscribers);
-    setNewsletters(mockNewsletters);
-  }, []);
+  const fetchNewsletters = async () => {
+    try {
+      // mock for now, replace with API later
+      const mockNewsletters = [
+        {
+          id: '1',
+          subject: 'Weekly Tech Insights - August Edition',
+          content: 'This week we explore the latest in AI advancements and cloud computing trends...',
+          status: 'sent',
+          sentAt: '2023-08-15'
+        },
+        {
+          id: '2',
+          subject: 'New Service Offerings - Cloud Solutions',
+          content: 'We are excited to announce our new cloud infrastructure services designed for...',
+          status: 'scheduled',
+          scheduledFor: '2023-09-01'
+        },
+        {
+          id: '3',
+          subject: 'Q2 Company Updates & Achievements',
+          content: 'As we wrap up the second quarter, we wanted to share some of our major milestones...',
+          status: 'draft'
+        }
+      ];
+      setNewsletters(mockNewsletters);
+      setNewsletterTotalPages(5); // example
+    } catch (err) {
+      console.error("Failed to fetch newsletters", err);
+      setNewsletters([]);
+      setNewsletterTotalPages(1);
+    }
+  };
+  
+  useEffect(() => {
+    fetchNewsletters();
+  }, [newsletterPage, newsletterSearch, newsletterStatusFilter]);
 
   useEffect(() => {
     if (isSubscriberModalOpen || isNewsletterModalOpen) {
@@ -133,23 +144,26 @@ const ManageNewsletter = () => {
     }));
   };
 
-  const handleToggleStatus = (id) => {
-    setSubscribers(subscribers.map(subscriber => 
-      subscriber.id === id ? { 
-        ...subscriber, 
-        status: subscriber.status === 'active' ? 'inactive' : 'active',
-        unsubscribedAt: subscriber.status === 'active' ? new Date().toISOString().split('T')[0] : null
-      } : subscriber
-    ));
+  const handleToggleStatus = async (subscriber_id,status) => {
+    const newStatus = (status === "Active")? "Inactive" : "Active";
+    const changed = await newsLetterApi.updateSubscriberStatus(subscriber_id,newStatus);
+    if(changed){
+      setSubscribers(subscribers.map(subscriber => 
+        subscriber.subscriber_id === subscriber_id ? { 
+          ...subscriber, 
+          status: newStatus,
+        } : subscriber
+      ));
+    }
+    
   };
 
   const openEditSubscriberModal = (subscriber) => {
     setCurrentSubscriber(subscriber);
     setFormData({
       email: subscriber.email,
-      name: subscriber.name,
       status: subscriber.status,
-      subscribedAt: subscriber.subscribedAt
+      subscribed_date: subscriber.subscribed_date
     });
     setIsSubscriberModalOpen(true);
   };
@@ -169,9 +183,8 @@ const ManageNewsletter = () => {
     setCurrentSubscriber(null);
     setFormData({
       email: '',
-      name: '',
-      status: 'active',
-      subscribedAt: new Date().toISOString().split('T')[0]
+      status: 'Active',
+      subscribed_date: new Date().toISOString().split('T')[0]
     });
     setIsSubscriberModalOpen(true);
   };
@@ -215,8 +228,6 @@ const ManageNewsletter = () => {
       const newNewsletter = {
         id: Date.now().toString(),
         sentAt: newsletterFormData.status === 'sent' ? new Date().toISOString().split('T')[0] : null,
-        openRate: '0%',
-        clickRate: '0%',
         ...newsletterFormData
       };
       setNewsletters([...newsletters, newNewsletter]);
@@ -244,22 +255,20 @@ const ManageNewsletter = () => {
 
   const filteredSubscribers = subscribers.filter(subscriber => {
     const matchesSearch = 
-      subscriber.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      subscriber.name.toLowerCase().includes(searchTerm.toLowerCase());
+      subscriber.email.toLowerCase().includes(subscriberSearch.toLowerCase()) 
     
-    const matchesStatus = statusFilter === 'all' || subscriber.status === statusFilter;
+    const matchesStatus = subscriberStatusFilter === '' || subscriber.status === subscriberStatusFilter;
     
     return matchesSearch && matchesStatus;
   });
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    if (!dateString) return "";
+    return new Date(dateString).toISOString().split("T")[0];
   };
 
   const getStatusBadge = (status) => {
-    return status === 'active' ? 'status-badge active' : 'status-badge inactive';
+    return status === 'Active' ? 'status-badge active' : 'status-badge inactive';
   };
 
   const getNewsletterStatusBadge = (status) => {
@@ -295,19 +304,19 @@ const ManageNewsletter = () => {
               <input
                 type="text"
                 placeholder="Search subscribers..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={subscriberSearch}
+                onChange={(e) => setSubscriberSearch(e.target.value)}
               />
               <FaSearch className="search-icon" />
             </div>
             <div className="newsletter-filters">
               <select 
-                value={statusFilter} 
-                onChange={(e) => setStatusFilter(e.target.value)}
+                value={subscriberStatusFilter} 
+                onChange={(e) => setSubscriberStatusFilter(e.target.value)}
               >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
+                <option value="">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
               </select>
             </div>
             <button onClick={openAddSubscriberModal} className="newsletter-btn-add">
@@ -321,7 +330,6 @@ const ManageNewsletter = () => {
               <thead>
                 <tr>
                   <th>Subscriber</th>
-                  <th>Email</th>
                   <th>Subscribed Date</th>
                   <th>Status</th>
                   <th>Actions</th>
@@ -330,32 +338,30 @@ const ManageNewsletter = () => {
               <tbody>
                 {filteredSubscribers.length > 0 ? (
                   filteredSubscribers.map(subscriber => (
-                    <tr key={subscriber.id}>
+                    <tr key={subscriber.subscriber_id}>
                       <td>
                         <div className="subscriber-info">
                           <div className="subscriber-avatar">
                             <FaEnvelope />
                           </div>
                           <div className="subscriber-details">
-                            <h4>{subscriber.name || 'Unknown Subscriber'}</h4>
+                            <h4>{subscriber.email || 'Unknown Subscriber'}</h4>
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <span className="subscriber-email">{subscriber.email}</span>
-                      </td>
+                      
                       <td>
                         <span className="subscriber-date">
                           <FaCalendarAlt size={12} />
-                          {formatDate(subscriber.subscribedAt)}
+                          {formatDate(subscriber.subscribed_date)}
                         </span>
                       </td>
                       <td>
                         <button 
-                          onClick={() => handleToggleStatus(subscriber.id)} 
+                          onClick={() => handleToggleStatus(subscriber.subscriber_id,subscriber.status)} 
                           className={getStatusBadge(subscriber.status)}
                         >
-                          {subscriber.status === 'active' ? (
+                          {subscriber.status === 'Active' ? (
                             <>
                               <FaCheckCircle /> Active
                             </>
@@ -373,11 +379,6 @@ const ManageNewsletter = () => {
                             className="edit-icon"
                             aria-label="Edit subscriber"
                           />
-                          <FaTrash 
-                            onClick={() => deleteSubscriber(subscriber.id)} 
-                            className="delete-icon"
-                            aria-label="Delete subscriber"
-                          />
                         </div>
                       </td>
                     </tr>
@@ -391,6 +392,70 @@ const ManageNewsletter = () => {
                 )}
               </tbody>
             </table>
+            {subscriberTotalPages > 1 && (
+            <div className="pagination">
+              {/* Previous */}
+              <button
+                onClick={() => setSubscriberPage((prev) => Math.max(prev - 1, 1))}
+                disabled={subscriberPage === 1}
+                className="pagination-btn"
+              >
+                <FiChevronLeft /> Previous
+              </button>
+
+              <div className="page-numbers">
+                {/* Always show first 3 pages */}
+                {Array.from({ length: Math.min(3, subscriberTotalPages) }, (_, i) => i + 1).map(
+                  (number) => (
+                    <button
+                      key={number}
+                      onClick={() => setSubscriberPage(number)}
+                      className={subscriberPage === number ? "active" : ""}
+                    >
+                      {number}
+                    </button>
+                  )
+                )}
+
+                {/* Ellipsis if currentPage > 4 and not near the end */}
+                {subscriberPage > 4 && subscriberPage < subscriberTotalPages - 2 && <span>...</span>}
+
+                {/* Show current page if it's not within the first 3 or last 1 */}
+                {subscriberPage > 3 && subscriberPage < subscriberTotalPages - 1 && (
+                  <button
+                    onClick={() => setCurrentPage(subscriberPage)}
+                    className="active"
+                  >
+                    {subscriberPage}
+                  </button>
+                )}
+
+                {/* Ellipsis before last page if needed */}
+                {subscriberPage < subscriberTotalPages - 2 && subscriberTotalPages > 4 && <span>...</span>}
+
+                {/* Always show last page if it's not already shown */}
+                {subscriberTotalPages > 3 && (
+                  <button
+                    onClick={() => setCurrentPage(subscriberTotalPages)}
+                    className={subscriberPage === subscriberTotalPages ? "active" : ""}
+                  >
+                    {subscriberTotalPages}
+                  </button>
+                )}
+              </div>
+
+              {/* Next */}
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, subscriberTotalPages))}
+                disabled={subscriberPage === subscriberTotalPages}
+                className="pagination-btn"
+              >
+                Next <FiChevronRight />
+              </button>
+            </div>
+          )}
+
+
           </div>
 
           {/* Subscriber Modal */}
@@ -444,8 +509,8 @@ const ManageNewsletter = () => {
                       <label>Subscription Date</label>
                       <input
                         type="date"
-                        name="subscribedAt"
-                        value={formData.subscribedAt}
+                        name="subscribed_date"
+                        value={formData.subscribed_date}
                         onChange={handleInputChange}
                         required
                       />
@@ -485,17 +550,17 @@ const ManageNewsletter = () => {
               <input
                 type="text"
                 placeholder="Search newsletters..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={newsletterSearch}
+                onChange={(e) => setNewsletterSearch(e.target.value)}
               />
               <FaSearch className="search-icon" />
             </div>
             <div className="newsletter-filters">
               <select 
-                value={statusFilter} 
-                onChange={(e) => setStatusFilter(e.target.value)}
+                value={newsletterSearch} 
+                onChange={(e) => setNewsletterSearch(e.target.value)}
               >
-                <option value="all">All Status</option>
+                <option value="">All Status</option>
                 <option value="draft">Draft</option>
                 <option value="scheduled">Scheduled</option>
                 <option value="sent">Sent</option>
@@ -514,8 +579,6 @@ const ManageNewsletter = () => {
                   <th>Subject</th>
                   <th>Status</th>
                   <th>Date</th>
-                  <th>Open Rate</th>
-                  <th>Click Rate</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -543,12 +606,6 @@ const ManageNewsletter = () => {
                           {newsletter.status === 'scheduled' && formatDate(newsletter.scheduledFor)}
                           {newsletter.status === 'draft' && 'Draft'}
                         </span>
-                      </td>
-                      <td>
-                        <span className="newsletter-metric">{newsletter.openRate}</span>
-                      </td>
-                      <td>
-                        <span className="newsletter-metric">{newsletter.clickRate}</span>
                       </td>
                      <td>
   <div className="action-buttons">
@@ -620,18 +677,31 @@ const ManageNewsletter = () => {
                   </div>
 
                   <div className="form-row">
-                    <div className="form-group full-width">
-                      <label>Content *</label>
-                      <textarea
-                        name="content"
-                        value={newsletterFormData.content}
-                        onChange={handleNewsletterInputChange}
-                        placeholder="Write your newsletter content here..."
-                        rows="8"
-                        required
-                      />
-                    </div>
-                  </div>
+  <div className="form-group full-width">
+    <label>
+      Content * 
+      <span className="content-help">
+        (You can paste Word content as HTML. Use{" "}
+        <a 
+          href="https://wordtohtml.net/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          this tool
+        </a>{" "}if needed)
+      </span>
+    </label>
+    <textarea
+      name="content"
+      value={newsletterFormData.content}
+      onChange={handleNewsletterInputChange}
+      placeholder="Write your newsletter content here..."
+      rows="8"
+      required
+    />
+  </div>
+</div>
+
 
                   <div className="form-row">
                     <div className="form-group">

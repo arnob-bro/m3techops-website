@@ -26,7 +26,7 @@ export default class AuthApi {
 
   async refresh() {
     try {
-      const response = await this.authApi.post(`${this.baseURL}/refresh`);
+      const response = await this.authApi.post(`${this.baseURL}/refresh`, { withCredentials: true });
       return response.data;
     } catch (err) {
       throw err.response?.data || { error: "Logout failed" };

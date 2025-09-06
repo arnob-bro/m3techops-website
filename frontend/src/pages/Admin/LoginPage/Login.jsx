@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiLock, FiMail, FiUser } from 'react-icons/fi';
 import './Login.css';
@@ -11,6 +11,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login} = useUserStore();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +21,9 @@ const Login = () => {
     try {
       console.log('Logging in with:', { email, password });
       const result = await login(email, password);
+      if(result.success){
+        navigate("/admin");
+      }
     } catch (err) {
       setError('Invalid credentials. Please try again.');
     } finally {
@@ -100,7 +104,8 @@ const Login = () => {
             type="submit" 
             className="login-button"
             disabled={loading}
-            onClick={handleSubmit}
+            // onClick={handleSubmit}
+            // onSubmit={handleSubmit}
           >
             {loading ? (
               <span className="spinner"></span>
