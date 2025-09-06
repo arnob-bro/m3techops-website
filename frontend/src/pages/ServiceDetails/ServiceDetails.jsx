@@ -251,7 +251,7 @@ const ServiceDetails = () => {
             variants={containerVariants}
           >
             <motion.div 
-              className="service-details-icon"
+              className="service-details-icon-sd"
               variants={itemVariants}
             >
               {service.icon}

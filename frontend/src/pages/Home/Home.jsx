@@ -4,7 +4,11 @@ import { Link } from 'react-router-dom';
 import './Home.css';
 
 import { FiArrowRight, FiCheck, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaReact, FaNodeJs, FaAws, FaDatabase, FaPython, FaLaptopCode } from 'react-icons/fa';
+import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaReact, FaNodeJs, FaAws, FaDatabase, FaPython, FaLaptopCode,  FaRocket, FaSmile, FaUsers, FaGlobe } from 'react-icons/fa';
+import CountUp from 'react-countup';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
+import { useSpring, animated } from '@react-spring/web';
 
 const Home = () => {
   useEffect(() => {
@@ -257,11 +261,73 @@ const Home = () => {
   }
 };
 
+// Statistics card animation variants
+const statCardVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: 100,
+    scale: 0.8,
+    rotate: -5
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotate: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+      duration: 0.8
+    }
+  },
+  hover: {
+    y: -20,
+    scale: 1.05,
+    rotate: 2,
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 10
+    }
+  }
+};
+
+
+useEffect(() => {
+  // Add mousemove effect for the gradient follow
+  const statCards = document.querySelectorAll('.stat-card');
+  
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    
+    e.currentTarget.style.setProperty('--x', `${x}%`);
+    e.currentTarget.style.setProperty('--y', `${y}%`);
+  };
+  
+  statCards.forEach(card => {
+    card.addEventListener('mousemove', handleMouseMove);
+  });
+  
+  return () => {
+    statCards.forEach(card => {
+      card.removeEventListener('mousemove', handleMouseMove);
+    });
+  };
+}, []);
+
+
+ const [statsInView, setStatsInView] = useState(false);
+
   return (
     <div className="home-container">
       {/* Hero Section - Unchanged */}
       <section className="home-hero">
+        
         <div className="home-hero-bg"></div>
+
         <div className="container">
           <div className="home-hero-content">
             <motion.div
@@ -637,6 +703,87 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+
+
+          {/* Statistics Section */}
+<section className="home-statistics" id="statistics">
+  <div className="section-header">
+    <motion.h2
+      className="section-title"
+      initial="hidden"
+      whileInView="visible"
+      variants={fadeInUp}
+      viewport={{ once: true, margin: "-100px" }}
+    >
+      <span className="accent">Our Impact</span>
+    </motion.h2>
+    <motion.p
+      className="section-subtitle"
+      initial="hidden"
+      whileInView="visible"
+      variants={fadeInUp}
+      transition={{ delay: 0.1 }}
+      viewport={{ once: true, margin: "-100px" }}
+    >
+      Driving digital transformation through innovation and excellence
+    </motion.p>
+  </div>
+  
+  <motion.div 
+    className="stats-grid"
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, margin: "-50px" }}
+    onViewportEnter={() => setStatsInView(true)}
+  >
+    <motion.div 
+      className="stat-card"
+      variants={statCardVariants}
+      whileHover="hover"
+    >
+      <div className="stat-icon">
+        <FaRocket size={30} />
+      </div>
+      <div className="stat-number">
+        {statsInView && <CountUp end={25} duration={3} separator="," suffix="+" />}
+      </div>
+      <div className="stat-label">Projects Completed</div>
+    </motion.div>
+    
+    <motion.div 
+      className="stat-card"
+      variants={statCardVariants}
+      transition={{ delay: 0.1 }}
+      whileHover="hover"
+    >
+      <div className="stat-icon">
+        <FaSmile size={30} />
+      </div>
+      <div className="stat-number">
+        {statsInView && <CountUp end={98} duration={3} suffix="%" />}
+      </div>
+      <div className="stat-label">Client Satisfaction</div>
+    </motion.div>
+    
+    <motion.div 
+      className="stat-card"
+      variants={statCardVariants}
+      transition={{ delay: 0.2 }}
+      whileHover="hover"
+    >
+      <div className="stat-icon">
+        <FaUsers size={30} />
+      </div>
+      <div className="stat-number">
+        {statsInView && <CountUp end={10} duration={3} separator="," suffix="+" />}
+      </div>
+      <div className="stat-label">Team Members</div>
+    </motion.div>
+  </motion.div>
+</section>
+
+
 
       {/* CTA Section */}
       <section className="home-cta">
