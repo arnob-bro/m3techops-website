@@ -39,7 +39,7 @@ class NewsLetterController {
         }
   
         const newSubscription = await this.newsLetterService.subscribe({ email: trimmedEmail });
-        return res.status(201).json({ success: true, message: "Subscribed successfully", data: newSubscription });
+        return res.status(201).json({ success: true, message: "Subscribed successfully", newSubscription });
       } catch (error) {
         console.error("Error creating subscription:", error);
         return res.status(500).json({ success: false, message: "Internal server error" });
@@ -70,7 +70,7 @@ class NewsLetterController {
         if (!updatedSubscriber) {
           return res.status(404).json({ error: "Subscriber not found" });
         }
-        return res.status(200).json({ success: true, message: "Subscriber status updated", data: updatedSubscriber });
+        return res.status(200).json({ success: true, message: "Subscriber status updated", updatedSubscriber });
       } catch (err) {
         console.error(err);
         return res.status(500).json({ success: false, error: "Failed to update subscriber status" });
@@ -90,7 +90,7 @@ class NewsLetterController {
         }
   
         const newsletter = await this.newsLetterService.createNewsletter({ title, content, status });
-        return res.status(201).json({ success: true, message: "Newsletter created", data: newsletter });
+        return res.status(201).json({ success: true, message: "Newsletter created", newNewsletter: newsletter });
       } catch (err) {
         console.error("Error creating newsletter:", err);
         return res.status(500).json({ success: false, message: "Internal server error" });
@@ -110,11 +110,12 @@ class NewsLetterController {
   
     async updateNewsletter(req, res) {
       try {
-        const updated = await this.newsLetterService.updateNewsletter(req.params.newsletter_id, req.body);
+        const {title, content, status, sent_date } = req.body;
+        const updated = await this.newsLetterService.updateNewsletter(req.params.newsletter_id, title, content, status, sent_date);
         if (!updated) {
           return res.status(404).json({ success: false, message: "Newsletter not found" });
         }
-        return res.status(200).json({ success: true, message: "Newsletter updated", data: updated });
+        return res.status(200).json({ success: true, message: "Newsletter updated", updatedNewsletter: updated });
       } catch (err) {
         console.error("Error updating newsletter:", err);
         return res.status(500).json({ success: false, message: "Failed to update newsletter" });
@@ -125,7 +126,7 @@ class NewsLetterController {
   
     async sendNewsletter(req, res) {
       try {
-        const sent = await this.newsLetterService.sendNewsletter(req.params.id);
+        const sent = await this.newsLetterService.sendNewsletter(req.params.newsletter_id);
         if (!sent) {
           return res.status(404).json({ success: false, message: "Newsletter not found" });
         }

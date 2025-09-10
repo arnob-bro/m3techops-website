@@ -17,6 +17,7 @@ const ManageNewsletter = () => {
   const [subscribers, setSubscribers] = useState([]);
   const [totalSubscribers, setTotalSubscribers] = useState(0);
   const [newsletters, setNewsletters] = useState([]);
+  const [totalNewsletters, setTotalNewsletters] = useState(0);
   const [searchEmail, setSearchEmail] = useState("");
   const [isSubscriberModalOpen, setIsSubscriberModalOpen] = useState(false);
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
@@ -39,17 +40,16 @@ const ManageNewsletter = () => {
   const [activeTab, setActiveTab] = useState('subscribers');
   const [formData, setFormData] = useState({
     email: '',
-    name: '',
-    status: 'active',
+    status: 'Active',
     subscribed_date: new Date().toISOString().split('T')[0]
   });
   const [newsletterFormData, setNewsletterFormData] = useState({
-    subject: '',
+    title: '',
     content: '',
-    scheduledFor: '',
-    status: 'draft'
+    status: 'Draft'
   });
   const subscribersPerPage = 10;
+  const newslettersPerPage = 10;
 
   const fetchSubscribers = async () => {
     try {
@@ -71,6 +71,26 @@ const ManageNewsletter = () => {
     }
   };
 
+  const fetchNewsletters = async () => {
+    try {
+      const result = await newsLetterApi.getNewsletters({
+        page: newsletterPage,
+        limit: newslettersPerPage,
+        title: newsletterSearch,
+        status: newsletterStatusFilter,
+      });
+  
+      setNewsletters(result.newsletters || []);
+      setNewsletterTotalPages(result.pagination?.totalPages || 1);
+      setTotalNewsletters(result.pagination?.total || 0);
+    } catch (err) {
+      console.error("Failed to fetch subscribers", err);
+      setNewsletters([]);
+      setNewsletterTotalPages(1);
+      setTotalNewsletters(0);
+    }
+  };
+
   useEffect(() => {
     Modal.setAppElement('#root');
     
@@ -78,41 +98,10 @@ const ManageNewsletter = () => {
 
   },  [subscriberPage, subscriberSearch, subscriberStatusFilter]);
 
-  const fetchNewsletters = async () => {
-    try {
-      // mock for now, replace with API later
-      const mockNewsletters = [
-        {
-          id: '1',
-          subject: 'Weekly Tech Insights - August Edition',
-          content: 'This week we explore the latest in AI advancements and cloud computing trends...',
-          status: 'sent',
-          sentAt: '2023-08-15'
-        },
-        {
-          id: '2',
-          subject: 'New Service Offerings - Cloud Solutions',
-          content: 'We are excited to announce our new cloud infrastructure services designed for...',
-          status: 'scheduled',
-          scheduledFor: '2023-09-01'
-        },
-        {
-          id: '3',
-          subject: 'Q2 Company Updates & Achievements',
-          content: 'As we wrap up the second quarter, we wanted to share some of our major milestones...',
-          status: 'draft'
-        }
-      ];
-      setNewsletters(mockNewsletters);
-      setNewsletterTotalPages(5); // example
-    } catch (err) {
-      console.error("Failed to fetch newsletters", err);
-      setNewsletters([]);
-      setNewsletterTotalPages(1);
-    }
-  };
+  
   
   useEffect(() => {
+    
     fetchNewsletters();
   }, [newsletterPage, newsletterSearch, newsletterStatusFilter]);
 
@@ -171,9 +160,8 @@ const ManageNewsletter = () => {
   const openEditNewsletterModal = (newsletter) => {
     setCurrentNewsletter(newsletter);
     setNewsletterFormData({
-      subject: newsletter.subject,
+      title: newsletter.title,
       content: newsletter.content,
-      scheduledFor: newsletter.scheduledFor || '',
       status: newsletter.status
     });
     setIsNewsletterModalOpen(true);
@@ -192,45 +180,78 @@ const ManageNewsletter = () => {
   const openAddNewsletterModal = () => {
     setCurrentNewsletter(null);
     setNewsletterFormData({
-      subject: '',
+      title: '',
       content: '',
-      scheduledFor: '',
-      status: 'draft'
+      status: 'Draft'
     });
     setIsNewsletterModalOpen(true);
   };
 
-  const handleSubscriberSubmit = (e) => {
+  const handleSubscriberSubmit = async (e) => {
     e.preventDefault();
     
-    if (currentSubscriber) {
-      setSubscribers(subscribers.map(subscriber => 
-        subscriber.id === currentSubscriber.id ? { ...subscriber, ...formData } : subscriber
-      ));
-    } else {
-      const newSubscriber = {
-        id: Date.now().toString(),
-        ...formData
-      };
-      setSubscribers([...subscribers, newSubscriber]);
+    try {
+      if (currentSubscriber) {
+        // Update subscriber
+
+        const res = await newsLetterApi.updateSubscriberStatus(currentSubscriber.subscriber_id,formData.status);
+
+
+  
+        setSubscribers(
+          subscribers.map((subscriber) =>
+            subscriber.subscriber_id === currentSubscriber.subscriber_id
+              ? res.updatedSubscriber // updated subscriber from backend
+              : subscriber
+          )
+        );
+      } else {
+        // Create subscriber
+        // const res = await axios.post("http://localhost:5000/api/subscribers", formData);
+        
+        const res = await newsLetterApi.subscribe(formData.email);
+
+  
+        setSubscribers([...subscribers, res.newSubscription]); // add new subscriber from backend
+      }
+  
+      setIsSubscriberModalOpen(false);
+    } catch (err) {
+      console.error("Error submitting subscriber:", err);
     }
-    setIsSubscriberModalOpen(false);
   };
 
-  const handleNewsletterSubmit = (e) => {
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
     
     if (currentNewsletter) {
-      setNewsletters(newsletters.map(newsletter => 
-        newsletter.id === currentNewsletter.id ? { ...newsletter, ...newsletterFormData } : newsletter
-      ));
+
+      const res = await newsLetterApi.updateNewsletter(currentNewsletter.newsletter_id,newsletterFormData.title,newsletterFormData.content,newsletterFormData.status, newsletterFormData.sent_date);
+
+      if(res.success){
+        setNewsletters(newsletters.map(newsletter => 
+          newsletter.newsletter_id === currentNewsletter.newsletter_id 
+          ? res.updatedNewsletter
+          : newsletter
+        ));
+        alert("Newspaper has been updated");
+      }else{
+        alert("Failed to update newspaper");
+      }
+
     } else {
-      const newNewsletter = {
-        id: Date.now().toString(),
-        sentAt: newsletterFormData.status === 'sent' ? new Date().toISOString().split('T')[0] : null,
-        ...newsletterFormData
-      };
-      setNewsletters([...newsletters, newNewsletter]);
+
+      console.log(newsletterFormData);
+
+      const res = await newsLetterApi.createNewsletter(newsletterFormData);
+
+      
+      if(res.success) {
+        setNewsletters([...newsletters, res.newNewsletter]);
+        alert("Newspaper has been created");
+      } else{
+        alert("Newspaper creation failed");
+      }
     }
     setIsNewsletterModalOpen(false);
   };
@@ -243,14 +264,17 @@ const ManageNewsletter = () => {
     setNewsletters(newsletters.filter(newsletter => newsletter.id !== id));
   };
 
-  const sendNewsletter = (id) => {
-    setNewsletters(newsletters.map(newsletter => 
-      newsletter.id === id ? { 
-        ...newsletter, 
-        status: 'sent',
-        sentAt: new Date().toISOString().split('T')[0]
-      } : newsletter
-    ));
+  const sendNewsletter = async (newsletter_id) => {
+    // setNewsletters(newsletters.map(newsletter => 
+    //   newsletter.id === id ? { 
+    //     ...newsletter, 
+    //     status: 'sent',
+    //     sentAt: new Date().toISOString().split('T')[0]
+    //   } : newsletter
+    // ));
+
+    const result = await newsLetterApi.sendNewsletter(newsletter_id);
+    if(result.success) alert("Newsletter has been sent successfully");
   };
 
   const filteredSubscribers = subscribers.filter(subscriber => {
@@ -272,8 +296,8 @@ const ManageNewsletter = () => {
   };
 
   const getNewsletterStatusBadge = (status) => {
-    if (status === 'sent') return 'status-badge sent';
-    if (status === 'scheduled') return 'status-badge scheduled';
+    if (status === 'Sent') return 'status-badge sent';
+    
     return 'status-badge draft';
   };
 
@@ -393,66 +417,59 @@ const ManageNewsletter = () => {
               </tbody>
             </table>
             {subscriberTotalPages > 1 && (
-            <div className="pagination">
-              {/* Previous */}
-              <button
-                onClick={() => setSubscriberPage((prev) => Math.max(prev - 1, 1))}
-                disabled={subscriberPage === 1}
-                className="pagination-btn"
-              >
-                <FiChevronLeft /> Previous
-              </button>
-
-              <div className="page-numbers">
-                {/* Always show first 3 pages */}
-                {Array.from({ length: Math.min(3, subscriberTotalPages) }, (_, i) => i + 1).map(
-                  (number) => (
-                    <button
-                      key={number}
-                      onClick={() => setSubscriberPage(number)}
-                      className={subscriberPage === number ? "active" : ""}
-                    >
-                      {number}
-                    </button>
-                  )
-                )}
-
-                {/* Ellipsis if currentPage > 4 and not near the end */}
-                {subscriberPage > 4 && subscriberPage < subscriberTotalPages - 2 && <span>...</span>}
-
-                {/* Show current page if it's not within the first 3 or last 1 */}
-                {subscriberPage > 3 && subscriberPage < subscriberTotalPages - 1 && (
-                  <button
-                    onClick={() => setCurrentPage(subscriberPage)}
-                    className="active"
-                  >
-                    {subscriberPage}
-                  </button>
-                )}
-
-                {/* Ellipsis before last page if needed */}
-                {subscriberPage < subscriberTotalPages - 2 && subscriberTotalPages > 4 && <span>...</span>}
-
-                {/* Always show last page if it's not already shown */}
-                {subscriberTotalPages > 3 && (
-                  <button
-                    onClick={() => setCurrentPage(subscriberTotalPages)}
-                    className={subscriberPage === subscriberTotalPages ? "active" : ""}
-                  >
-                    {subscriberTotalPages}
-                  </button>
-                )}
+                <div className="pagination">
+                {/* Previous */}
+                <button
+                  onClick={() => setSubscriberPage(prev => Math.max(prev - 1, 1))}
+                  disabled={subscriberPage === 1}
+                  className="pagination-btn"
+                >
+                  <FiChevronLeft /> Previous
+                </button>
+              
+                {/* Page numbers with ellipsis */}
+                {(() => {
+                  const pages = [];
+                  const delta = 1; // show ±1 around current
+              
+                  for (let i = 1; i <= subscriberTotalPages; i++) {
+                    if (
+                      i === 1 || 
+                      i === subscriberTotalPages || 
+                      (i >= subscriberPage - delta && i <= subscriberPage + delta)
+                    ) {
+                      pages.push(i);
+                    } else if (pages[pages.length - 1] !== '...') {
+                      pages.push('...');
+                    }
+                  }
+              
+                  return pages.map((page, idx) =>
+                    page === '...' ? (
+                      <span key={idx} className="pagination-ellipsis">…</span>
+                    ) : (
+                      <button
+                        key={idx}
+                        onClick={() => setSubscriberPage(page)}
+                        className={subscriberPage === page ? 'active' : ''}
+                      >
+                        {page}
+                      </button>
+                    )
+                  );
+                })()}
+              
+                {/* Next */}
+                <button
+                  onClick={() => setSubscriberPage(prev => Math.min(prev + 1, subscriberTotalPages))}
+                  disabled={subscriberPage === subscriberTotalPages}
+                  className="pagination-btn"
+                >
+                  Next <FiChevronRight />
+                </button>
               </div>
-
-              {/* Next */}
-              <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, subscriberTotalPages))}
-                disabled={subscriberPage === subscriberTotalPages}
-                className="pagination-btn"
-              >
-                Next <FiChevronRight />
-              </button>
-            </div>
+          
+          
           )}
 
 
@@ -480,7 +497,7 @@ const ManageNewsletter = () => {
               <div className="newsletter-modal-form-container">
                 <form onSubmit={handleSubscriberSubmit}>
                   <div className="form-row">
-                    <div className="form-group">
+                    {/* <div className="form-group">
                       <label>Name (Optional)</label>
                       <input
                         type="text"
@@ -489,7 +506,7 @@ const ManageNewsletter = () => {
                         onChange={handleInputChange}
                         placeholder="Enter subscriber name"
                       />
-                    </div>
+                    </div> */}
                     
                     <div className="form-group">
                       <label>Email Address *</label>
@@ -504,15 +521,16 @@ const ManageNewsletter = () => {
                     </div>
                   </div>
 
-                  <div className="form-row">
+                  {currentSubscriber && (<div>
+                    <div className="form-row">
                     <div className="form-group">
                       <label>Subscription Date</label>
                       <input
                         type="date"
                         name="subscribed_date"
-                        value={formData.subscribed_date}
+                        value={formatDate(formData.subscribed_date)}
                         onChange={handleInputChange}
-                        required
+                        disabled
                       />
                     </div>
                     
@@ -522,13 +540,13 @@ const ManageNewsletter = () => {
                         name="status"
                         value={formData.status}
                         onChange={handleInputChange}
-                        required
                       >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
                       </select>
                     </div>
                   </div>
+                  </div>)}
                   
                   <div className="form-actions">
                     <button type="button" onClick={() => setIsSubscriberModalOpen(false)} className="cancel-btn">
@@ -557,13 +575,13 @@ const ManageNewsletter = () => {
             </div>
             <div className="newsletter-filters">
               <select 
-                value={newsletterSearch} 
-                onChange={(e) => setNewsletterSearch(e.target.value)}
+                value={newsletterStatusFilter} 
+                onChange={(e) => setNewsletterStatusFilter(e.target.value)}
               >
                 <option value="">All Status</option>
-                <option value="draft">Draft</option>
-                <option value="scheduled">Scheduled</option>
-                <option value="sent">Sent</option>
+                <option value="Draft">Draft</option>
+                <option value="Sent">Sent</option>
+                <option value="Canceled">Canceled</option>
               </select>
             </div>
             <button onClick={openAddNewsletterModal} className="newsletter-btn-add">
@@ -585,49 +603,49 @@ const ManageNewsletter = () => {
               <tbody>
                 {newsletters.length > 0 ? (
                   newsletters.map(newsletter => (
-                    <tr key={newsletter.id}>
+                    <tr key={newsletter.newsletter_id}>
                       <td>
                         <div className="newsletter-subject">
-                          <h4>{newsletter.subject}</h4>
+                          <h4>{newsletter.title}</h4>
                           <p>{newsletter.content.substring(0, 60)}...</p>
                         </div>
                       </td>
                       <td>
                         <span className={getNewsletterStatusBadge(newsletter.status)}>
-                          {newsletter.status === 'sent' && <FaCheckCircle />}
-                          {newsletter.status === 'scheduled' && <FaCalendarAlt />}
-                          {newsletter.status === 'draft' && <FaEdit />}
+                          {newsletter.status === 'Sent' && <FaCheckCircle />}
+                          {/* {newsletter.status === 'scheduled' && <FaCalendarAlt />} */}
+                          {newsletter.status === 'Draft' && <FaEdit />}
                           {newsletter.status.charAt(0).toUpperCase() + newsletter.status.slice(1)}
                         </span>
                       </td>
                       <td>
                         <span className="newsletter-date">
-                          {newsletter.status === 'sent' && formatDate(newsletter.sentAt)}
-                          {newsletter.status === 'scheduled' && formatDate(newsletter.scheduledFor)}
-                          {newsletter.status === 'draft' && 'Draft'}
+                          {newsletter.status === 'Sent' && formatDate(newsletter.sent_date)}
+                          {/* {newsletter.status === 'scheduled' && formatDate(newsletter.scheduledFor)} */}
+                          {newsletter.status === 'Draft' && 'Not sent yet'}
                         </span>
                       </td>
                      <td>
-  <div className="action-buttons">
-    <FaEdit 
-      onClick={() => openEditNewsletterModal(newsletter)} 
-      className="edit-icon"
-      aria-label="Edit newsletter"
-    />
-    {newsletter.status === 'draft' && (
-      <FaPaperPlane 
-        onClick={() => sendNewsletter(newsletter.id)} 
-        className="send-icon"
-        aria-label="Send newsletter"
-      />
-    )}
-    <FaTrash 
-      onClick={() => deleteNewsletter(newsletter.id)} 
-      className="delete-icon"
-      aria-label="Delete newsletter"
-    />
-  </div>
-</td>
+                      <div className="action-buttons">
+                        <FaEdit 
+                          onClick={() => openEditNewsletterModal(newsletter)} 
+                          className="edit-icon"
+                          aria-label="Edit newsletter"
+                        />
+                        {newsletter.status === 'Draft' && (
+                          <FaPaperPlane 
+                            onClick={() => sendNewsletter(newsletter.newsletter_id)} 
+                            className="send-icon"
+                            aria-label="Send newsletter"
+                          />
+                        )}
+                        {/* <FaTrash 
+                          onClick={() => deleteNewsletter(newsletter.newsletter_id)} 
+                          className="delete-icon"
+                          aria-label="Delete newsletter"
+                        /> */}
+                      </div>
+                    </td>
                     </tr>
                   ))
                 ) : (
@@ -639,6 +657,60 @@ const ManageNewsletter = () => {
                 )}
               </tbody>
             </table>
+            {newsletterTotalPages > 1 && (
+                <div className="pagination">
+                {/* Previous */}
+                <button
+                  onClick={() => setNewsletterPage(prev => Math.max(prev - 1, 1))}
+                  disabled={newsletterPage === 1}
+                  className="pagination-btn"
+                >
+                  <FiChevronLeft /> Previous
+                </button>
+              
+                {/* Page numbers with ellipsis */}
+                {(() => {
+                  const pages = [];
+                  const delta = 1; // show ±1 around current
+              
+                  for (let i = 1; i <= newsletterTotalPages; i++) {
+                    if (
+                      i === 1 || 
+                      i === newsletterTotalPages || 
+                      (i >= newsletterPage - delta && i <= newsletterPage + delta)
+                    ) {
+                      pages.push(i);
+                    } else if (pages[pages.length - 1] !== '...') {
+                      pages.push('...');
+                    }
+                  }
+              
+                  return pages.map((page, idx) =>
+                    page === '...' ? (
+                      <span key={idx} className="pagination-ellipsis">…</span>
+                    ) : (
+                      <button
+                        key={idx}
+                        onClick={() => setNewsletterPage(page)}
+                        className={newsletterPage === page ? 'active' : ''}
+                      >
+                        {page}
+                      </button>
+                    )
+                  );
+                })()}
+                {/* Next */}
+                <button
+                  onClick={() => setNewsletterPage(prev => Math.min(prev + 1, newsletterTotalPages))}
+                  disabled={newsletterPage === newsletterTotalPages}
+                  className="pagination-btn"
+                >
+                  Next <FiChevronRight />
+                </button>
+              </div>
+          
+          
+          )}
           </div>
 
           {/* Newsletter Modal */}
@@ -667,8 +739,8 @@ const ManageNewsletter = () => {
                       <label>Subject *</label>
                       <input
                         type="text"
-                        name="subject"
-                        value={newsletterFormData.subject}
+                        name="title"
+                        value={newsletterFormData.title}
                         onChange={handleNewsletterInputChange}
                         placeholder="Enter newsletter subject"
                         required
@@ -677,30 +749,30 @@ const ManageNewsletter = () => {
                   </div>
 
                   <div className="form-row">
-  <div className="form-group full-width">
-    <label>
-      Content * 
-      <span className="content-help">
-        (You can paste Word content as HTML. Use{" "}
-        <a 
-          href="https://wordtohtml.net/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-        >
-          this tool
-        </a>{" "}if needed)
-      </span>
-    </label>
-    <textarea
-      name="content"
-      value={newsletterFormData.content}
-      onChange={handleNewsletterInputChange}
-      placeholder="Write your newsletter content here..."
-      rows="8"
-      required
-    />
-  </div>
-</div>
+                    <div className="form-group full-width">
+                      <label>
+                        Content * 
+                        <span className="content-help">
+                          (You can paste Word content as HTML. Use{" "}
+                          <a 
+                            href="https://wordtohtml.net/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                          >
+                            this tool
+                          </a>{" "}if needed)
+                        </span>
+                      </label>
+                      <textarea
+                        name="content"
+                        value={newsletterFormData.content}
+                        onChange={handleNewsletterInputChange}
+                        placeholder="Write your newsletter content here..."
+                        rows="8"
+                        required
+                      />
+                    </div>
+                  </div>
 
 
                   <div className="form-row">
@@ -711,14 +783,22 @@ const ManageNewsletter = () => {
                         value={newsletterFormData.status}
                         onChange={handleNewsletterInputChange}
                         required
+                        disabled={newsletterFormData.status === "Sent"} 
                       >
-                        <option value="draft">Draft</option>
-                        <option value="scheduled">Scheduled</option>
-                        <option value="sent">Send Now</option>
+                        {newsletterFormData.status === "Sent" ? (
+                          
+                          <option value="Sent">Sent</option>
+                        ) : (
+                          <>
+                            <option value="Draft">Draft</option>
+                            <option value="Canceled">Canceled</option>
+                          </>
+                        )}
                       </select>
                     </div>
+
                     
-                    {newsletterFormData.status === 'scheduled' && (
+                    {/* {newsletterFormData.status === 'scheduled' && (
                       <div className="form-group">
                         <label>Schedule For</label>
                         <input
@@ -729,7 +809,7 @@ const ManageNewsletter = () => {
                           required={newsletterFormData.status === 'scheduled'}
                         />
                       </div>
-                    )}
+                    )} */}
                   </div>
                   
                   <div className="form-actions">

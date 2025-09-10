@@ -37,12 +37,16 @@ CREATE TABLE users (
 -- 5. Services
 CREATE TABLE services (
     service_id BIGSERIAL PRIMARY KEY,
-    title VARCHAR(150) NOT NULL,
-    description TEXT,
-    price NUMERIC(10,2),
-    is_available BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    title VARCHAR(255) NOT NULL,
+    short_desc TEXT NOT NULL,
+    key_benefits JSONB NOT NULL, -- store array of strings
+    our_process JSONB NOT NULL,  -- store array of strings
+    active BOOLEAN DEFAULT TRUE,
+    icon VARCHAR(100),           -- optional, can store "FaCode" etc.
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 -- 6. Categories
 CREATE TABLE categories (
@@ -145,8 +149,7 @@ CREATE TABLE newsletters (
     newsletter_id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
-    status VARCHAR(20) CHECK (status IN ('Draft', 'Scheduled', 'Sent', 'Canceled')) DEFAULT 'Draft',
-    scheduled_date TIMESTAMP, -- when it's planned to be sent
+    status VARCHAR(20) CHECK (status IN ('Draft', 'Sent', 'Canceled')) DEFAULT 'Draft',
     sent_date TIMESTAMP,      -- actual sent date
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

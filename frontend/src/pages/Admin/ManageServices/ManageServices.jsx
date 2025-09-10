@@ -1,7 +1,25 @@
 import { useState, useEffect } from 'react';
-import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaServer, FaEdit, FaToggleOn, FaToggleOff, FaPlus, FaTrash } from 'react-icons/fa';
+import { 
+  FaCode, FaMobileAlt, FaCloud, FaRobot, FaServer, 
+  FaEdit, FaToggleOn, FaToggleOff, FaPlus, FaTrash 
+} from 'react-icons/fa';
 import Modal from 'react-modal';
 import './ManageServices.css';
+import ServiceApi from '../../../apis/serviceApi';
+
+const serviceApi = new ServiceApi();
+
+// Map icon strings to React Icons
+const iconMap = {
+  FaCode: <FaCode size={24} />,
+  FaMobileAlt: <FaMobileAlt size={24} />,
+  FaCloud: <FaCloud size={24} />,
+  FaRobot: <FaRobot size={24} />,
+  FaServer: <FaServer size={24} />
+};
+
+// List of available icons for selection
+const availableIcons = ['FaCode', 'FaMobileAlt', 'FaCloud', 'FaRobot', 'FaServer'];
 
 const ManageServices = () => {
   const [services, setServices] = useState([]);
@@ -9,68 +27,26 @@ const ManageServices = () => {
   const [currentService, setCurrentService] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
-    shortDesc: '',
-    keyBenefits: [''],
-    ourProcess: [''],
-    active: true
+    short_desc: '',
+    key_benefits: [{ id: crypto.randomUUID(), value: '' }],
+    our_process: [{ id: crypto.randomUUID(), value: '' }],
+    active: true,
+    icon: 'FaCode'
   });
 
+  // Fetch services
   useEffect(() => {
-    // Set up modal app element for react-modal
     Modal.setAppElement('#root');
-    
-    // Fetch services from API
+
     const fetchServices = async () => {
       try {
-        // Simulated data - replace with actual API call
-        const mockServices = [
-          {
-            id: 'web-development',
-            icon: <FaCode size={24} />,
-            title: "Web Development",
-            shortDesc: "Custom websites and web applications that drive engagement and conversions.",
-            keyBenefits: ["Responsive Design", "SEO Optimized", "Fast Loading Times", "Modern UI/UX"],
-            ourProcess: ["Requirements Analysis", "Design & Prototyping", "Development", "Testing & Deployment"],
-            active: true
-          },
-          {
-            id: 'mobile-development',
-            icon: <FaMobileAlt size={24} />,
-            title: "Mobile App Development",
-            shortDesc: "Native and cross-platform mobile solutions for iOS and Android.",
-            keyBenefits: ["Cross-platform Compatibility", "Native Performance", "App Store Optimization"],
-            ourProcess: ["Platform Analysis", "UI/UX Design", "Development", "Testing & Launch"],
-            active: true
-          },
-          {
-            id: 'cloud-solutions',
-            icon: <FaCloud size={24} />,
-            title: "Cloud Solutions",
-            shortDesc: "Scalable cloud infrastructure and services for your business.",
-            keyBenefits: ["Scalability", "Cost Efficiency", "High Availability"],
-            ourProcess: ["Infrastructure Planning", "Migration Strategy", "Implementation", "Monitoring"],
-            active: false
-          },
-          {
-            id: 'ai-automation',
-            icon: <FaRobot size={24} />,
-            title: "AI & Automation",
-            shortDesc: "Intelligent automation solutions to streamline your operations.",
-            keyBenefits: ["Process Automation", "AI Integration", "Efficiency Gains"],
-            ourProcess: ["Process Analysis", "AI Model Development", "Integration", "Training & Support"],
-            active: true
-          },
-          {
-            id: 'custom-software',
-            icon: <FaServer size={24} />,
-            title: "Custom Software",
-            shortDesc: "Tailored software solutions designed for your specific business needs.",
-            keyBenefits: ["Custom Features", "Scalable Architecture", "Ongoing Support"],
-            ourProcess: ["Requirements Gathering", "System Design", "Development", "Deployment & Maintenance"],
-            active: true
-          }
-        ];
-        setServices(mockServices);
+        const result = await serviceApi.getServices();
+        const allServices = result.services.map(s => ({
+          ...s,
+          key_benefits: s.key_benefits.map(k => ({ id: crypto.randomUUID(), value: k })),
+          our_process: s.our_process.map(p => ({ id: crypto.randomUUID(), value: p }))
+        }));
+        setServices(allServices);
       } catch (error) {
         console.error('Error fetching services:', error);
       }
@@ -79,107 +55,130 @@ const ManageServices = () => {
     fetchServices();
   }, []);
 
-  // Handle modal open/close body scroll lock
+  // Lock body scroll when modal open
   useEffect(() => {
-    if (isModalOpen) {
-      document.body.classList.add('modal-open');
-    } else {
-      document.body.classList.remove('modal-open');
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.classList.remove('modal-open');
-    };
+    if (isModalOpen) document.body.classList.add('modal-open');
+    else document.body.classList.remove('modal-open');
+    return () => document.body.classList.remove('modal-open');
   }, [isModalOpen]);
 
+  // Input handlers
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleArrayInputChange = (index, field, value) => {
+  const handleArrayInputChange = (id, field, value) => {
     setFormData(prev => ({
       ...prev,
-      [field]: prev[field].map((item, i) => i === index ? value : item)
+      [field]: prev[field].map(item => item.id === id ? { ...item, value } : item)
     }));
   };
 
   const addArrayItem = (field) => {
     setFormData(prev => ({
       ...prev,
-      [field]: [...prev[field], '']
+      [field]: [...prev[field], { id: crypto.randomUUID(), value: '' }]
     }));
   };
 
-  const removeArrayItem = (index, field) => {
+  const removeArrayItem = (id, field) => {
     if (formData[field].length > 1) {
       setFormData(prev => ({
         ...prev,
-        [field]: prev[field].filter((_, i) => i !== index)
+        [field]: prev[field].filter(item => item.id !== id)
       }));
     }
   };
 
-  const handleToggleActive = (id) => {
-    setServices(services.map(service => 
-      service.id === id ? { ...service, active: !service.active } : service
-    ));
-    // Here you would also update the service status in your backend
+  // Toggle active
+  const handleToggleActive = async (service_id) => {
+    const updatedServices = services.map(service =>
+      service.service_id === service_id ? { ...service, active: !service.active } : service
+    );
+    setServices(updatedServices);
+  
+    try {
+      const service = updatedServices.find(s => s.service_id === service_id);
+      await serviceApi.updateService(
+        service.service_id,
+        service.title,
+        service.short_desc,
+        service.key_benefits.map(k => k.value),
+        service.our_process.map(p => p.value),
+        service.active,
+        service.icon
+      );
+      alert("Service status updated!");
+      window.location.reload(); // reload after status toggle
+    } catch (err) {
+      console.error('Failed to update active status:', err);
+      alert("Failed to update service status.");
+    }
   };
 
+  // Open modal for edit
   const openEditModal = (service) => {
     setCurrentService(service);
     setFormData({
       title: service.title,
-      shortDesc: service.shortDesc,
-      keyBenefits: service.keyBenefits || [''],
-      ourProcess: service.ourProcess || [''],
-      active: service.active
+      short_desc: service.short_desc,
+      key_benefits: service.key_benefits.length > 0 ? service.key_benefits : [{ id: crypto.randomUUID(), value: '' }],
+      our_process: service.our_process.length > 0 ? service.our_process : [{ id: crypto.randomUUID(), value: '' }],
+      active: service.active,
+      icon: service.icon || 'FaCode'
     });
     setIsModalOpen(true);
   };
 
+  // Open modal for add
   const openAddModal = () => {
     setCurrentService(null);
     setFormData({
       title: '',
-      shortDesc: '',
-      keyBenefits: [''],
-      ourProcess: [''],
-      active: true
+      short_desc: '',
+      key_benefits: [{ id: crypto.randomUUID(), value: '' }],
+      our_process: [{ id: crypto.randomUUID(), value: '' }],
+      active: true,
+      icon: 'FaCode'
     });
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  // Submit add/edit
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Filter out empty strings from arrays
-    const cleanedFormData = {
+  
+    const cleanedData = {
       ...formData,
-      keyBenefits: formData.keyBenefits.filter(benefit => benefit.trim() !== ''),
-      ourProcess: formData.ourProcess.filter(process => process.trim() !== '')
+      key_benefits: formData.key_benefits.map(k => k.value).filter(v => v.trim() !== ''),
+      our_process: formData.our_process.map(p => p.value).filter(v => v.trim() !== '')
     };
-
-    if (currentService) {
-      // Update existing service
-      setServices(services.map(service => 
-        service.id === currentService.id ? { ...service, ...cleanedFormData } : service
-      ));
-    } else {
-      // Add new service
-      const newService = {
-        id: cleanedFormData.title.toLowerCase().replace(/\s+/g, '-'),
-        icon: <FaCode size={24} />, // Default icon, could be selected in form
-        ...cleanedFormData
-      };
-      setServices([...services, newService]);
+  
+    try {
+      if (currentService) {
+        await serviceApi.updateService(
+          currentService.service_id,
+          cleanedData.title,
+          cleanedData.short_desc,
+          cleanedData.key_benefits,
+          cleanedData.our_process,
+          cleanedData.active,
+          cleanedData.icon
+        );
+        alert("Service updated successfully!");
+      } else {
+        await serviceApi.createService(cleanedData);
+        alert("Service added successfully!");
+      }
+  
+      setIsModalOpen(false);
+      window.location.reload(); // reload after add/edit
+  
+    } catch (err) {
+      console.error('Error saving service:', err);
+      alert("Failed to save service.");
     }
-    setIsModalOpen(false);
   };
 
   return (
@@ -187,29 +186,24 @@ const ManageServices = () => {
       <div className="services-header">
         <h2>Manage Services</h2>
         <button onClick={openAddModal} className="btn-add">
-          <FaPlus size={16} />
-          Add New Service
+          <FaPlus size={16} /> Add New Service
         </button>
       </div>
 
       <div className="services-grid">
         {services.map(service => (
-          <div key={service.id} className={`service-card ${service.active ? 'active' : 'inactive'}`}>
-            <div className="service-icon">{service.icon}</div>
+          <div key={service.service_id} className={`service-card ${service.active ? 'active' : 'inactive'}`}>
+            <div className="service-icon">{iconMap[service.icon] || <FaCode size={24} />}</div>
             <div className="service-info">
               <h3>{service.title}</h3>
-              <p>{service.shortDesc}</p>
+              <p>{service.short_desc}</p>
             </div>
             <div className="service-actions">
-              <button 
-                onClick={() => openEditModal(service)} 
-                className="btn-edit"
-                aria-label="Edit service"
-              >
+              <button onClick={() => openEditModal(service)} className="btn-edit" aria-label="Edit service">
                 <FaEdit />
               </button>
               <button 
-                onClick={() => handleToggleActive(service.id)} 
+                onClick={() => handleToggleActive(service.service_id)} 
                 className={`btn-toggle ${service.active ? 'active' : ''}`}
                 aria-label={service.active ? 'Deactivate service' : 'Activate service'}
               >
@@ -221,7 +215,7 @@ const ManageServices = () => {
         ))}
       </div>
 
-      {/* Edit/Add Modal */}
+      {/* Add/Edit Modal */}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
@@ -232,128 +226,110 @@ const ManageServices = () => {
           <div className="modal-header">
             <h3>{currentService ? 'Edit Service' : 'Add New Service'}</h3>
           </div>
-          
-          <div className="modal-form-container">
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Service Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  placeholder="Enter service title"
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label>Short Description</label>
-                <textarea
-                  name="shortDesc"
-                  value={formData.shortDesc}
-                  onChange={handleInputChange}
-                  placeholder="Brief description of the service"
-                  required
-                  rows="3"
-                />
-              </div>
+          <form onSubmit={handleSubmit} className="modal-form-container">
 
-              <div className="form-group">
-                <label>Key Benefits</label>
-                <div className="array-inputs">
-                  {formData.keyBenefits.map((benefit, index) => (
-                    <div key={index} className="array-input-row">
-                      <input
-                        type="text"
-                        value={benefit}
-                        onChange={(e) => handleArrayInputChange(index, 'keyBenefits', e.target.value)}
-                        placeholder={`Benefit ${index + 1}`}
-                        required
-                      />
-                      <div className="array-actions">
-                        <button
-                          type="button"
-                          onClick={() => addArrayItem('keyBenefits')}
-                          className="btn-array-add"
-                          aria-label="Add benefit"
-                        >
-                          <FaPlus />
-                        </button>
-                        {formData.keyBenefits.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeArrayItem(index, 'keyBenefits')}
-                            className="btn-array-remove"
-                            aria-label="Remove benefit"
-                          >
-                            <FaTrash />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <div className="form-group">
+              <label>Service Title</label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                placeholder="Enter service title"
+                required
+              />
+            </div>
 
-              <div className="form-group">
-                <label>Our Process</label>
-                <div className="array-inputs">
-                  {formData.ourProcess.map((process, index) => (
-                    <div key={index} className="array-input-row">
-                      <input
-                        type="text"
-                        value={process}
-                        onChange={(e) => handleArrayInputChange(index, 'ourProcess', e.target.value)}
-                        placeholder={`Step ${index + 1}`}
-                        required
-                      />
-                      <div className="array-actions">
-                        <button
-                          type="button"
-                          onClick={() => addArrayItem('ourProcess')}
-                          className="btn-array-add"
-                          aria-label="Add process step"
-                        >
-                          <FaPlus />
-                        </button>
-                        {formData.ourProcess.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeArrayItem(index, 'ourProcess')}
-                            className="btn-array-remove"
-                            aria-label="Remove process step"
-                          >
-                            <FaTrash />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+            <div className="form-group">
+              <label>Short Description</label>
+              <textarea
+                name="short_desc"
+                value={formData.short_desc}
+                onChange={handleInputChange}
+                placeholder="Brief description"
+                rows="3"
+                required
+              />
+            </div>
+
+            {/* Icon Selection */}
+            <div className="form-group">
+              <label>Service Icon</label>
+              <div className="icon-selection">
+                {availableIcons.map(iconKey => (
+                  <button
+                    type="button"
+                    key={iconKey}
+                    className={`icon-btn ${formData.icon === iconKey ? 'selected' : ''}`}
+                    onClick={() => setFormData({...formData, icon: iconKey})}
+                  >
+                    {iconMap[iconKey]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Key Benefits */}
+            <div className="form-group">
+              <label>Key Benefits</label>
+              {formData.key_benefits.map((item, index) => (
+                <div key={item.id} className="array-input-row">
+                  <input
+                    type="text"
+                    value={item.value}
+                    onChange={e => handleArrayInputChange(item.id, 'key_benefits', e.target.value)}
+                    placeholder={`Benefit ${index + 1}`}
+                    required
+                  />
+                  {index === formData.key_benefits.length - 1 && (
+                    <button type="button" onClick={() => addArrayItem('key_benefits')}><FaPlus /></button>
+                  )}
+                  {formData.key_benefits.length > 1 && (
+                    <button type="button" onClick={() => removeArrayItem(item.id, 'key_benefits')}><FaTrash /></button>
+                  )}
                 </div>
-              </div>
-              
-              <div className="form-group checkbox-group">
-                <input
-                  type="checkbox"
-                  id="active"
-                  name="active"
-                  checked={formData.active}
-                  onChange={(e) => setFormData({...formData, active: e.target.checked})}
-                />
-                <label htmlFor="active">Active (visible to users)</label>
-              </div>
-              
-              <div className="modal-actions">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="btn-cancel">
-                  Cancel
-                </button>
-                <button type="submit" className="btn-save">
-                  {currentService ? 'Save Changes' : 'Add Service'}
-                </button>
-              </div>
-            </form>
-          </div>
+              ))}
+            </div>
+
+            {/* Our Process */}
+            <div className="form-group">
+              <label>Our Process</label>
+              {formData.our_process.map((item, index) => (
+                <div key={item.id} className="array-input-row">
+                  <input
+                    type="text"
+                    value={item.value}
+                    onChange={e => handleArrayInputChange(item.id, 'our_process', e.target.value)}
+                    placeholder={`Step ${index + 1}`}
+                    required
+                  />
+                  {index === formData.our_process.length - 1 && (
+                    <button type="button" onClick={() => addArrayItem('our_process')}><FaPlus /></button>
+                  )}
+                  {formData.our_process.length > 1 && (
+                    <button type="button" onClick={() => removeArrayItem(item.id, 'our_process')}><FaTrash /></button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="form-group checkbox-group">
+              <input
+                type="checkbox"
+                id="active"
+                name="active"
+                checked={formData.active}
+                onChange={e => setFormData({...formData, active: e.target.checked})}
+              />
+              <label htmlFor="active">Active (visible to users)</label>
+            </div>
+
+            <div className="modal-actions">
+              <button type="button" onClick={() => setIsModalOpen(false)} className="btn-cancel">Cancel</button>
+              <button type="submit" className="btn-save">{currentService ? 'Save Changes' : 'Add Service'}</button>
+            </div>
+
+          </form>
         </div>
       </Modal>
     </div>
