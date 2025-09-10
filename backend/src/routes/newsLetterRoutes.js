@@ -7,10 +7,10 @@ function createNewsLetterRouter(newsLetterController) {
   router.get("/subscribers", newsLetterController.getSubscribers);
   router.put("/subscribers/:subscriber_id/status", newsLetterController.updateSubscriberStatus);
 
-  router.post("/newsletters", newsLetterController.createNewsletter);         // Create
-  router.get("/newsletters", newsLetterController.getNewsletters);         // List all (with pagination)
-  router.patch("/newsletters/:newsletter_id", newsLetterController.updateNewsletter);    // Update title/content/status
-  router.post("/newsletters/:newsletter_id/send", newsLetterController.sendNewsletter);  // Trigger sending
+  router.post("/", newsLetterController.createNewsletter);         // Create
+  router.get("/", newsLetterController.getNewsletters);         // List all (with pagination)
+  router.put("/:newsletter_id", newsLetterController.updateNewsletter);    // Update title/content/status
+  router.post("/:newsletter_id/send", newsLetterController.sendNewsletter);  // Trigger sending
 
 
   return router;

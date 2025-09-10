@@ -89,4 +89,5 @@ INSERT INTO subscribers (email, status, subscribed_date) VALUES
 ('jackson.reid@example.com', 'Active', '2025-08-29 14:25:00'),
 ('madison.cole@example.com', 'Inactive', '2025-09-05 09:40:00'),
 ('gabriel.ward@example.com', 'Active', '2025-09-13 13:55:00'),
-('chloe.foster@example.com', 'Active', '2025-09-21 11:10:00');
+('chloe.foster@example.com', 'Active', '2025-09-21 11:10:00'),
+('abdulmohaimenkhanarnob@gmail.com', 'Active', '2025-09-21 11:10:00');
