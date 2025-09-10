@@ -270,6 +270,9 @@
 .label-icon {
   font-size: 1rem;
   color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.5rem;
 }
 
 .form-group input,
