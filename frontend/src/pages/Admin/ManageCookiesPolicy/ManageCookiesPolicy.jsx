@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaSave, FaEdit, FaTimes, FaUpload } from 'react-icons/fa';
 import Modal from 'react-modal';
+import ReactMarkdown from 'react-markdown'; 
 import './ManageCookiesPolicy.css';
+import PolicyApi from '../../../apis/policyApi';
+const policyApi = new PolicyApi();
 
 const ManageCookiesPolicy = () => {
   const [content, setContent] = useState('');
@@ -22,8 +25,10 @@ const ManageCookiesPolicy = () => {
         content: `# Cookie Policy\n\n## 1. What Are Cookies\nCookies are small text files that are placed on your computer or mobile device when you visit our website. They are widely used to make websites work more efficiently and provide information to the website owners.\n\n## 2. How We Use Cookies\nWe use cookies for several purposes:\n\n### Essential Cookies\nThese cookies are necessary for the website to function properly. They enable core functionality such as security, network management, and accessibility.\n\n### Analytics Cookies\nThese cookies help us understand how visitors interact with our website. We use this information to improve our services and user experience.`,
         lastUpdated: '2024-01-01'
       };
-      setContent(mockData.content);
-      setLastUpdated(mockData.lastUpdated);
+      const cookie = await policyApi.getpolicyByType("cookie");
+
+      setContent(cookie.content);
+      setLastUpdated(cookie.updated_at);
     } catch (error) {
       console.error('Error fetching cookies policy:', error);
     }
@@ -33,7 +38,10 @@ const ManageCookiesPolicy = () => {
     try {
       // Simulate API call to save content
       console.log('Saving cookies policy:', content);
-      setLastUpdated(new Date().toISOString().split('T')[0]);
+      const updatedCookie = await policyApi.updatePolicy("cookie","Cookie Policy", content);
+
+      setContent(updatedCookie.content);
+      setLastUpdated(updatedCookie.updated_at);
       setIsModalOpen(false);
       alert('Cookies policy saved successfully!');
     } catch (error) {
@@ -42,47 +50,47 @@ const ManageCookiesPolicy = () => {
     }
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // const handleFileUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
 
-    if (file.type !== 'text/html') {
-      alert('Please upload an HTML file only.');
-      return;
-    }
+  //   if (file.type !== 'text/html') {
+  //     alert('Please upload an HTML file only.');
+  //     return;
+  //   }
 
-    setIsUploading(true);
+  //   setIsUploading(true);
     
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        // Extract text content from HTML
-        const htmlContent = e.target.result;
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlContent;
-        const textContent = tempDiv.textContent || tempDiv.innerText || '';
+  //   const reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     try {
+  //       // Extract text content from HTML
+  //       const htmlContent = e.target.result;
+  //       const tempDiv = document.createElement('div');
+  //       tempDiv.innerHTML = htmlContent;
+  //       const textContent = tempDiv.textContent || tempDiv.innerText || '';
         
-        setContent(textContent);
-        setIsUploading(false);
-        alert('HTML file uploaded successfully! Content extracted to editor.');
-      } catch (error) {
-        console.error('Error processing HTML file:', error);
-        alert('Error processing HTML file. Please try again.');
-        setIsUploading(false);
-      }
-    };
+  //       setContent(textContent);
+  //       setIsUploading(false);
+  //       alert('HTML file uploaded successfully! Content extracted to editor.');
+  //     } catch (error) {
+  //       console.error('Error processing HTML file:', error);
+  //       alert('Error processing HTML file. Please try again.');
+  //       setIsUploading(false);
+  //     }
+  //   };
     
-    reader.onerror = () => {
-      alert('Error reading file. Please try again.');
-      setIsUploading(false);
-    };
+  //   reader.onerror = () => {
+  //     alert('Error reading file. Please try again.');
+  //     setIsUploading(false);
+  //   };
     
-    reader.readAsText(file);
-  };
+  //   reader.readAsText(file);
+  // };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
+  // const triggerFileInput = () => {
+  //   fileInputRef.current?.click();
+  // };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -113,19 +121,8 @@ const ManageCookiesPolicy = () => {
         <div className="policy-preview">
           <h3>Current Cookies Policy</h3>
           <div className="policy-text">
-            {content.split('\n').map((line, index) => {
-              if (line.startsWith('# ')) {
-                return <h1 key={index}>{line.substring(2)}</h1>;
-              } else if (line.startsWith('## ')) {
-                return <h2 key={index}>{line.substring(3)}</h2>;
-              } else if (line.startsWith('### ')) {
-                return <h3 key={index}>{line.substring(4)}</h3>;
-              } else if (line.startsWith('- ')) {
-                return <li key={index}>{line.substring(2)}</li>;
-              } else {
-                return <p key={index}>{line}</p>;
-              }
-            })}
+            
+            <ReactMarkdown>{content}</ReactMarkdown>
           </div>
         </div>
       </div>
@@ -148,7 +145,7 @@ const ManageCookiesPolicy = () => {
           </div>
           
           <div className="policy-modal-body">
-            <div className="upload-section">
+            {/* <div className="upload-section">
               <h4>Upload HTML File</h4>
               <p>Upload an HTML file to extract content (will replace current content)</p>
               <input
@@ -165,7 +162,7 @@ const ManageCookiesPolicy = () => {
               >
                 <FaUpload /> {isUploading ? 'Processing...' : 'Upload HTML File'}
               </button>
-            </div>
+            </div> */}
 
             <div className="form-group">
               <label>Policy Content (Markdown supported)</label>
