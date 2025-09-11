@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaSave, FaEdit, FaTimes, FaUpload } from 'react-icons/fa';
 import Modal from 'react-modal';
+import ReactMarkdown from 'react-markdown';   // Add this import
 import './ManagePrivacyPolicy.css';
+import PolicyApi from '../../../apis/policyApi';
+const policyApi = new PolicyApi();
 
 const ManagePrivacyPolicy = () => {
   const [content, setContent] = useState('');
@@ -17,13 +20,15 @@ const ManagePrivacyPolicy = () => {
 
   const fetchPrivacyPolicy = async () => {
     try {
-      // Simulated API response
-      const mockData = {
-        content: `# Privacy Policy\n\n## 1. Introduction\nAt M3 TECHOPS, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.\n\n## 2. Information We Collect\nWe may collect the following types of information:\n\n### Personal Information\n- Contact information (name, email address, phone number)\n- Business information (company name, job title)\n- Payment information for service transactions\n- Communication preferences\n\n### Technical Information\n- IP address and browser type\n- Device information and operating system\n- Pages visited and time spent on our website\n- Referring website addresses\n- Cookies and similar tracking technologies`,
-        lastUpdated: '2024-01-01'
-      };
-      setContent(mockData.content);
-      setLastUpdated(mockData.lastUpdated);
+      // const mockData = {
+      //   content: `# Privacy Policy\n\n## 1. Introduction\nAt M3 TECHOPS, we are committed to protecting your privacy and ensuring the security of your personal information.\n\n- Contact info\n- Business info\n- Payment info`,
+      //   lastUpdated: '2024-01-01'
+      // };
+
+      const privacy = await policyApi.getpolicyByType("privacy");
+
+      setContent(privacy.content);
+      setLastUpdated(privacy.updated_at);
     } catch (error) {
       console.error('Error fetching privacy policy:', error);
     }
@@ -31,9 +36,11 @@ const ManagePrivacyPolicy = () => {
 
   const handleSave = async () => {
     try {
-      // Simulate API call to save content
       console.log('Saving privacy policy:', content);
-      setLastUpdated(new Date().toISOString().split('T')[0]);
+      const updatedPrivacy = await policyApi.updatePolicy("privacy","Privacy Policy", content);
+
+      setContent(updatedPrivacy.content);
+      setLastUpdated(updatedPrivacy.updated_at);
       setIsModalOpen(false);
       alert('Privacy policy saved successfully!');
     } catch (error) {
@@ -42,49 +49,45 @@ const ManagePrivacyPolicy = () => {
     }
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // const handleFileUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
 
-    if (file.type !== 'text/html') {
-      alert('Please upload an HTML file only.');
-      return;
-    }
+  //   if (file.type !== 'text/html') {
+  //     alert('Please upload an HTML file only.');
+  //     return;
+  //   }
 
-    setIsUploading(true);
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        // Extract text content from HTML (basic extraction)
-        const htmlContent = e.target.result;
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlContent;
-        const textContent = tempDiv.textContent || tempDiv.innerText || '';
-        
-        setContent(textContent);
-        setIsUploading(false);
-        alert('HTML file uploaded successfully! Content extracted to editor.');
-      } catch (error) {
-        console.error('Error processing HTML file:', error);
-        alert('Error processing HTML file. Please try again.');
-        setIsUploading(false);
-      }
-    };
-    
-    reader.onerror = () => {
-      alert('Error reading file. Please try again.');
-      setIsUploading(false);
-    };
-    
-    reader.readAsText(file);
-  };
+  //   setIsUploading(true);
+  //   const reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     try {
+  //       const htmlContent = e.target.result;
+  //       const tempDiv = document.createElement('div');
+  //       tempDiv.innerHTML = htmlContent;
+  //       const textContent = tempDiv.textContent || tempDiv.innerText || '';
+  //       setContent(textContent);
+  //       setIsUploading(false);
+  //       alert('HTML file uploaded successfully! Content extracted to editor.');
+  //     } catch (error) {
+  //       console.error('Error processing HTML file:', error);
+  //       alert('Error processing HTML file. Please try again.');
+  //       setIsUploading(false);
+  //     }
+  //   };
+  //   reader.onerror = () => {
+  //     alert('Error reading file. Please try again.');
+  //     setIsUploading(false);
+  //   };
+  //   reader.readAsText(file);
+  // };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
+  // const triggerFileInput = () => {
+  //   fileInputRef.current?.click();
+  // };
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -113,23 +116,13 @@ const ManagePrivacyPolicy = () => {
         <div className="policy-preview">
           <h3>Current Privacy Policy</h3>
           <div className="policy-text">
-            {content.split('\n').map((line, index) => {
-              if (line.startsWith('# ')) {
-                return <h1 key={index}>{line.substring(2)}</h1>;
-              } else if (line.startsWith('## ')) {
-                return <h2 key={index}>{line.substring(3)}</h2>;
-              } else if (line.startsWith('### ')) {
-                return <h3 key={index}>{line.substring(4)}</h3>;
-              } else if (line.startsWith('- ')) {
-                return <li key={index}>{line.substring(2)}</li>;
-              } else {
-                return <p key={index}>{line}</p>;
-              }
-            })}
+            
+            <ReactMarkdown>{content}</ReactMarkdown>
           </div>
         </div>
       </div>
 
+      
       <Modal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
@@ -148,7 +141,7 @@ const ManagePrivacyPolicy = () => {
           </div>
           
           <div className="policy-modal-body">
-            <div className="upload-section">
+            {/* <div className="upload-section">
               <h4>Upload HTML File</h4>
               <p>Upload an HTML file to extract content (will replace current content)</p>
               <input
@@ -165,7 +158,7 @@ const ManagePrivacyPolicy = () => {
               >
                 <FaUpload /> {isUploading ? 'Processing...' : 'Upload HTML File'}
               </button>
-            </div>
+            </div> */}
 
             <div className="form-group">
               <label>Policy Content (Markdown supported)</label>

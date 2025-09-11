@@ -154,3 +154,21 @@ CREATE TABLE newsletters (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE policies (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(50) NOT NULL UNIQUE,  -- 'privacy', 'cookie', 'terms'
+    title VARCHAR(255) NOT NULL,       -- e.g., "Privacy Policy"
+    content TEXT NOT NULL,             -- full policy text (can be long)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert initial rows
+INSERT INTO policies (type, title, content)
+VALUES 
+('privacy', 'Privacy Policy', 'Your privacy policy content here...'),
+('cookie', 'Cookie Policy', 'Your cookie policy content here...'),
+('terms', 'Terms of Service', 'Your terms of service content here...');
+

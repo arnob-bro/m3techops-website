@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { FaSave, FaEdit, FaTimes, FaUpload } from 'react-icons/fa';
 import Modal from 'react-modal';
 import './ManageTermsOfService.css';
+import ReactMarkdown from 'react-markdown';
+import PolicyApi from '../../../apis/policyApi';
+const policyApi = new PolicyApi();
 
 const ManageTermsOfService = () => {
   const [content, setContent] = useState('');
@@ -18,12 +21,14 @@ const ManageTermsOfService = () => {
   const fetchTermsOfService = async () => {
     try {
       // Simulated API response
-      const mockData = {
-        content: `# Terms of Service\n\n## 1. Agreement to Terms\nBy accessing or using our website and services, you agree to be bound by these Terms of Service. If you disagree with any part of the terms, you may not access our services.\n\n## 2. Use of Services\nYou agree to use our services only for lawful purposes and in accordance with these Terms:\n\n- You will not use our services in any way that violates applicable laws\n- You will not engage in unauthorized framing or linking to our website\n- You will not interfere with or disrupt the services or servers\n- You will not attempt to gain unauthorized access to any portion of our services`,
-        lastUpdated: '2024-01-01'
-      };
-      setContent(mockData.content);
-      setLastUpdated(mockData.lastUpdated);
+      // const mockData = {
+      //   content: `# Terms of Service\n\n## 1. Agreement to Terms\nBy accessing or using our website and services, you agree to be bound by these Terms of Service. If you disagree with any part of the terms, you may not access our services.\n\n## 2. Use of Services\nYou agree to use our services only for lawful purposes and in accordance with these Terms:\n\n- You will not use our services in any way that violates applicable laws\n- You will not engage in unauthorized framing or linking to our website\n- You will not interfere with or disrupt the services or servers\n- You will not attempt to gain unauthorized access to any portion of our services`,
+      //   lastUpdated: '2024-01-01'
+      // };
+      const terms = await policyApi.getpolicyByType("terms");
+
+      setContent(terms.content);
+      setLastUpdated(terms.updated_at);
     } catch (error) {
       console.error('Error fetching terms of service:', error);
     }
@@ -32,8 +37,11 @@ const ManageTermsOfService = () => {
   const handleSave = async () => {
     try {
       // Simulate API call to save content
-      console.log('Saving terms of service:', content);
-      setLastUpdated(new Date().toISOString().split('T')[0]);
+      // console.log('Saving terms of service:', content);
+      const updatedTerms = await policyApi.updatePolicy("terms","Terms of Service", content);
+
+      setContent(updatedTerms.content);
+      setLastUpdated(updatedTerms.updated_at);
       setIsModalOpen(false);
       alert('Terms of service saved successfully!');
     } catch (error) {
@@ -42,47 +50,47 @@ const ManageTermsOfService = () => {
     }
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // const handleFileUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
 
-    if (file.type !== 'text/html') {
-      alert('Please upload an HTML file only.');
-      return;
-    }
+  //   if (file.type !== 'text/html') {
+  //     alert('Please upload an HTML file only.');
+  //     return;
+  //   }
 
-    setIsUploading(true);
+  //   setIsUploading(true);
     
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        // Extract text content from HTML
-        const htmlContent = e.target.result;
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlContent;
-        const textContent = tempDiv.textContent || tempDiv.innerText || '';
+  //   const reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     try {
+  //       // Extract text content from HTML
+  //       const htmlContent = e.target.result;
+  //       const tempDiv = document.createElement('div');
+  //       tempDiv.innerHTML = htmlContent;
+  //       const textContent = tempDiv.textContent || tempDiv.innerText || '';
         
-        setContent(textContent);
-        setIsUploading(false);
-        alert('HTML file uploaded successfully! Content extracted to editor.');
-      } catch (error) {
-        console.error('Error processing HTML file:', error);
-        alert('Error processing HTML file. Please try again.');
-        setIsUploading(false);
-      }
-    };
+  //       setContent(textContent);
+  //       setIsUploading(false);
+  //       alert('HTML file uploaded successfully! Content extracted to editor.');
+  //     } catch (error) {
+  //       console.error('Error processing HTML file:', error);
+  //       alert('Error processing HTML file. Please try again.');
+  //       setIsUploading(false);
+  //     }
+  //   };
     
-    reader.onerror = () => {
-      alert('Error reading file. Please try again.');
-      setIsUploading(false);
-    };
+  //   reader.onerror = () => {
+  //     alert('Error reading file. Please try again.');
+  //     setIsUploading(false);
+  //   };
     
-    reader.readAsText(file);
-  };
+  //   reader.readAsText(file);
+  // };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
+  // const triggerFileInput = () => {
+  //   fileInputRef.current?.click();
+  // };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -113,19 +121,9 @@ const ManageTermsOfService = () => {
         <div className="policy-preview">
           <h3>Current Terms of Service</h3>
           <div className="policy-text">
-            {content.split('\n').map((line, index) => {
-              if (line.startsWith('# ')) {
-                return <h1 key={index}>{line.substring(2)}</h1>;
-              } else if (line.startsWith('## ')) {
-                return <h2 key={index}>{line.substring(3)}</h2>;
-              } else if (line.startsWith('### ')) {
-                return <h3 key={index}>{line.substring(4)}</h3>;
-              } else if (line.startsWith('- ')) {
-                return <li key={index}>{line.substring(2)}</li>;
-              } else {
-                return <p key={index}>{line}</p>;
-              }
-            })}
+
+              <ReactMarkdown>{content}</ReactMarkdown>
+            
           </div>
         </div>
       </div>
@@ -148,7 +146,7 @@ const ManageTermsOfService = () => {
           </div>
           
           <div className="policy-modal-body">
-            <div className="upload-section">
+            {/* <div className="upload-section">
               <h4>Upload HTML File</h4>
               <p>Upload an HTML file to extract content (will replace current content)</p>
               <input
@@ -165,7 +163,7 @@ const ManageTermsOfService = () => {
               >
                 <FaUpload /> {isUploading ? 'Processing...' : 'Upload HTML File'}
               </button>
-            </div>
+            </div> */}
 
             <div className="form-group">
               <label>Terms Content (Markdown supported)</label>
