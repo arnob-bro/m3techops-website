@@ -51,7 +51,7 @@ const Login = () => {
               ease: "easeInOut"
             }}
           >
-            <span>M3</span>
+            <span>M³</span>
           </motion.div>
           <h2>Welcome Back</h2>
           <p>Sign in to your account</p>

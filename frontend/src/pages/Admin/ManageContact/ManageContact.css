@@ -97,13 +97,13 @@
   }
   
   /* Stats */
-  .messages-stats {
+  .messages-stats-ac {
     display: flex;
     justify-content: center; /* center the single card */
     margin-bottom: 32px;
   }
   
-  .stat-card {
+  .stat-card-ac {
     width: 200px; /* fixed width */
     padding: 16px; /* smaller padding */
     border-radius: 16px;
@@ -116,12 +116,12 @@
     transition: all 0.3s ease;
   }
   
-  .stat-card:hover {
+  .stat-card-ac:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px var(--admin-pages-shadow-lg);
   }
   
-  .stat-icon {
+  .stat-icon-ac {
     width: 50px; /* slightly smaller icon */
     height: 50px;
     border-radius: 12px;
@@ -132,22 +132,22 @@
     color: white;
   }
   
-  .stat-icon.total {
+  .stat-icon-ac.total {
     background: linear-gradient(135deg, var(--admin-pages-accent), var(--admin-pages-accent-light));
   }
   
-  .stat-icon.unread {
+  .stat-icon-ac.unread {
     background: linear-gradient(135deg, var(--admin-pages-accent-warm), #fd7e14);
   }
   
-  .stat-info h3 {
+  .stat-info-ac h3 {
     font-size: 28px;
     font-weight: 700;
     color: var(--admin-pages-text-primary);
     margin: 0 0 4px 0;
   }
   
-  .stat-info p {
+  .stat-info-ac p {
     color: var(--admin-pages-text-secondary);
     margin: 0;
     font-size: 14px;
