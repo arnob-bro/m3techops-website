@@ -8,18 +8,27 @@ const createRoleRouter = require("./src/routes/roleRoutes");
 const createNewsLetterRouter = require("./src/routes/newsLetterRoutes");
 const createServiceRouter = require("./src/routes/serviceRoutes");
 const createPolicyRouter = require("./src/routes/policyRoutes");
+const createPortfolioRouter = require("./src/routes/portfolioRoutes");
+const createBlogRouter = require("./src/routes/blogRoutes");
+
 const AuthController = require("./src/controllers/authController");
 const InquiryController = require("./src/controllers/inquiryController");
 const RoleController = require("./src/controllers/roleController");
 const NewsLetterController = require("./src/controllers/newsLetterController");
 const ServiceController = require("./src/controllers/serviceController");
 const PolicyController = require("./src/controllers/policyController");
+const PortfolioController = require("./src/controllers/portfolioController");
+const BlogController = require("./src/controllers/blogController");
+
 const UserService = require("./src/services/userService");
 const InquiryService = require("./src/services/inquiryService");
 const RoleService = require("./src/services/roleService");
 const NewsLetterService = require("./src/services/newsLetterService");
 const ServiceService = require("./src/services/serviceService");
 const PolicyService = require("./src/services/policyService");
+const PortfolioService = require("./src/services/portfolioService");
+const BlogService = require("./src/services/blogService");
+
 
 const db = require("./src/config/supabaseClient");
 
@@ -50,6 +59,8 @@ const roleService = new RoleService(db);
 const newsLetterService = new NewsLetterService(db);
 const serviceService = new ServiceService(db);
 const policyService = new PolicyService(db);
+const portfolioService = new PortfolioService(db);
+const blogService = new BlogService(db);
 
 const authController = new AuthController(userService);
 const inquiryController = new InquiryController(inquiryService);
@@ -57,6 +68,8 @@ const roleController = new RoleController(roleService);
 const newsLetterController = new NewsLetterController(newsLetterService);
 const serviceController = new ServiceController(serviceService);
 const policyController = new PolicyController(policyService);
+const portfolioController = new PortfolioController(portfolioService);
+const blogController = new BlogController(blogService);
 
 const authRouter = createAuthRouter(authController);
 const inquiryRouter = createInquiryRouter(inquiryController);
@@ -64,6 +77,8 @@ const roleRouter = createRoleRouter(roleController);
 const newsLetterRouter = createNewsLetterRouter(newsLetterController);
 const serviceRouter = createServiceRouter(serviceController);
 const policyRouter = createPolicyRouter(policyController);
+const portfolioRouter = createPortfolioRouter(portfolioController);
+const blogRouter = createBlogRouter(blogController);
 
 
 
@@ -74,5 +89,7 @@ app.use("/role", roleRouter);
 app.use("/newsletter", newsLetterRouter);
 app.use("/service", serviceRouter);
 app.use("/policy", policyRouter);
+app.use("/portfolio", portfolioRouter);
+app.use("/blog", blogRouter);
 
 module.exports = app;

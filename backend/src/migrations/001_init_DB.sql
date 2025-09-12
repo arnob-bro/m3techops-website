@@ -76,6 +76,24 @@ CREATE TABLE project_categories (
     PRIMARY KEY (project_id, category_id)
 );
 
+
+
+CREATE TABLE portfolio_items (
+    portfolio_item_id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    image TEXT,
+    problem TEXT NOT NULL,
+    solution TEXT NOT NULL,
+    results TEXT NOT NULL,
+    tech_stack JSONB NOT NULL,
+    active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -- 9. Inquiries
 CREATE TABLE inquiries (
     inquiry_id BIGSERIAL PRIMARY KEY,
@@ -94,13 +112,22 @@ CREATE TABLE inquiries (
 
 -- 10. Blogs
 CREATE TABLE blogs (
-    blog_id BIGSERIAL PRIMARY KEY,
-    title VARCHAR(150) NOT NULL,
-    slug VARCHAR(200) UNIQUE,
-    content TEXT NOT NULL,
-    author_id VARCHAR(20) REFERENCES users(user_id) ON DELETE SET NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    blog_id SERIAL PRIMARY KEY,               
+    title VARCHAR(255) NOT NULL,         
+    category VARCHAR(100) NOT NULL,      
+    excerpt TEXT NOT NULL,               
+    content TEXT NOT NULL,               
+    image TEXT,                          
+    date DATE DEFAULT CURRENT_DATE, 
+    read_time VARCHAR(50) DEFAULT '5 min read', 
+    author_name VARCHAR(100) NOT NULL,   
+    author_avatar TEXT,                  
+    author_role VARCHAR(100),            
+    active BOOLEAN DEFAULT TRUE,         
+    created_at TIMESTAMP DEFAULT NOW(),  
+    updated_at TIMESTAMP DEFAULT NOW()   
 );
+
 
 -- 11. Testimonials
 CREATE TABLE testimonials (

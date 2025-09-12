@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react';
 import { FaEdit, FaToggleOn, FaToggleOff, FaPlus, FaTrash, FaSearch } from 'react-icons/fa';
+import {
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import Modal from 'react-modal';
 import './ManageBlogs.css';
+import ServiceApi from "../../../apis/serviceApi";
+import BlogApi from "../../../apis/blogApi";
+
+const serviceApi = new ServiceApi();
+const blogApi = new BlogApi();
 
 const ManageBlog = () => {
   const [blogPosts, setBlogPosts] = useState([]);
@@ -9,87 +18,61 @@ const ManageBlog = () => {
   const [currentPost, setCurrentPost] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
-    title: '',
-    category: 'Web Development',
-    excerpt: '',
-    content: '',
-    image: '',
+    title: "",
+    category: "",
+    excerpt: "",
+    content: "",
+    image: "",
     date: new Date().toISOString().split('T')[0],
-    readTime: '5 min read',
-    author: {
-      name: '',
-      avatar: '',
-      role: ''
-    },
+    read_time: '5 min read',
+    author_name: "",
+    author_avatar: "",
+    author_role: "",
     active: true
   });
+  const [categories, setCategories] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [statusFilter, setStatusFilter] = useState('');
+  const limit = 10;
+
+  
+  const fetchCategories = async () => {
+    try {
+      const res = await serviceApi.getServices(); 
+      const services = res.services;
+      setCategories(services);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
+  };
+
+
+  const fetchBlogPosts = async () => {
+    try {
+
+      const res = await blogApi.getBlogs({
+        page: page,
+        limit: limit,
+        title: searchTerm,
+        active: statusFilter
+      });
+      const blogs = res.data?.blogs;
+      setBlogPosts(blogs);
+      setTotalPages(res.data?.pagination.totalPages);
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
+    }
+  };
+
 
   useEffect(() => {
     // Set up modal app element for react-modal
     Modal.setAppElement('#root');
-    
-    // Fetch blog posts from API
-    const fetchBlogPosts = async () => {
-      try {
-        // Simulated data - replace with actual API call
-        const mockBlogPosts = [
-          {
-            id: '1',
-            title: "The Future of Web Development in 2023",
-            excerpt: "Exploring the latest trends and technologies shaping web development this year.",
-            content: "<h2>Introduction</h2><p>As we move further into 2023, the web development landscape continues to evolve...</p>",
-            category: "Web Development",
-            date: "2023-06-15",
-            readTime: "5 min read",
-            image: "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-            author: {
-              name: "Alex Johnson",
-              avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-              role: "Senior Web Developer"
-            },
-            active: true
-          },
-          {
-            id: '2',
-            title: "Mobile App Security Best Practices",
-            excerpt: "Essential security measures every mobile app developer should implement.",
-            content: "<h2>The Importance of Mobile Security</h2><p>With mobile devices becoming the primary computing platform...</p>",
-            category: "Mobile Development",
-            date: "2023-05-28",
-            readTime: "7 min read",
-            image: "https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-            author: {
-              name: "Sarah Chen",
-              avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-              role: "Mobile Security Specialist"
-            },
-            active: true
-          },
-          {
-            id: '3',
-            title: "Cloud Computing: Cost Optimization Strategies",
-            excerpt: "How to maximize your cloud investment while minimizing expenses.",
-            content: "<h2>The Cloud Cost Challenge</h2><p>While cloud computing offers numerous benefits, costs can quickly spiral...</p>",
-            category: "Cloud Solutions",
-            date: "2023-04-10",
-            readTime: "6 min read",
-            image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-            author: {
-              name: "Michael Rodriguez",
-              avatar: "https://randomuser.me/api/portraits/men/75.jpg",
-              role: "Cloud Architect"
-            },
-            active: false
-          }
-        ];
-        setBlogPosts(mockBlogPosts);
-      } catch (error) {
-        console.error('Error fetching blog posts:', error);
-      }
-    };
 
+    fetchCategories();
     fetchBlogPosts();
-  }, []);
+  }, [page, searchTerm, statusFilter]);
 
   // Handle modal open/close body scroll lock
   useEffect(() => {
@@ -113,22 +96,22 @@ const ManageBlog = () => {
     }));
   };
 
-  const handleAuthorChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      author: {
-        ...prev.author,
-        [name]: value
-      }
-    }));
-  };
-
-  const handleToggleActive = (id) => {
-    setBlogPosts(blogPosts.map(post => 
-      post.id === id ? { ...post, active: !post.active } : post
-    ));
-    // Here you would also update the post status in your backend
+  const handleToggleActive = async (blog_id) => {
+    try {
+      
+      setBlogPosts(blogPosts.map(post =>
+        post.blog_id === blog_id ? { ...post, active: !post.active } : post
+      ));
+      await blogApi.toggleActive(blog_id);
+  
+    } catch (error) {
+      console.error("Error updating blog status:", error);
+  
+      // Revert UI change if backend update fails
+      setBlogPosts(blogPosts.map(post =>
+        post.blog_id === blog_id ? { ...post, active: !post.active } : post
+      ));
+    }
   };
 
   const openEditModal = (post) => {
@@ -139,13 +122,11 @@ const ManageBlog = () => {
       excerpt: post.excerpt,
       content: post.content,
       image: post.image,
-      date: post.date,
-      readTime: post.readTime,
-      author: {
-        name: post.author.name,
-        avatar: post.author.avatar,
-        role: post.author.role
-      },
+      date: new Date(post.date).toISOString().split("T")[0],
+      read_time: post.read_time,
+      author_name: post.author_name,
+      author_avatar: post.author_avatar,
+      author_role: post.author_role,
       active: post.active
     });
     setIsModalOpen(true);
@@ -154,52 +135,56 @@ const ManageBlog = () => {
   const openAddModal = () => {
     setCurrentPost(null);
     setFormData({
-      title: '',
-      category: 'Web Development',
-      excerpt: '',
-      content: '',
-      image: '',
+      title: "",
+      category: "",
+      excerpt: "",
+      content: "",
+      image: "",
       date: new Date().toISOString().split('T')[0],
-      readTime: '5 min read',
-      author: {
-        name: '',
-        avatar: '',
-        role: ''
-      },
+      read_time: "",
+      author_name: "",
+      author_avatar: "",
+      author_role: "",
       active: true
     });
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (currentPost) {
-      // Update existing post
-      setBlogPosts(blogPosts.map(post => 
-        post.id === currentPost.id ? { ...post, ...formData } : post
-      ));
-    } else {
-      // Add new post
-      const newPost = {
-        id: Date.now().toString(),
-        ...formData
-      };
-      setBlogPosts([...blogPosts, newPost]);
+  
+    try {
+      if (currentPost) {
+        // Update existing post
+        const res = await blogApi.updateBlog(currentPost.blog_id, formData);
+        const updatedBlog = res.blog; // assuming backend returns the updated blog
+        setBlogPosts(blogPosts.map(post => 
+          post.blog_id === currentPost.blog_id ? updatedBlog : post
+        ));
+      } else {
+        // Add new post
+        const res = await blogApi.createBlog(formData);
+        const newBlog = res.blog; // backend returns the created blog with blog_id
+        setBlogPosts([...blogPosts, newBlog]);
+      }
+  
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error saving blog post:", error);
     }
-    setIsModalOpen(false);
   };
+  
 
-  const deletePost = (id) => {
-    setBlogPosts(blogPosts.filter(post => post.id !== id));
-    // Here you would also delete the post from your backend
-  };
+  // const deletePost = (blog_id) => {
+  //   setBlogPosts(blogPosts.filter(post => post.blog_id !== blog_id));
+  //   // Here you would also delete the post from your backend
+  // };
 
-  const filteredPosts = blogPosts.filter(post => 
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredPosts = blogPosts.filter(post => 
+  //   post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   post.category.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -214,12 +199,25 @@ const ManageBlog = () => {
           <div className="blog-search">
             <input
               type="text"
-              placeholder="Search posts..."
+              placeholder="Search posts by title..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <FaSearch className="search-icon" />
           </div>
+          <div className="blog-filters">
+              <select 
+                value={statusFilter} 
+                onChange={(e) => {
+                  setStatusFilter(e.target.value)
+                  setPage(1);
+                }}
+              >
+                <option value="">All Status</option>
+                <option value= {true} >Active</option>
+                <option value={false}>Inactive</option>
+              </select>
+            </div>
           <button onClick={openAddModal} className="blog-btn-add">
             <FaPlus size={16} />
             Add New Post
@@ -240,9 +238,9 @@ const ManageBlog = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredPosts.length > 0 ? (
-              filteredPosts.map(post => (
-                <tr key={post.id} className={post.active ? '' : 'inactive'}>
+            {blogPosts.length > 0 ? (
+              blogPosts.map(post => (
+                <tr key={post.blog_id} className={post.active ? '' : 'inactive'}>
                   <td>
                     <div className="post-title-cell">
                       {post.image && (
@@ -260,15 +258,15 @@ const ManageBlog = () => {
                   <td>{formatDate(post.date)}</td>
                   <td>
                     <div className="author-cell">
-                      {post.author.avatar && (
-                        <img src={post.author.avatar} alt={post.author.name} className="author-avatar" />
+                      {post.author_avatar && (
+                        <img src={post.author_avatar} alt={post.author_name} className="author-avatar" />
                       )}
-                      <span>{post.author.name}</span>
+                      <span>{post.author_name}</span>
                     </div>
                   </td>
                   <td>
                     <button 
-                      onClick={() => handleToggleActive(post.id)} 
+                      onClick={() => handleToggleActive(post.blog_id)} 
                       className={`status-btn ${post.active ? 'active' : 'inactive'}`}
                     >
                       {post.active ? (
@@ -283,19 +281,19 @@ const ManageBlog = () => {
                     </button>
                   </td>
                   <td>
-  <div className="action-buttons">
-    <FaEdit 
-      onClick={() => openEditModal(post)} 
-      className="edit-icon"
-      aria-label="Edit post"
-    />
-    <FaTrash 
-      onClick={() => deletePost(post.id)} 
-      className="delete-icon"
-      aria-label="Delete post"
-    />
-  </div>
-</td>
+                    <div className="action-buttons">
+                      <FaEdit 
+                        onClick={() => openEditModal(post)} 
+                        className="edit-icon"
+                        aria-label="Edit post"
+                      />
+                      {/* <FaTrash 
+                        onClick={() => deletePost(post.blog_id)} 
+                        className="delete-icon"
+                        aria-label="Delete post"
+                      /> */}
+                    </div>
+                  </td>
                 </tr>
               ))
             ) : (
@@ -307,6 +305,61 @@ const ManageBlog = () => {
             )}
           </tbody>
         </table>
+        {totalPages > 1 && (
+                <div className="pagination">
+                {/* Previous */}
+                <button
+                  onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                  disabled={page === 1}
+                  className="pagination-btn"
+                >
+                  <FiChevronLeft /> Previous
+                </button>
+              
+                {/* Page numbers with ellipsis */}
+                {(() => {
+                  const pages = [];
+                  const delta = 1; // show ±1 around current
+              
+                  for (let i = 1; i <= totalPages; i++) {
+                    if (
+                      i === 1 || 
+                      i === totalPages || 
+                      (i >= page - delta && i <= page + delta)
+                    ) {
+                      pages.push(i);
+                    } else if (pages[pages.length - 1] !== '...') {
+                      pages.push('...');
+                    }
+                  }
+              
+                  return pages.map((page, idx) =>
+                    page === '...' ? (
+                      <span key={idx} className="pagination-ellipsis">…</span>
+                    ) : (
+                      <button
+                        key={idx}
+                        onClick={() => setPage(page)}
+                        className={page === page ? 'active' : ''}
+                      >
+                        {page}
+                      </button>
+                    )
+                  );
+                })()}
+              
+                {/* Next */}
+                <button
+                  onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={page === totalPages}
+                  className="pagination-btn"
+                >
+                  Next <FiChevronRight />
+                </button>
+              </div>
+          
+          
+          )}
       </div>
 
       {/* Edit/Add Modal */}
@@ -344,19 +397,20 @@ const ManageBlog = () => {
                 </div>
                 
                 <div className="form-group">
-                  <label>Category</label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="Web Development">Web Development</option>
-                    <option value="Mobile Development">Mobile Development</option>
-                    <option value="Cloud Solutions">Cloud Solutions</option>
-                    <option value="AI & Automation">AI & Automation</option>
-                    <option value="Custom Software">Custom Software</option>
-                  </select>
+                    <label>Category</label>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">-- Select Category --</option>
+                      {categories.map((cat, idx) => (
+                        <option key={idx} value={cat.title}>
+                          {cat.title}
+                        </option>
+                      ))}
+                    </select>
                 </div>
               </div>
 
@@ -384,6 +438,16 @@ const ManageBlog = () => {
                     placeholder="Full blog post content (HTML allowed)"
                     required
                     rows="8"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Content Preview</label>
+                  <div
+                    style={{ border: '1px solid #ccc', padding: '1rem' }}
+                    dangerouslySetInnerHTML={{ __html: formData.content }}
                   />
                 </div>
               </div>
@@ -424,8 +488,8 @@ const ManageBlog = () => {
                   <label>Read Time</label>
                   <input
                     type="text"
-                    name="readTime"
-                    value={formData.readTime}
+                    name="read_time"
+                    value={formData.read_time}
                     onChange={handleInputChange}
                     placeholder="e.g. 5 min read"
                     required
@@ -440,9 +504,9 @@ const ManageBlog = () => {
                   <label>Author Name</label>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.author.name}
-                    onChange={handleAuthorChange}
+                    name="author_name"
+                    value={formData.author_name}
+                    onChange={handleInputChange}
                     placeholder="Author's full name"
                     required
                   />
@@ -452,9 +516,9 @@ const ManageBlog = () => {
                   <label>Author Role</label>
                   <input
                     type="text"
-                    name="role"
-                    value={formData.author.role}
-                    onChange={handleAuthorChange}
+                    name="author_role"
+                    value={formData.author_role}
+                    onChange={handleInputChange}
                     placeholder="Author's role/position"
                     required
                   />
@@ -466,15 +530,15 @@ const ManageBlog = () => {
                   <label>Author Avatar URL</label>
                   <input
                     type="url"
-                    name="avatar"
-                    value={formData.author.avatar}
-                    onChange={handleAuthorChange}
+                    name="author_avatar"
+                    value={formData.author_avatar}
+                    onChange={handleInputChange}
                     placeholder="Enter avatar image URL"
                     required
                   />
-                  {formData.author.avatar && (
+                  {formData.author_avatar && (
                     <div className="avatar-preview">
-                      <img src={formData.author.avatar} alt="Author preview" />
+                      <img src={formData.author_avatar} alt="Author preview" />
                       <span>Preview</span>
                     </div>
                   )}
