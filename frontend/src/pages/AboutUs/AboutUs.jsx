@@ -38,7 +38,7 @@ const AboutUs = () => {
       id: 1,
       name: "Alex Johnson",
       role: "CEO & Founder",
-      bio: "With over 15 years of experience in the tech industry, Alex founded M3 TECHOPS to bridge the gap between innovative ideas and practical digital solutions.",
+      bio: "With over 15 years of experience in the tech industry, Alex founded M³ TECHOPS to bridge the gap between innovative ideas and practical digital solutions.",
       image: "https://randomuser.me/api/portraits/men/32.jpg",
       social: {
         linkedin: "#",
@@ -134,7 +134,7 @@ const AboutUs = () => {
             <div className="hero-badge-AU">
               <span>Our Story</span>
             </div>
-            <h1>About M3 TECHOPS</h1>
+            <h1>About M³ TECHOPS</h1>
             <p>We're a team of passionate technologists dedicated to transforming businesses through innovative digital solutions.</p>
             
           </motion.div>
@@ -271,7 +271,7 @@ const AboutUs = () => {
               viewport={{ once: true }}
             >
               <div className="section-header-AU">
-                <h2>Why Choose M3 TECHOPS?</h2>
+                <h2>Why Choose M³ TECHOPS?</h2>
                 <p>We combine technical expertise with business acumen to deliver solutions that not only work flawlessly but also drive real business results.</p>
               </div>
               

@@ -151,7 +151,7 @@ const Footer = () => {
         >
           <div className="footer-bottom-left">
             <p className="footer-copyright">
-              © {new Date().getFullYear()} M3 TECHOPS. All rights reserved.
+              © {new Date().getFullYear()} M³ TECHOPS. All rights reserved.
             </p>
             <p className="footer-built-text">
               Built with ❤️ using React & modern web technologies

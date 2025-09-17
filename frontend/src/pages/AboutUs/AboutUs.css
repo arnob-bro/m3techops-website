@@ -220,7 +220,8 @@
 }
 
 .mission-card-AU h2 {
-  font-size: 2rem;
+  font-size: 1.75rem;
+  /* Reduced from 2rem */
   margin-bottom: 1.5rem;
   color: var(--color-text);
   font-weight: 700;
@@ -249,7 +250,8 @@
 }
 
 .section-header-AU h2 {
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  /* Reduced from clamp(2.5rem, 5vw, 3.5rem) */
   font-weight: 800;
   margin-bottom: 1rem;
   background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
@@ -696,11 +698,13 @@
   }
 
   .mission-card-AU h2 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
+    /* Reduced from 1.75rem */
   }
 
   .section-header-AU h2 {
-    font-size: 2.2rem;
+    font-size: 1.9rem;
+    /* Reduced from 2.2rem */
   }
 
   .value-icon-AU {
@@ -749,11 +753,13 @@
   }
 
   .mission-card-AU h2 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
+    /* Reduced from 1.6rem */
   }
 
   .section-header-AU h2 {
-    font-size: 1.9rem;
+    font-size: 1.7rem;
+    /* Reduced from 1.9rem */
   }
 
   .team-info-AU {
@@ -784,8 +790,3 @@
     animation: none;
   }
 }
-
-
-
-
-

@@ -132,12 +132,12 @@ const ManageContact = () => {
       </div>
 
       {/* Stats */}
-      <div className="messages-stats">
-        <div className="stat-card">
-          <div className="stat-icon total">
+      <div className="messages-stats-ac">
+        <div className="stat-card-ac">
+          <div className="stat-icon total-ac">
             <FiMail />
           </div>
-          <div className="stat-info">
+          <div className="stat-info-ac">
             <h3>{totalMessages}</h3>
             <p>Total Messages</p>
           </div>
