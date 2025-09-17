@@ -201,7 +201,11 @@ const ManageBlog = () => {
               type="text"
               placeholder="Search posts by title..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(1);
+
+              }}
             />
             <FaSearch className="search-icon" />
           </div>

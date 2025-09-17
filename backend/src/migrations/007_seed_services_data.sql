@@ -79,4 +79,12 @@ VALUES
   '["Security assessment","Implement firewalls & tools","Monitor threats","Regular audits"]'::jsonb,
   true,
   'FaLock'
+),
+(
+  'Custom Software',
+  'Tailored software solutions designed for your specific business needs.',
+  '["Machine Learning", "Process Automation", "Data Analysis"]'::jsonb,
+  '["Bespoke Development", "Process Automation", "System Integration"]'::jsonb,
+  true,
+  'FaLock'
 );

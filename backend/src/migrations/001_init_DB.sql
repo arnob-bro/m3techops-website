@@ -25,14 +25,35 @@ CREATE TABLE role_permissions (
 -- 4. Users (custom ID as VARCHAR)
 CREATE TABLE users (
     user_id VARCHAR(20) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    phone VARCHAR(20),
-    role_id BIGINT NOT NULL REFERENCES roles(id),
+    role VARCHAR(20) NOT NULL DEFAULT 'customer', ---(customer,employee)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE employees (
+    employee_id VARCHAR(50) PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL REFERENCES users(email) ON UPDATE CASCADE,
+    phone VARCHAR(50) NOT NULL,
+    position VARCHAR(100) NOT NULL,
+    role_id BIGINT NOT NULL REFERENCES roles(id),
+    hire_date DATE NOT NULL,
+    address TEXT,
+    city VARCHAR(100),
+    country VARCHAR(100),
+    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (
+        status IN ('active', 'on_leave', 'terminated', 'probation')
+    ),
+    avatar TEXT,
+    emergency_contact JSONB,  -- { "name": "...", "relationship": "...", "phone": "..." }
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 -- 5. Services
 CREATE TABLE services (

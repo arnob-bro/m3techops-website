@@ -17,20 +17,18 @@ class AuthController {
       this.logout = this.logout.bind(this);
       this.refresh = this.refresh.bind(this);
       this.getProfile = this.getProfile.bind(this);
+      this.changePassword = this.changePassword.bind(this);
     }
   
     async createUser(req, res) {
       try {
-        const { user_id, name,email, password, phone, role_id } = req.body;
+        const { user_id, email, password, role} = req.body;
         
         // check if all fields are provided
-        if (!user_id || !name || !email || !password || !role_id) {
+        if (!user_id  || !email || !password || !role) {
           return res.status(400).json({error: "All fields are required"});
         }
-        // check if phone is a valid number
-        if (phone && !/^\+?\d{10,14}$/.test(phone)) {
-          return res.status(400).json({ error: "Invalid phone number" });
-        }
+        
         
         // check if email is a valid email
         if (!/^(?!.*\.\.)(?!.*\.$)[^\W][\w.+-]{0,63}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/.test(email)) {
@@ -42,10 +40,7 @@ class AuthController {
           return res.status(400).json({ error: "Invalid user_id" });
         }
         
-        // check if name is a valid name
-        if (!/^[A-Za-z]+(?: [A-Za-z]+)*$/.test(name)) {
-          return res.status(400).json({ error: "Invalid name" });
-        }
+        
         
         // check if password is at least 6 characters
         if (password.length < 6) {
@@ -55,27 +50,17 @@ class AuthController {
         if (!/^[a-zA-Z0-9]{6,}$/.test(password)) {
           return res.status(400).json({error: "Invalid password"});
         }
-        // check if role_id is a valid role_id
-        if (!/^[1-3]$/.test(role_id)) {
-          return res.status(400).json({error: "Invalid role_id"});
-        }
         
         
         // check if user already exists
         const userExists = await this.userService.getUserByEmail(email);
         if (userExists) {
           return res.status(400).json({error: "User already exists"});
-        } 
-        
-        // check if role_id is valid
-        const role = await this.userService.getRoleById(role_id);
-        if (!role) {
-          return res.status(400).json({error: "Invalid role"});
-        } 
+        }
 
         
-        const user = await this.userService.createUser(user_id, name,email, password, phone, role_id);
-        res.status(201).json({success: true, message: "User created successfully"});
+        const user = await this.userService.createUser(user_id, email, password, role);
+        res.status(201).json({success: true, message: "User created successfully", user});
       } catch (err) {
         res.status(400).json({ error: err.message });
       }
@@ -129,8 +114,8 @@ class AuthController {
             accessToken, 
             user: {
               user_id: user.user_id,
-              name: user.name,
               email: user.email,
+              role: user.role
             }});
           
         
@@ -184,6 +169,28 @@ class AuthController {
         res.status(500).json({ error: "Invalid request for fetching profile"});
       }
     }
+
+    async changePassword(req, res) {
+      try {
+        const userId = req.user.user_id; 
+        const { oldPassword, newPassword } = req.body;
+    
+        if (!oldPassword || !newPassword) {
+          return res.status(400).json({ error: "Old password and new password are required" });
+        }
+    
+        if (newPassword.length < 6) {
+          return res.status(400).json({ error: "New password must be at least 6 characters" });
+        }
+    
+        const updatedUser = await this.userService.changePassword(userId, oldPassword, newPassword);
+    
+        res.status(200).json({ success: true, message: "Password changed successfully", user: updatedUser });
+      } catch (err) {
+        res.status(400).json({ error: err.message });
+      }
+    }
+    
     
       
 }

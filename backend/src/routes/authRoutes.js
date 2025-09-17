@@ -9,7 +9,9 @@ function createAuthRouter(authController) {
   router.post("/logout", authController.logout);
   router.post("/refresh", authController.refresh);
   router.get("/profile", verifyAccessToken, authController.getProfile);
-  // router.get("/verify-email", authController.verifyEmail);
+
+  // New route
+  router.post("/change-password", verifyAccessToken, authController.changePassword);
 
   return router;
 }

@@ -1,16 +1,58 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './Home.css';
 
 import { FiArrowRight, FiCheck, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaReact, FaNodeJs, FaAws, FaDatabase, FaPython, FaLaptopCode,  FaRocket, FaSmile, FaUsers, FaGlobe } from 'react-icons/fa';
+import { FaCode, FaMobileAlt, FaCloud, FaRobot, 
+  FaReact, FaNodeJs, FaAws, FaDatabase, FaPython, 
+  FaLaptopCode,  FaRocket, FaSmile, FaUsers, FaGlobe, FaServer, 
+  FaEdit, FaToggleOn, FaLock, FaToggleOff, FaPlus, FaBullhorn, FaBrain, FaTrash, FaPaintBrush, FaShoppingCart, FaCheckCircle  } from 'react-icons/fa';
+
 import CountUp from 'react-countup';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
 import { useSpring, animated } from '@react-spring/web';
+import ServiceApi from "../../apis/serviceApi";
+const serviceApi = new ServiceApi();
 
 const Home = () => {
+  const [services, setServices] = useState([]);
+  const fetchedOnce = useRef(false);
+
+  const iconMap = {
+    FaCode: <FaCode size={36} />,
+    FaMobileAlt: <FaMobileAlt size={36} />,
+    FaCloud: <FaCloud size={36} />,
+    FaRobot: <FaRobot size={36} />,
+    FaServer: <FaServer size={36} />,
+    FaGlobe: <FaGlobe size={36} />,
+    FaPaintBrush: <FaPaintBrush size={36} />,
+    FaShoppingCart: <FaShoppingCart size={36} />,
+    FaCheckCircle: <FaCheckCircle size={36} />,
+    FaBullhorn: <FaBullhorn size={36} />,
+    FaBrain: <FaBrain size={36} />,
+    FaLock: <FaLock size={36} />,
+    FaLaptopCode: <FaLaptopCode size={36} />
+  };
+
+  const fetchServices = async () => {
+    try {
+      const result = await serviceApi.getServices();
+      const AllServices = result.services;
+      setServices(AllServices);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (!fetchedOnce.current) {
+      fetchServices();
+      // fetchedOnce.current = true;
+    }
+  }, []); 
+
   useEffect(() => {
     document.title = "M3 TECHOPS | Innovative Digital Solutions";
     
@@ -31,43 +73,43 @@ const Home = () => {
     };
   }, []);
 
-  const services = [
-    {
-      id: 'web-development',
-      icon: <FaCode size={36} />,
-      title: "Web Development",
-      description: "Custom websites and web applications that drive engagement and conversions.",
-      features: ["Responsive Design", "SEO Optimized", "Fast Performance"]
-    },
-    {
-      id: 'mobile-development',
-      icon: <FaMobileAlt size={36} />,
-      title: "Mobile App Development",
-      description: "Native and cross-platform mobile solutions for iOS and Android.",
-      features: ["User-Centric Design", "Cross-Platform", "Secure"]
-    },
-    {
-      id: 'cloud-solutions',
-      icon: <FaCloud size={36} />,
-      title: "Cloud Solutions",
-      description: "Scalable cloud infrastructure and services for your business.",
-      features: ["AWS/Azure/GCP", "Cost Optimized", "High Availability"]
-    },
-    {
-      id: 'custom-software',
-      icon: <FaLaptopCode size={36} />,
-      title: "Custom Software",
-      description: "Tailored software solutions designed for your specific business needs.",
-      features: ["Bespoke Development", "Process Automation", "System Integration"]
-    },
-    {
-      id: 'ai-automation',
-      icon: <FaRobot size={36} />,
-      title: "AI & Automation",
-      description: "Intelligent automation solutions to streamline your operations.",
-      features: ["Machine Learning", "Process Automation", "Data Analysis"]
-    },
-  ];
+  // const services = [
+  //   {
+  //     id: 'web-development',
+  //     icon: <FaCode size={36} />,
+  //     title: "Web Development",
+  //     description: "Custom websites and web applications that drive engagement and conversions.",
+  //     features: ["Responsive Design", "SEO Optimized", "Fast Performance"]
+  //   },
+  //   {
+  //     id: 'mobile-development',
+  //     icon: <FaMobileAlt size={36} />,
+  //     title: "Mobile App Development",
+  //     description: "Native and cross-platform mobile solutions for iOS and Android.",
+  //     features: ["User-Centric Design", "Cross-Platform", "Secure"]
+  //   },
+  //   {
+  //     id: 'cloud-solutions',
+  //     icon: <FaCloud size={36} />,
+  //     title: "Cloud Solutions",
+  //     description: "Scalable cloud infrastructure and services for your business.",
+  //     features: ["AWS/Azure/GCP", "Cost Optimized", "High Availability"]
+  //   },
+  //   {
+  //     id: 'custom-software',
+  //     icon: <FaLaptopCode size={36} />,
+  //     title: "Custom Software",
+  //     description: "Tailored software solutions designed for your specific business needs.",
+  //     features: ["Bespoke Development", "Process Automation", "System Integration"]
+  //   },
+  //   {
+  //     id: 'ai-automation',
+  //     icon: <FaRobot size={36} />,
+  //     title: "AI & Automation",
+  //     description: "Intelligent automation solutions to streamline your operations.",
+  //     features: ["Machine Learning", "Process Automation", "Data Analysis"]
+  //   },
+  // ];
 
   const projects = [
     {
@@ -524,12 +566,12 @@ useEffect(() => {
                     transition: { type: "spring", stiffness: 300 }
                   }}
                 >
-                  {service.icon}
+                  {iconMap[service.icon]}
                 </motion.div>
                 <h3 className="home-service-title">{service.title}</h3>
-                <p className="home-service-description">{service.description}</p>
+                <p className="home-service-description">{service.short_desc}</p>
                 <ul className="home-service-features">
-                  {service.features.map((feature, featureIndex) => (
+                  {service.key_benefits.map((feature, featureIndex) => (
                     <motion.li
                       key={featureIndex}
                       className="home-service-feature"
@@ -541,7 +583,7 @@ useEffect(() => {
                     </motion.li>
                   ))}
                 </ul>
-                <Link to={`/services/${service.id}`} className="home-service-link">
+                <Link to={`/services/${service.service_id}`} className="home-service-link">
                   Learn More 
                 </Link>
               </motion.div>

@@ -207,7 +207,6 @@ const ManageNewsletter = () => {
         );
       } else {
         // Create subscriber
-        // const res = await axios.post("http://localhost:5000/api/subscribers", formData);
         
         const res = await newsLetterApi.subscribe(formData.email);
 

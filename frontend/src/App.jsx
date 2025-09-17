@@ -7,7 +7,7 @@ import "./App.css";
 import Home from "./pages/Home/Home";
 import Services from "./pages/Services/Services";
 import ServiceDetails from "./pages/ServiceDetails/ServiceDetails";
-import Projects from "./pages/Projects/Projects";
+import Projects from "./pages/Portfolios/Portfolios";
 import ProjectDetails from "./pages/ProjectDetails/ProjectDetails";
 import Blog from "./pages/Blog/Blog";
 import BlogDetails from "./pages/BlogDetails/BlogDetails";
@@ -116,7 +116,7 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/services/:service_id" element={<ServiceDetails />} />
           <Route path="/projects" element={<Projects />} />
-          <Route path="/projects/:portfolio_id" element={<ProjectDetails />} />
+          <Route path="/projects/:portfolio_item_id" element={<ProjectDetails />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:blog_id" element={<BlogDetails />} />
           <Route path="/about-us" element={<AboutUs />} />

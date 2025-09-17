@@ -10,6 +10,7 @@ const createServiceRouter = require("./src/routes/serviceRoutes");
 const createPolicyRouter = require("./src/routes/policyRoutes");
 const createPortfolioRouter = require("./src/routes/portfolioRoutes");
 const createBlogRouter = require("./src/routes/blogRoutes");
+const createEmployeeRouter = require("./src/routes/employeeRoutes");
 
 const AuthController = require("./src/controllers/authController");
 const InquiryController = require("./src/controllers/inquiryController");
@@ -19,6 +20,7 @@ const ServiceController = require("./src/controllers/serviceController");
 const PolicyController = require("./src/controllers/policyController");
 const PortfolioController = require("./src/controllers/portfolioController");
 const BlogController = require("./src/controllers/blogController");
+const EmployeeController = require("./src/controllers/employeeController");
 
 const UserService = require("./src/services/userService");
 const InquiryService = require("./src/services/inquiryService");
@@ -28,6 +30,7 @@ const ServiceService = require("./src/services/serviceService");
 const PolicyService = require("./src/services/policyService");
 const PortfolioService = require("./src/services/portfolioService");
 const BlogService = require("./src/services/blogService");
+const EmployeeService = require("./src/services/employeeService");
 
 
 const db = require("./src/config/supabaseClient");
@@ -61,6 +64,7 @@ const serviceService = new ServiceService(db);
 const policyService = new PolicyService(db);
 const portfolioService = new PortfolioService(db);
 const blogService = new BlogService(db);
+const employeeService = new EmployeeService(db, userService, roleService);
 
 const authController = new AuthController(userService);
 const inquiryController = new InquiryController(inquiryService);
@@ -70,6 +74,7 @@ const serviceController = new ServiceController(serviceService);
 const policyController = new PolicyController(policyService);
 const portfolioController = new PortfolioController(portfolioService);
 const blogController = new BlogController(blogService);
+const employeeController = new EmployeeController(employeeService);
 
 const authRouter = createAuthRouter(authController);
 const inquiryRouter = createInquiryRouter(inquiryController);
@@ -79,6 +84,7 @@ const serviceRouter = createServiceRouter(serviceController);
 const policyRouter = createPolicyRouter(policyController);
 const portfolioRouter = createPortfolioRouter(portfolioController);
 const blogRouter = createBlogRouter(blogController);
+const employeeRouter = createEmployeeRouter(employeeController);
 
 
 
@@ -91,5 +97,6 @@ app.use("/service", serviceRouter);
 app.use("/policy", policyRouter);
 app.use("/portfolio", portfolioRouter);
 app.use("/blog", blogRouter);
+app.use("/employee", employeeRouter);
 
 module.exports = app;

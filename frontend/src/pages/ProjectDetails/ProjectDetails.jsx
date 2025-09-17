@@ -83,7 +83,7 @@ const ProjectDetails = () => {
               <div className="tech-stack">
                 <h3>Tech Stack</h3>
                 <div className="tech-tags">
-                  {project.techStack.map((tech, index) => (
+                  {project.tech_stack.map((tech, index) => (
                     <span key={index} className="tech-tag">{tech}</span>
                   ))}
                 </div>
@@ -109,8 +109,8 @@ const ProjectDetails = () => {
               <Link 
                 to="/contact" 
                 className="cta-button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whilehover={{ scale: 1.05 }}
+                whiletap={{ scale: 0.95 }}
               >
                 Start Your Project <FiExternalLink />
               </Link>

@@ -9,7 +9,7 @@ import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaServer, FaCheck } from 'react-
 import { FiArrowLeft, FiX, FiMail, FiPhone, FiUser, FiBriefcase, FiGlobe, FiMessageSquare } from 'react-icons/fi';
 
 const ServiceDetails = () => {
-  const { id } = useParams();
+  const { service_id } = useParams();
   const [service, setService] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -140,14 +140,14 @@ const ServiceDetails = () => {
   ];
 
   useEffect(() => {
-    if (services[id]) {
-      setService(services[id]);
+    if (services[service_id]) {
+      setService(services[service_id]);
       setFormData(prev => ({
         ...prev,
-        service: services[id].title
+        service: services[service_id].title
       }));
     }
-  }, [id]);
+  }, [service_id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

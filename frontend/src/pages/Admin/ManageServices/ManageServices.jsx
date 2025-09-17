@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { 
   FaCode, FaMobileAlt, FaCloud, FaRobot, FaServer, 
-  FaEdit, FaToggleOn, FaToggleOff, FaPlus, FaTrash 
+  FaEdit, FaToggleOn, FaToggleOff, FaPlus, FaTrash,FaGlobe, 
+  FaPaintBrush,FaShoppingCart,FaCheckCircle, FaBullhorn, 
+  FaBrain, FaLock, FaLaptopCode
 } from 'react-icons/fa';
 import Modal from 'react-modal';
 import './ManageServices.css';
@@ -11,11 +13,19 @@ const serviceApi = new ServiceApi();
 
 // Map icon strings to React Icons
 const iconMap = {
-  FaCode: <FaCode size={24} />,
-  FaMobileAlt: <FaMobileAlt size={24} />,
-  FaCloud: <FaCloud size={24} />,
-  FaRobot: <FaRobot size={24} />,
-  FaServer: <FaServer size={24} />
+  FaCode: <FaCode size={36} />,
+  FaMobileAlt: <FaMobileAlt size={36} />,
+  FaCloud: <FaCloud size={36} />,
+  FaRobot: <FaRobot size={36} />,
+  FaServer: <FaServer size={36} />,
+  FaGlobe: <FaGlobe size={36} />,
+  FaPaintBrush: <FaPaintBrush size={36} />,
+  FaShoppingCart: <FaShoppingCart size={36} />,
+  FaCheckCircle: <FaCheckCircle size={36} />,
+  FaBullhorn: <FaBullhorn size={36} />,
+  FaBrain: <FaBrain size={36} />,
+  FaLock: <FaLock size={36} />,
+  FaLaptopCode: <FaLaptopCode size={36} />
 };
 
 // List of available icons for selection

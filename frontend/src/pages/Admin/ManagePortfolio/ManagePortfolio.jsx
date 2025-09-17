@@ -29,45 +29,6 @@ const ManagePortfolio = () => {
     // Fetch portfolio items from API
     const fetchPortfolioItems = async () => {
       try {
-        // Simulated data - replace with actual API call
-        // const mockPortfolioItems = [
-        //   {
-        //     portfolio_item_id: '1',
-        //     title: "E-commerce Platform",
-        //     category: "Web Development",
-        //     description: "A high-performance online store with custom checkout flow",
-        //     image: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-        //     problem: "Client needed a scalable e-commerce solution to replace their outdated platform that couldn't handle increased traffic.",
-        //     solution: "Built a custom React frontend with Node.js backend and MongoDB database, integrating Stripe for secure payments.",
-        //     tech_stack: ["React", "Node.js", "Express", "MongoDB", "Stripe API", "Redux"],
-        //     results: "Increased conversion rate by 35%, reduced page load time by 60%, and handled 2x more traffic during peak seasons.",
-        //     active: true
-        //   },
-        //   {
-        //     portfolio_item_id: '2',
-        //     title: "Health & Fitness App",
-        //     category: "Mobile Development",
-        //     description: "Personalized workout and nutrition tracking application",
-        //     image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-        //     problem: "Fitness startup needed a cross-platform app to help users track workouts and nutrition with personalized recommendations.",
-        //     solution: "Developed a React Native app with Firebase backend, integrating with health APIs for comprehensive tracking.",
-        //     tech_stack: ["React Native", "Firebase", "Google Fit API", "Apple HealthKit", "Redux"],
-        //     results: "100,000+ downloads in first 3 months, 4.8/5 app store rating, and 75% user retention after 30 days.",
-        //     active: true
-        //   },
-        //   {
-        //     portfolio_item_id: '3',
-        //     title: "Enterprise Dashboard",
-        //     category: "Cloud Solutions",
-        //     description: "Real-time analytics dashboard for business intelligence",
-        //     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-        //     problem: "Large corporation needed a unified dashboard to visualize data from multiple sources in real-time.",
-        //     solution: "Created a cloud-based solution with AWS services and React frontend with advanced data visualization.",
-        //     tech_stack: ["AWS Lambda", "React", "D3.js", "Python", "Amazon QuickSight", "GraphQL"],
-        //     results: "Reduced decision-making time by 40%, consolportfolio_item_idated 5 separate tools into one platform, saving $250k/year.",
-        //     active: false
-        //   }
-        // ];
 
         const result = await portfolioApi.getPortfolios();
         setPortfolioItems(result.portfolios);
