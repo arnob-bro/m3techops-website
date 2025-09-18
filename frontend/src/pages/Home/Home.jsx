@@ -535,7 +535,7 @@ useEffect(() => {
               <span className="accent">Our Expertise</span>
             </motion.h2>
             <motion.p
-              className="section-subtitle"
+              className="section-subtitle-h"
               initial="hidden"
               whileInView="visible"
               variants={fadeInUp}
@@ -606,7 +606,7 @@ useEffect(() => {
               <span className="accent">Featured Projects</span>
             </motion.h2>
             <motion.p
-              className="section-subtitle"
+              className="section-subtitle-h"
               initial="hidden"
               whileInView="visible"
               variants={fadeInUp}
@@ -679,7 +679,7 @@ useEffect(() => {
               <span className="accent">What Our Clients Say</span>
             </motion.h2>
             <motion.p
-              className="section-subtitle"
+              className="section-subtitle-h"
               initial="hidden"
               whileInView="visible"
               variants={fadeInUp}
@@ -761,7 +761,7 @@ useEffect(() => {
       <span className="accent">Our Impact</span>
     </motion.h2>
     <motion.p
-      className="section-subtitle"
+      className="section-subtitle-h"
       initial="hidden"
       whileInView="visible"
       variants={fadeInUp}
