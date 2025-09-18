@@ -20,7 +20,7 @@ const PaySlipGenerator = () => {
     earnings: 0,
     deductions: 0,
     netPay: 0,
-    paymentMode: 'Bank',
+    paymentMode: 'Bank Transfer',
     accountHolder: '',
     bankName: '',
     bankBranch: '',
@@ -252,7 +252,7 @@ const PaySlipGenerator = () => {
                 value={formData.paymentMode}
                 onChange={handleChange}
               >
-                <option value="Bank">Bank Transfer</option>
+                <option value="Bank Transfer">Bank Transfer</option>
                 <option value="Cash">Cash</option>
                 <option value="Bkash">Bkash</option>
               </select>
@@ -267,7 +267,7 @@ const PaySlipGenerator = () => {
                 />
               </div>
             
-            {formData.paymentMode === 'Bank' && (
+            {formData.paymentMode === 'Bank Transfer' && (
               <>
                 <h3>Bank Details</h3>
                 <div className="form-group">
@@ -465,7 +465,7 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
       <div className="payment-mode">
         <span className="mode-label">Payment Mode:</span>
         <div className="mode-options">
-          {['Bank', 'Cash', 'Bkash'].map(mode => (
+          {['Bank Transfer', 'Cash', 'Bkash'].map(mode => (
             <div key={mode} className="mode-option">
               <div className={`mode-checkbox ${data.paymentMode === mode ? 'checked' : ''}`}>
                 {data.paymentMode === mode && '✓'}
@@ -476,7 +476,7 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
         </div>
       </div>
       
-      {data.paymentMode === 'Bank' && (
+      {data.paymentMode === 'Bank Transfer' && (
         <div className="bank-details">
           <h4>Bank Details</h4>
           <div className="bank-grid">

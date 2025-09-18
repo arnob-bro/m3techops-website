@@ -11,6 +11,7 @@ export default class ServiceApi {
     short_desc,
     key_benefits,
     our_process,
+    technologies,
     active,
     icon}
     ) {
@@ -21,6 +22,7 @@ export default class ServiceApi {
             short_desc,
             key_benefits,
             our_process,
+            technologies,
             active,
             icon
         });
@@ -40,6 +42,16 @@ export default class ServiceApi {
     }
   }
 
+  async getServiceById(service_id) {
+    try {
+      const response = await this.serviceApi.get(`${this.baseURL}/${service_id}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: "Failed to fetch service" };
+    }
+  }
+
 
   
   async updateService(service_id,
@@ -47,6 +59,7 @@ export default class ServiceApi {
     short_desc,
     key_benefits,
     our_process,
+    technologies,
     active,
     icon) {
     try {
@@ -56,6 +69,7 @@ export default class ServiceApi {
             short_desc,
             key_benefits,
             our_process,
+            technologies,
             active,
             icon 
         });

@@ -62,6 +62,7 @@ CREATE TABLE services (
     short_desc TEXT NOT NULL,
     key_benefits JSONB NOT NULL, -- store array of strings
     our_process JSONB NOT NULL,  -- store array of strings
+    technologies JSONB NOT NULL DEFAULT '[]',
     active BOOLEAN DEFAULT TRUE,
     icon VARCHAR(100),           -- optional, can store "FaCode" etc.
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -154,9 +155,10 @@ CREATE TABLE blogs (
 CREATE TABLE testimonials (
     testimonial_id BIGSERIAL PRIMARY KEY,
     client_name VARCHAR(100) NOT NULL,
+    company_name VARCHAR(100) NOT NULL,
     designation VARCHAR(100),
     feedback TEXT NOT NULL,
-    rating INT CHECK (rating >= 1 AND rating <= 5),
+    -- rating INT CHECK (rating >= 1 AND rating <= 5),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -172,17 +174,46 @@ CREATE TABLE bookings (
 );
 
 -- 13. Pay Slips
-CREATE TABLE pay_slips (
+-- Salary Payments Table
+CREATE TABLE payslips (
     payslip_id BIGSERIAL PRIMARY KEY,
-    user_id VARCHAR(20) NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-    salary_month DATE NOT NULL, -- e.g., 2025-08-01
-    basic_salary NUMERIC(10,2) NOT NULL,
-    allowances NUMERIC(10,2) DEFAULT 0.00,
-    deductions NUMERIC(10,2) DEFAULT 0.00,
-    net_salary NUMERIC(10,2) GENERATED ALWAYS AS (basic_salary + allowances - deductions) STORED,
-    status VARCHAR(20) CHECK (status IN ('Generated','Paid','Cancelled')) DEFAULT 'Generated',
-    issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    -- Company info
+    company_name VARCHAR(255) NOT NULL DEFAULT 'm³ techOps Ltd.',
+    company_address TEXT NOT NULL,
+
+    -- Reference & period
+    reference VARCHAR(255),
+    payment_month VARCHAR(20), -- e.g. "September 2025"
+
+    -- Employee info
+    employee_name VARCHAR(255) NOT NULL,
+    designation VARCHAR(255),
+    employee_id VARCHAR(50),
+
+    pay_date DATE NOT NULL,
+    earnings NUMERIC(12,2) DEFAULT 0,
+    deductions NUMERIC(12,2) DEFAULT 0,
+    net_pay NUMERIC(12,2) DEFAULT 0,
+
+    payment_mode VARCHAR(50) DEFAULT 'Bank Transfer', -- e.g., Bank / Bkash / Cash
+    account_holder VARCHAR(255),
+    bank_name VARCHAR(255),
+    bank_branch VARCHAR(255),
+    account_number VARCHAR(100),
+    bkash_transaction VARCHAR(100),
+
+    authorized_by VARCHAR(255) DEFAULT 'Sumaiya Ahmed',
+    payee VARCHAR(255),
+
+    logo TEXT,      -- store as URL or Base64
+    logo_url TEXT,
+    note TEXT,
+    status VARCHAR(50) DEFAULT 'Pending', -- e.g.  Paid / Pending
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 -- 14. Subscribers
 CREATE TABLE subscribers (

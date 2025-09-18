@@ -5,6 +5,7 @@ function createServiceRouter(serviceController) {
 
   router.post("/", serviceController.createService);
   router.get("/", serviceController.getServices);
+  router.get("/:service_id", serviceController.getServiceById);
   router.put("/:service_id", serviceController.updateService);
 
 

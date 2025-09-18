@@ -29,7 +29,7 @@ const iconMap = {
 };
 
 // List of available icons for selection
-const availableIcons = ['FaCode', 'FaMobileAlt', 'FaCloud', 'FaRobot', 'FaServer'];
+const availableIcons = Object.keys(iconMap);
 
 const ManageServices = () => {
   const [services, setServices] = useState([]);
@@ -40,6 +40,7 @@ const ManageServices = () => {
     short_desc: '',
     key_benefits: [{ id: crypto.randomUUID(), value: '' }],
     our_process: [{ id: crypto.randomUUID(), value: '' }],
+    technologies: [{ id: crypto.randomUUID(), value: '' }],
     active: true,
     icon: 'FaCode'
   });
@@ -54,7 +55,8 @@ const ManageServices = () => {
         const allServices = result.services.map(s => ({
           ...s,
           key_benefits: s.key_benefits.map(k => ({ id: crypto.randomUUID(), value: k })),
-          our_process: s.our_process.map(p => ({ id: crypto.randomUUID(), value: p }))
+          our_process: s.our_process.map(p => ({ id: crypto.randomUUID(), value: p })),
+          technologies: s.technologies.map(t => ({ id: crypto.randomUUID(), value: t }))
         }));
         setServices(allServices);
       } catch (error) {
@@ -116,6 +118,7 @@ const ManageServices = () => {
         service.short_desc,
         service.key_benefits.map(k => k.value),
         service.our_process.map(p => p.value),
+        service.technologies.map(t => t.values),
         service.active,
         service.icon
       );
@@ -135,6 +138,7 @@ const ManageServices = () => {
       short_desc: service.short_desc,
       key_benefits: service.key_benefits.length > 0 ? service.key_benefits : [{ id: crypto.randomUUID(), value: '' }],
       our_process: service.our_process.length > 0 ? service.our_process : [{ id: crypto.randomUUID(), value: '' }],
+      technologies: service.technologies.length > 0 ? service.technologies : [{ id: crypto.randomUUID(), value: '' }],
       active: service.active,
       icon: service.icon || 'FaCode'
     });
@@ -149,6 +153,7 @@ const ManageServices = () => {
       short_desc: '',
       key_benefits: [{ id: crypto.randomUUID(), value: '' }],
       our_process: [{ id: crypto.randomUUID(), value: '' }],
+      technologies: [{ id: crypto.randomUUID(), value: '' }],
       active: true,
       icon: 'FaCode'
     });
@@ -162,7 +167,8 @@ const ManageServices = () => {
     const cleanedData = {
       ...formData,
       key_benefits: formData.key_benefits.map(k => k.value).filter(v => v.trim() !== ''),
-      our_process: formData.our_process.map(p => p.value).filter(v => v.trim() !== '')
+      our_process: formData.our_process.map(p => p.value).filter(v => v.trim() !== ''),
+      technologies: formData.technologies.map(t => t.value).filter(v => v.trim() !== '')
     };
   
     try {
@@ -173,6 +179,7 @@ const ManageServices = () => {
           cleanedData.short_desc,
           cleanedData.key_benefits,
           cleanedData.our_process,
+          cleanedData.technologies,
           cleanedData.active,
           cleanedData.icon
         );
@@ -318,6 +325,27 @@ const ManageServices = () => {
                   )}
                   {formData.our_process.length > 1 && (
                     <button type="button" onClick={() => removeArrayItem(item.id, 'our_process')}><FaTrash /></button>
+                  )}
+                </div>
+              ))}
+            </div>
+              {/* Technologies */}
+            <div className="form-group">
+              <label>Technologies</label>
+              {formData.technologies.map((item, index) => (
+                <div key={item.id} className="array-input-row">
+                  <input
+                    type="text"
+                    value={item.value}
+                    onChange={e => handleArrayInputChange(item.id, 'technologies', e.target.value)}
+                    placeholder={`Step ${index + 1}`}
+                    required
+                  />
+                  {index === formData.technologies.length - 1 && (
+                    <button type="button" onClick={() => addArrayItem('technologies')}><FaPlus /></button>
+                  )}
+                  {formData.technologies.length > 1 && (
+                    <button type="button" onClick={() => removeArrayItem(item.id, 'technologies')}><FaTrash /></button>
                   )}
                 </div>
               ))}

@@ -3,6 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import './Navbar.css';
 import logo from '../../assets/images/m3logo.png';
+import ServiceApi from '../../apis/serviceApi';
+
+const serviceApi = new ServiceApi();
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -12,6 +15,27 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const location = useLocation();
+  const [serviceItems, setServiceItems] = useState([]);
+
+  // const serviceItems = [
+  //   { name: 'Web Development', id: 'web-development' },
+  //   { name: 'Mobile App Development', id: 'mobile-development' },
+  //   { name: 'Cloud Solutions', id: 'cloud-solutions' },
+  //   { name: 'AI & Automation', id: 'ai-automation' },
+  //   { name: 'Custom Software', id: 'custom-software' }
+  // ];
+
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: null, dropdown: true },
+    { name: 'Portfolio', path: '/projects' },
+    { name: 'Blogs', path: '/blog' },
+    { name: 'About Us', path: '/about-us' },
+    { name: 'Contact', path: '/contact' }
+  ];
+
+
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +45,8 @@ const Navbar = () => {
       setScrolled(isScrolled);
       setAtTop(isAtTop);
     };
+
+    
 
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -41,6 +67,26 @@ const Navbar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    
+
+    const fetchServices = async () => {
+      try {
+        const result = await serviceApi.getServices();
+        const allServices = result.services.map(s => ({
+          ...s,
+          key_benefits: s.key_benefits.map(k => ({ id: crypto.randomUUID(), value: k })),
+          our_process: s.our_process.map(p => ({ id: crypto.randomUUID(), value: p }))
+        }));
+        setServiceItems(allServices);
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -70,22 +116,7 @@ const Navbar = () => {
     return location.pathname.startsWith(path);
   };
 
-  const serviceItems = [
-    { name: 'Web Development', id: 'web-development' },
-    { name: 'Mobile App Development', id: 'mobile-development' },
-    { name: 'Cloud Solutions', id: 'cloud-solutions' },
-    { name: 'AI & Automation', id: 'ai-automation' },
-    { name: 'Custom Software', id: 'custom-software' }
-  ];
-
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Services', path: null, dropdown: true },
-    { name: 'Portfolio', path: '/projects' },
-    { name: 'Blogs', path: '/blog' },
-    { name: 'About Us', path: '/about-us' },
-    { name: 'Contact', path: '/contact' }
-  ];
+  
 
   return (
     <motion.nav 
@@ -161,11 +192,11 @@ const Navbar = () => {
                           {serviceItems.map((service, i) => (
                             <Link
                               key={i}
-                              to={`/services/${service.id}`}
-                              className={`sidebar-dropdown-item ${isActiveLink(`/services/${service.id}`) ? 'active' : ''}`}
+                              to={`/services/${service.service_id}`}
+                              className={`sidebar-dropdown-item ${isActiveLink(`/services/${service.service_id}`) ? 'active' : ''}`}
                               onClick={closeAllMenus}
                             >
-                              {service.name}
+                              {service.title}
                             </Link>
                           ))}
                         </motion.div>
@@ -238,11 +269,11 @@ const Navbar = () => {
                         {serviceItems.map((service, i) => (
                           <Link
                             key={i}
-                            to={`/services/${service.id}`}
-                            className={`dropdown-item ${isActiveLink(`/services/${service.id}`) ? 'active' : ''}`}
+                            to={`/services/${service.service_id}`}
+                            className={`dropdown-item ${isActiveLink(`/services/${service.service_id}`) ? 'active' : ''}`}
                             onClick={closeAllMenus}
                           >
-                            {service.name}
+                            {service.title}
                           </Link>
                         ))}
                       </motion.div>
