@@ -209,7 +209,7 @@ CREATE TABLE payslips (
     logo TEXT,      -- store as URL or Base64
     logo_url TEXT,
     note TEXT,
-    status VARCHAR(50) DEFAULT 'Pending', -- e.g.  Paid / Pending
+    status VARCHAR(20) DEFAULT 'Pending', -- e.g.  Paid / Pending / Failed
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

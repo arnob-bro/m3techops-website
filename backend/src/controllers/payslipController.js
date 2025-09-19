@@ -1,43 +1,43 @@
 class PayslipController {
-    constructor(payslipService) {
-      this.payslipService = payslipService;
+  constructor(payslipService) {
+    this.payslipService = payslipService;
   
-      // Bind methods so 'this' works in routes
-      this.createPayslip = this.createPayslip.bind(this);
-      this.getPayslips = this.getPayslips.bind(this);
-      this.getPayslipById = this.getPayslipById.bind(this);
-      this.updatePayslipStatus = this.updatePayslipStatus.bind(this);
-    }
+    // Bind methods so 'this' works in routes
+    this.createPayslip = this.createPayslip.bind(this);
+    this.getPayslips = this.getPayslips.bind(this);
+    this.getPayslipById = this.getPayslipById.bind(this);
+    this.updatePayslipStatus = this.updatePayslipStatus.bind(this);
+  }
   
-    async createPayslip (req, res) {
-        try {
-            const {
-                company_name,
-                company_address,
-                reference,
-                payment_month,
-                employee_name,
-                designation,
-                employee_id,
-                pay_date,
-                earnings,
-                deductions,
-                net_pay,
-                payment_mode,
-                account_holder,
-                bank_name,
-                bank_branch,
-                account_number,
-                bkash_transaction,
-                authorized_by,
-                payee,
-                logo,
-                logo_url,
-                note,
-                status
-              } = req.body;
+  async createPayslip (req, res) {
+      try {
+          const {
+              company_name,
+              company_address,
+              reference,
+              payment_month,
+              employee_name,
+              designation,
+              employee_id,
+              pay_date,
+              earnings,
+              deductions,
+              net_pay,
+              payment_mode,
+              account_holder,
+              bank_name,
+              bank_branch,
+              account_number,
+              bkash_transaction,
+              authorized_by,
+              payee,
+              logo,
+              logo_url,
+              note,
+              status
+          } = req.body;
 
-          const payslip = await payslipService.createPayslip({
+          const payslip = await this.payslipService.createPayslip({
                 company_name,
                 company_address,
                 reference,
@@ -67,20 +67,17 @@ class PayslipController {
           console.error(err);
           res.status(500).json({ error: "Failed to create payslip" });
         }
-      }
+  }
 
-    async getPayslips(req, res) {
+  async getPayslips(req, res) {
       try {
-        const { page, limit, employee_name, designation, employee_id, reference, status } = req.query;
+        const { page, limit, searchTerm, status } = req.query;
         
     
-        const payslips = await this.inquiryService.getInquiries(
+        const payslips = await this.payslipService.getPayslips(
           page,
           limit,
-          employee_name, 
-          designation, 
-          employee_id, 
-          reference,
+          searchTerm,
           status
         );
     
@@ -89,30 +86,33 @@ class PayslipController {
         console.error("Error fetching payslips:", err);
         res.status(400).json({ error: err.message });
       }
-    }
+  }
     
 
-    async replyToInquiry (req, res) {
-      try {
-        const { inquiry_id } = req.params;
-        const { replyMessage } = req.body;
-  
-        const reply = await this.inquiryService.replyToInquiry(inquiry_id, replyMessage);
-  
-        if(reply){
-          await this.inquiryService.updateInquiryStatus(inquiry_id, "Replied");
+  async getPayslipById (req, res) {
+        try {
+          const payslip = await this.payslipService.getPayslipById(req.params.id);
+          if (!payslip) return res.status(404).json({ error: "Payslip not found" });
+          res.json(payslip);
+        } catch (err) {
+          res.status(500).json({ error: "Failed to fetch payslip" });
         }
-        if (!reply) {
-          return res.status(404).json({ error: "Inquiry not found" });
-        }
-  
-        res.json(reply);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    }
-  
   }
+
+  async updatePayslipStatus (req, res) {
+        try {
+            const { payslip_id } = req.params;
+            const { status } = req.body;
+
+          const updated = await this.payslipService.updatePayslipStatus(payslip_id, status);
+          if (!updated) return res.status(404).json({ error: "Payslip not found" });
+          res.json(updated);
+        } catch (err) {
+          res.status(500).json({ error: "Failed to update payslip" });
+        }
+  }
+
+}
   
-  module.exports = InquiryController;
+  module.exports = PayslipController;
   

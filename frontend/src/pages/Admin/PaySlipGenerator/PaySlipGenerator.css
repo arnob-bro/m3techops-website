@@ -76,7 +76,8 @@
     color: #333;
 }
 
-.payslip-generator .form-card h2 {
+.payslip-generator .form-card h2, h3 {
+    font-size: 1.4rem;
     color: var(--primary-color);
     margin-bottom: 1.2rem;
     padding-bottom: 0.5rem;
