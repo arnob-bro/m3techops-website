@@ -1,119 +1,48 @@
-import { useState, useEffect } from 'react';
-import { FiDownload, FiEye, FiSearch, FiFilter, FiX } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiDownload, FiEye, FiSearch, FiX } from 'react-icons/fi';
+import {
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import './ManagePaySlip.css';
+import PayslipApi from '../../../apis/payslipApi';
+const payslipApi = new PayslipApi();
 
 const ManagePaySlip = () => {
   const [paySlips, setPaySlips] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [selectedPaySlip, setSelectedPaySlip] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     // Fetch pay slips from API
     const fetchPaySlips = async () => {
       try {
-        // Simulated data - replace with actual API call
-        const mockPaySlips = [
-          {
-            id: 'PS001',
-            employeeId: 'EMP001',
-            employeeName: 'John Doe',
-            reference: 'REF202401',
-            payDate: '2024-01-15',
-            paymentMonth: 'January 2024',
-            status: 'paid',
-            amount: 85000,
-            earnings: 90000,
-            deductions: 5000,
-            paymentMode: 'Bank Transfer',
-            bankName: 'City Bank',
-            accountNumber: 'XXXX-XXXX-1234',
-            authorizedBy: 'Sumaiya Ahmed'
-          },
-          {
-            id: 'PS002',
-            employeeId: 'EMP002',
-            employeeName: 'Sarah Johnson',
-            reference: 'REF202401',
-            payDate: '2024-01-15',
-            paymentMonth: 'January 2024',
-            status: 'paid',
-            amount: 95000,
-            earnings: 100000,
-            deductions: 5000,
-            paymentMode: 'Bkash',
-            bkashNumber: 'XXXX-XXXX-5678',
-            authorizedBy: 'Sumaiya Ahmed'
-          },
-          {
-            id: 'PS003',
-            employeeId: 'EMP003',
-            employeeName: 'Michael Chen',
-            reference: 'REF202401',
-            payDate: '2024-01-15',
-            paymentMonth: 'January 2024',
-            status: 'pending',
-            amount: 75000,
-            earnings: 80000,
-            deductions: 5000,
-            paymentMode: 'Cash',
-            authorizedBy: 'Sumaiya Ahmed'
-          },
-          {
-            id: 'PS004',
-            employeeId: 'EMP004',
-            employeeName: 'Emma Williams',
-            reference: 'REF202312',
-            payDate: '2023-12-15',
-            paymentMonth: 'December 2023',
-            status: 'paid',
-            amount: 65000,
-            earnings: 70000,
-            deductions: 5000,
-            paymentMode: 'Bank Transfer',
-            bankName: 'Eastern Bank',
-            accountNumber: 'XXXX-XXXX-9012',
-            authorizedBy: 'Sumaiya Ahmed'
-          },
-          {
-            id: 'PS005',
-            employeeId: 'EMP005',
-            employeeName: 'David Kim',
-            reference: 'REF202312',
-            payDate: '2023-12-15',
-            paymentMonth: 'December 2023',
-            status: 'failed',
-            amount: 90000,
-            earnings: 95000,
-            deductions: 5000,
-            paymentMode: 'Bank Transfer',
-            bankName: 'DBBL',
-            accountNumber: 'XXXX-XXXX-3456',
-            authorizedBy: 'Sumaiya Ahmed'
-          }
-        ];
-        setPaySlips(mockPaySlips);
+        const result = await payslipApi.getPayslips({
+          page: page,
+          limit: 10, 
+          searchTerm: searchTerm ,
+          status: statusFilter
+        });
+        if(result.success){
+          const payslips = result.payslips;
+          setPaySlips(payslips);
+          setTotalPages(result.pagination.totalPages);
+        }
+        
       } catch (error) {
         console.error('Error fetching pay slips:', error);
       }
     };
 
     fetchPaySlips();
-  }, []);
+  }, [page, searchTerm, statusFilter]);
 
-  const filteredPaySlips = paySlips.filter(paySlip => {
-    const matchesSearch = 
-      paySlip.employeeId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      paySlip.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      paySlip.reference.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = statusFilter === 'all' || paySlip.status === statusFilter;
-    const matchesDate = !dateFilter || paySlip.payDate === dateFilter;
-    
-    return matchesSearch && matchesStatus && matchesDate;
-  });
+  
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -129,22 +58,18 @@ const ManagePaySlip = () => {
 
   const getStatusBadge = (status) => {
     const statusClasses = {
-      paid: 'MPS-status-paid',
-      pending: 'MPS-status-pending',
-      failed: 'MPS-status-failed'
+      Paid: 'MPS-status-paid',
+      Pending: 'MPS-status-pending',
+      Failed: 'MPS-status-failed'
     };
-    
+
     const statusLabels = {
-      paid: 'Paid',
-      pending: 'Pending',
-      failed: 'Failed'
+      Paid: 'Paid',
+      Pending: 'Pending',
+      Failed: 'Failed'
     };
-    
-    return (
-      <span className={`MPS-status-badge ${statusClasses[status]}`}>
-        {statusLabels[status]}
-      </span>
-    );
+
+    return <span className={`MPS-status-badge ${statusClasses[status]}`}>{statusLabels[status]}</span>;
   };
 
   const handleView = (paySlip) => {
@@ -153,28 +78,34 @@ const ManagePaySlip = () => {
   };
 
   const handleDownload = (paySlip) => {
-    // Create a PDF download
     const pdfContent = `
       PAY SLIP - ${paySlip.paymentMonth}
       ==================================
+      Company: ${paySlip.companyName}
+      Address: ${paySlip.companyAddress}
+      ----------------------------------
       Employee: ${paySlip.employeeName} (${paySlip.employeeId})
+      Designation: ${paySlip.designation || 'N/A'}
       Reference: ${paySlip.reference}
       Pay Date: ${formatDate(paySlip.payDate)}
       ----------------------------------
       Earnings: ${formatCurrency(paySlip.earnings)}
       Deductions: ${formatCurrency(paySlip.deductions)}
-      Net Pay: ${formatCurrency(paySlip.amount)}
+      Net Pay: ${formatCurrency(paySlip.netPay)}
       ----------------------------------
       Payment Mode: ${paySlip.paymentMode}
+      ${paySlip.accountHolder ? `Account Holder: ${paySlip.accountHolder}` : ''}
       ${paySlip.bankName ? `Bank: ${paySlip.bankName}` : ''}
+      ${paySlip.bankBranch ? `Branch: ${paySlip.bankBranch}` : ''}
       ${paySlip.accountNumber ? `Account: ${paySlip.accountNumber}` : ''}
-      ${paySlip.bkashNumber ? `Bkash: ${paySlip.bkashNumber}` : ''}
+      ${paySlip.bkashTransaction ? `Bkash Transaction: ${paySlip.bkashTransaction}` : ''}
       ----------------------------------
       Authorized By: ${paySlip.authorizedBy}
+      Payee: ${paySlip.payee}
       
-      m³ techOps Ltd.
+      Notes: ${paySlip.note || 'N/A'}
     `;
-    
+
     const blob = new Blob([pdfContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -206,14 +137,11 @@ const ManagePaySlip = () => {
             <FiSearch className="MPS-search-icon" />
           </div>
           <div className="MPS-payslip-filters">
-            <select 
-              value={statusFilter} 
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="all">All Status</option>
-              <option value="paid">Paid</option>
-              <option value="pending">Pending</option>
-              <option value="failed">Failed</option>
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <option value="">All Status</option>
+              <option value="Paid">Paid</option>
+              <option value="Pending">Pending</option>
+              <option value="Failed">Failed</option>
             </select>
             <input
               type="date"
@@ -230,151 +158,233 @@ const ManagePaySlip = () => {
           <thead>
             <tr>
               <th>Employee ID</th>
-              <th>Employee Name</th>
+              <th>Name</th>
+              <th>Designation</th>
               <th>Reference</th>
               <th>Payment Month</th>
               <th>Pay Date</th>
-              <th>Amount</th>
+              <th>Net Pay</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredPaySlips.length > 0 ? (
-              filteredPaySlips.map(paySlip => (
-                <tr key={paySlip.id}>
+            {paySlips.length > 0 ? (
+              paySlips.map((paySlip) => (
+                <tr key={paySlip.payslip_id}>
+                  <td>{paySlip.employee_id}</td>
+                  <td>{paySlip.employee_name}</td>
+                  <td>{paySlip.designation || 'N/A'}</td>
+                  <td>{paySlip.reference}</td>
+                  <td>{paySlip.payment_month}</td>
+                  <td>{formatDate(paySlip.pay_date)}</td>
+                  <td>{formatCurrency(paySlip.net_pay)}</td>
+                  <td>{getStatusBadge(paySlip.status)}</td>
                   <td>
-                    <span className="MPS-employee-id">{paySlip.employeeId}</span>
-                  </td>
-                  <td>
-                    <span className="MPS-employee-name">{paySlip.employeeName}</span>
-                  </td>
-                  <td>
-                    <span className="MPS-reference-code">{paySlip.reference}</span>
-                  </td>
-                  <td>
-                    <span className="MPS-payment-month">{paySlip.paymentMonth}</span>
-                  </td>
-                  <td>{formatDate(paySlip.payDate)}</td>
-                  <td>
-                    <span className="MPS-amount">{formatCurrency(paySlip.amount)}</span>
-                  </td>
-                  <td>
-                    {getStatusBadge(paySlip.status)}
-                  </td>
-                  <td>
-                    <div className="MPS-action-icons">
-                      <FiEye 
-                        className="MPS-view-icon" 
-                        onClick={() => handleView(paySlip)}
-                        title="View Pay Slip"
-                      />
-                      <FiDownload 
-                        className="MPS-download-icon" 
-                        onClick={() => handleDownload(paySlip)}
-                        title="Download PDF"
-                      />
-                    </div>
+                    <FiEye className="MPS-view-icon" onClick={() => handleView(paySlip)} title="View" />
+                    <FiDownload
+                      className="MPS-download-icon"
+                      onClick={() => handleDownload(paySlip)}
+                      title="Download"
+                    />
                   </td>
                 </tr>
               ))
             ) : (
               <tr className="MPS-no-results">
-                <td colSpan="8">
-                  No pay slips found matching your criteria
-                </td>
+                <td colSpan="9">No pay slips found matching your criteria</td>
               </tr>
             )}
           </tbody>
         </table>
+        
       </div>
+      {totalPages > 1 && (
+                <div className="pagination">
+                {/* Previous */}
+                <button
+                  onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                  disabled={page === 1}
+                  className="pagination-btn"
+                >
+                  <FiChevronLeft /> Previous
+                </button>
+              
+                {/* Page numbers with ellipsis */}
+                {(() => {
+                  const pages = [];
+                  const delta = 1; // show ±1 around current
+              
+                  for (let i = 1; i <= totalPages; i++) {
+                    if (
+                      i === 1 || 
+                      i === totalPages || 
+                      (i >= page - delta && i <= page + delta)
+                    ) {
+                      pages.push(i);
+                    } else if (pages[pages.length - 1] !== '...') {
+                      pages.push('...');
+                    }
+                  }
+              
+                  return pages.map((page, idx) =>
+                    page === '...' ? (
+                      <span key={idx} className="pagination-ellipsis">…</span>
+                    ) : (
+                      <button
+                        key={idx}
+                        onClick={() => setPage(page)}
+                        className={page === page ? 'active' : ''}
+                      >
+                        {page}
+                      </button>
+                    )
+                  );
+                })()}
+              
+                {/* Next */}
+                <button
+                  onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={page === totalPages}
+                  className="pagination-btn"
+                >
+                  Next <FiChevronRight />
+                </button>
+              </div>
+          
+          
+          )}
 
-      {/* View Modal */}
-      {isModalOpen && selectedPaySlip && (
-        <div className="MPS-modal-overlay" onClick={closeModal}>
-          <div className="MPS-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="MPS-modal-header">
-              <h3>Pay Slip Details</h3>
-              <button className="MPS-modal-close" onClick={closeModal}>
-                <FiX />
-              </button>
-            </div>
-            <div className="MPS-modal-body">
-              <div className="MPS-payslip-details">
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Employee ID:</span>
-                  <span className="MPS-detail-value">{selectedPaySlip.employeeId}</span>
-                </div>
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Employee Name:</span>
-                  <span className="MPS-detail-value">{selectedPaySlip.employeeName}</span>
-                </div>
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Reference:</span>
-                  <span className="MPS-detail-value">{selectedPaySlip.reference}</span>
-                </div>
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Payment Month:</span>
-                  <span className="MPS-detail-value">{selectedPaySlip.paymentMonth}</span>
-                </div>
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Pay Date:</span>
-                  <span className="MPS-detail-value">{formatDate(selectedPaySlip.payDate)}</span>
-                </div>
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Earnings:</span>
-                  <span className="MPS-detail-value">{formatCurrency(selectedPaySlip.earnings)}</span>
-                </div>
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Deductions:</span>
-                  <span className="MPS-detail-value">{formatCurrency(selectedPaySlip.deductions)}</span>
-                </div>
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Net Pay:</span>
-                  <span className="MPS-detail-value MPS-highlight">{formatCurrency(selectedPaySlip.amount)}</span>
-                </div>
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Payment Mode:</span>
-                  <span className="MPS-detail-value">{selectedPaySlip.paymentMode}</span>
-                </div>
-                {selectedPaySlip.bankName && (
-                  <div className="MPS-detail-row">
-                    <span className="MPS-detail-label">Bank Name:</span>
-                    <span className="MPS-detail-value">{selectedPaySlip.bankName}</span>
+          {isModalOpen && selectedPaySlip && (
+            <div className="MPS-modal-overlay" onClick={closeModal}>
+              <div className="MPS-modal-content payslip-generator" onClick={(e) => e.stopPropagation()}>
+                <div className="payslip-container">
+                  
+                  {/* Header */}
+                  <div className="payslip-header">
+                    <div className="company-logo">
+                      <img
+                        src={selectedPaySlip.logo_url}
+                        alt="Company Logo"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.parentNode.innerHTML =
+                            '<div class="logo-placeholder">LOGO</div>';
+                        }}
+                      />
+                    </div>
+                    <div className="company-info-container">
+                      <div className="company-info">
+                        <h1>{selectedPaySlip.company_name}</h1>
+                        <p className="company-address">{selectedPaySlip.company_address}</p>
+                      </div>
+                    </div>
                   </div>
-                )}
-                {selectedPaySlip.accountNumber && (
-                  <div className="MPS-detail-row">
-                    <span className="MPS-detail-label">Account Number:</span>
-                    <span className="MPS-detail-value">{selectedPaySlip.accountNumber}</span>
+
+                  {/* Title */}
+                  <div className="payslip-title">
+                    <h2>PAY SLIP – {selectedPaySlip.payment_month}</h2>
                   </div>
-                )}
-                {selectedPaySlip.bkashNumber && (
-                  <div className="MPS-detail-row">
-                    <span className="MPS-detail-label">Bkash Number:</span>
-                    <span className="MPS-detail-value">{selectedPaySlip.bkashNumber}</span>
+
+                  {/* Employee Info */}
+                  <div className="employee-info">
+                    <div className="info-item">
+                      <span className="info-label">Employee Name:</span>
+                      <span className="info-value">{selectedPaySlip.employee_name}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Employee ID:</span>
+                      <span className="info-value">{selectedPaySlip.employee_id}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Designation:</span>
+                      <span className="info-value">{selectedPaySlip.designation || 'N/A'}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Pay Date:</span>
+                      <span className="info-value">{formatDate(selectedPaySlip.pay_date)}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Reference:</span>
+                      <span className="info-value">{selectedPaySlip.reference}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Status:</span>
+                      <span className="info-value">{getStatusBadge(selectedPaySlip.status)}</span>
+                    </div>
                   </div>
-                )}
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Authorized By:</span>
-                  <span className="MPS-detail-value">{selectedPaySlip.authorizedBy}</span>
-                </div>
-                <div className="MPS-detail-row">
-                  <span className="MPS-detail-label">Status:</span>
-                  <span className="MPS-detail-value">{getStatusBadge(selectedPaySlip.status)}</span>
+
+                  {/* Salary Breakdown */}
+                  <div className="payment-info">
+                    <div className="payment-item">
+                      <span className="payment-label">Earnings:</span>
+                      <span className="payment-value">৳ {selectedPaySlip.earnings}</span>
+                    </div>
+                    <div className="payment-item">
+                      <span className="payment-label">Deductions:</span>
+                      <span className="payment-value">৳ {selectedPaySlip.deductions}</span>
+                    </div>
+                    <div className="payment-item net-pay">
+                      <span className="payment-label">Net Pay:</span>
+                      <span className="payment-value">৳ {selectedPaySlip.net_pay}</span>
+                    </div>
+                  </div>
+
+                  {/* Payment Mode */}
+                  <div className="payment-mode">
+                    <span className="mode-label">Payment Mode:</span>
+                    <span>{selectedPaySlip.payment_mode}</span>
+                  </div>
+                  {selectedPaySlip.payment_mode === 'Bank Transfer' && (
+                    <div className="bank-details">
+                      <h4>Bank Details</h4>
+                      <div className="bank-grid">
+                        <span>Account Holder:</span> <span>{selectedPaySlip.account_holder}</span>
+                        <span>Bank:</span> <span>{selectedPaySlip.bank_name}, {selectedPaySlip.bank_branch}</span>
+                        <span>Account No.:</span> <span>{selectedPaySlip.account_number}</span>
+                      </div>
+                    </div>
+                  )}
+                  {selectedPaySlip.payment_mode === 'Bkash' && (
+                    <div className="bkash-details">
+                      <h4>Bkash Details</h4>
+                      <div className="bkash-info">
+                        <span>Transaction:</span> <span>{selectedPaySlip.bkash_transaction}</span>
+                        <span>Reference:</span> <span>{selectedPaySlip.reference}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Notes */}
+                  {selectedPaySlip.note && (
+                    <div className="footer-notes">
+                      <strong>Notes:</strong>
+                      <p>{selectedPaySlip.note}</p>
+                    </div>
+                  )}
+
+                  {/* Signatures */}
+                  <div className="signature-section">
+                    <div className="signature authorized">
+                      <div className="signature-line"></div>
+                      <p>Authorized By</p>
+                      <p>{selectedPaySlip.authorized_by}</p>
+                    </div>
+                    <div className="signature">
+                      <div className="signature-line"></div>
+                      <p>Employee / Payee</p>
+                      <p>{selectedPaySlip.payee || selectedPaySlip.employee_name}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="MPS-modal-footer">
-              <button className="MPS-download-btn" onClick={() => handleDownload(selectedPaySlip)}>
-                <FiDownload /> Download Pay Slip
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          )}
+
     </div>
   );
 };
+
+
 
 export default ManagePaySlip;

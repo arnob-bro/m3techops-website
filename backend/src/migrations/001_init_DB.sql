@@ -25,14 +25,35 @@ CREATE TABLE role_permissions (
 -- 4. Users (custom ID as VARCHAR)
 CREATE TABLE users (
     user_id VARCHAR(20) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    phone VARCHAR(20),
-    role_id BIGINT NOT NULL REFERENCES roles(id),
+    role VARCHAR(20) NOT NULL DEFAULT 'customer', ---(customer,employee)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE employees (
+    employee_id VARCHAR(50) PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL REFERENCES users(email) ON UPDATE CASCADE,
+    phone VARCHAR(50) NOT NULL,
+    position VARCHAR(100) NOT NULL,
+    role_id BIGINT NOT NULL REFERENCES roles(id),
+    hire_date DATE NOT NULL,
+    address TEXT,
+    city VARCHAR(100),
+    country VARCHAR(100),
+    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (
+        status IN ('active', 'on_leave', 'terminated', 'probation')
+    ),
+    avatar TEXT,
+    emergency_contact JSONB,  -- { "name": "...", "relationship": "...", "phone": "..." }
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 -- 5. Services
 CREATE TABLE services (
@@ -41,6 +62,7 @@ CREATE TABLE services (
     short_desc TEXT NOT NULL,
     key_benefits JSONB NOT NULL, -- store array of strings
     our_process JSONB NOT NULL,  -- store array of strings
+    technologies JSONB NOT NULL DEFAULT '[]',
     active BOOLEAN DEFAULT TRUE,
     icon VARCHAR(100),           -- optional, can store "FaCode" etc.
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -76,6 +98,24 @@ CREATE TABLE project_categories (
     PRIMARY KEY (project_id, category_id)
 );
 
+
+
+CREATE TABLE portfolio_items (
+    portfolio_item_id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    image TEXT,
+    problem TEXT NOT NULL,
+    solution TEXT NOT NULL,
+    results TEXT NOT NULL,
+    tech_stack JSONB NOT NULL,
+    active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -- 9. Inquiries
 CREATE TABLE inquiries (
     inquiry_id BIGSERIAL PRIMARY KEY,
@@ -94,21 +134,31 @@ CREATE TABLE inquiries (
 
 -- 10. Blogs
 CREATE TABLE blogs (
-    blog_id BIGSERIAL PRIMARY KEY,
-    title VARCHAR(150) NOT NULL,
-    slug VARCHAR(200) UNIQUE,
-    content TEXT NOT NULL,
-    author_id VARCHAR(20) REFERENCES users(user_id) ON DELETE SET NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    blog_id SERIAL PRIMARY KEY,               
+    title VARCHAR(255) NOT NULL,         
+    category VARCHAR(100) NOT NULL,      
+    excerpt TEXT NOT NULL,               
+    content TEXT NOT NULL,               
+    image TEXT,                          
+    date DATE DEFAULT CURRENT_DATE, 
+    read_time VARCHAR(50) DEFAULT '5 min read', 
+    author_name VARCHAR(100) NOT NULL,   
+    author_avatar TEXT,                  
+    author_role VARCHAR(100),            
+    active BOOLEAN DEFAULT TRUE,         
+    created_at TIMESTAMP DEFAULT NOW(),  
+    updated_at TIMESTAMP DEFAULT NOW()   
 );
+
 
 -- 11. Testimonials
 CREATE TABLE testimonials (
     testimonial_id BIGSERIAL PRIMARY KEY,
     client_name VARCHAR(100) NOT NULL,
+    company_name VARCHAR(100) NOT NULL,
     designation VARCHAR(100),
     feedback TEXT NOT NULL,
-    rating INT CHECK (rating >= 1 AND rating <= 5),
+    -- rating INT CHECK (rating >= 1 AND rating <= 5),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -124,17 +174,46 @@ CREATE TABLE bookings (
 );
 
 -- 13. Pay Slips
-CREATE TABLE pay_slips (
+-- Salary Payments Table
+CREATE TABLE payslips (
     payslip_id BIGSERIAL PRIMARY KEY,
-    user_id VARCHAR(20) NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-    salary_month DATE NOT NULL, -- e.g., 2025-08-01
-    basic_salary NUMERIC(10,2) NOT NULL,
-    allowances NUMERIC(10,2) DEFAULT 0.00,
-    deductions NUMERIC(10,2) DEFAULT 0.00,
-    net_salary NUMERIC(10,2) GENERATED ALWAYS AS (basic_salary + allowances - deductions) STORED,
-    status VARCHAR(20) CHECK (status IN ('Generated','Paid','Cancelled')) DEFAULT 'Generated',
-    issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    -- Company info
+    company_name VARCHAR(255) NOT NULL DEFAULT 'm³ techOps Ltd.',
+    company_address TEXT NOT NULL,
+
+    -- Reference & period
+    reference VARCHAR(255),
+    payment_month VARCHAR(20), -- e.g. "September 2025"
+
+    -- Employee info
+    employee_name VARCHAR(255) NOT NULL,
+    designation VARCHAR(255),
+    employee_id VARCHAR(50),
+
+    pay_date DATE NOT NULL,
+    earnings NUMERIC(12,2) DEFAULT 0,
+    deductions NUMERIC(12,2) DEFAULT 0,
+    net_pay NUMERIC(12,2) DEFAULT 0,
+
+    payment_mode VARCHAR(50) DEFAULT 'Bank Transfer', -- e.g., Bank / Bkash / Cash
+    account_holder VARCHAR(255),
+    bank_name VARCHAR(255),
+    bank_branch VARCHAR(255),
+    account_number VARCHAR(100),
+    bkash_transaction VARCHAR(100),
+
+    authorized_by VARCHAR(255) DEFAULT 'Sumaiya Ahmed',
+    payee VARCHAR(255),
+
+    logo TEXT,      -- store as URL or Base64
+    logo_url TEXT,
+    note TEXT,
+    status VARCHAR(20) DEFAULT 'Pending', -- e.g.  Paid / Pending / Failed
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 -- 14. Subscribers
 CREATE TABLE subscribers (

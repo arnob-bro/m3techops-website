@@ -3,36 +3,40 @@ import React, { useRef, useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './PaySlipGenerator.css';
+import PayslipApi from "../../../apis/payslipApi";
+const payslipApi = new PayslipApi();
 
 // Import the default logo
 import defaultLogo from '../../../assets/images/m3logo.png';
 
 const PaySlipGenerator = () => {
   const [formData, setFormData] = useState({
-    companyName: 'm³ techOps Ltd.',
-    companyAddress: '77/1, Siddeshwari Road\nAnarkali Super Market\n4th floor shop No.26/A\nDhaka 1217',
+    company_name: 'm³ techOps Ltd.',
+    company_address: '77/1, Siddeshwari Road\nAnarkali Super Market\n4th floor shop No.26/A\nDhaka 1217',
     reference: '',
-    paymentMonth: '',             
-    employeeName: '',
+    payment_month: '',             
+    employee_name: '',
     designation: '',
-    employeeId: '',
-    payDate: '',
+    employee_id: '',
+    pay_date: '',
     earnings: 0,
     deductions: 0,
-    netPay: 0,
-    paymentMode: 'Bank',
-    accountHolder: '',
-    bankName: '',
-    bankBranch: '',
-    accountNumber: '',
-    bkashTransaction: '',
-    authorizedBy: 'Sumaiya Ahmed',
+    net_pay: 0,
+    payment_mode: 'Bank Transfer',
+    account_holder: '',
+    bank_name: '',
+    bank_branch: '',
+    account_number: '',
+    bkash_transaction: '',
+    authorized_by: 'Sumaiya Ahmed',
     payee: '',
     logo: null,
-    logoUrl: defaultLogo, // Set default logo here
+    logo_url: defaultLogo, // Set default logo here
     note: "** In case of bkash payments, the payee agrees to pay any required charges for bkash service.\n*** This document is for internal documentation only."
   });
 
+  const [error, setError] = useState("");   // 🔹 Error state
+  const [loading, setLoading] = useState(false); // 🔹 Loading state
   const paySlipRef = useRef();
   
   // Add reset logo functionality
@@ -40,34 +44,48 @@ const PaySlipGenerator = () => {
     setFormData(prev => ({
       ...prev,
       logo: null,
-      logoUrl: defaultLogo
+      logo_url: defaultLogo
     }));
   };
 
-  const generatePDF = () => {
-    const input = paySlipRef.current;
-    
-    html2canvas(input, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      backgroundColor: '#FFFFFF'
-    }).then(canvas => {
+  const generatePDF = async () => {
+    setError(""); // clear previous errors
+    setLoading(true);
+    try {
+      const input = paySlipRef.current;
+      console.log(formData);
+
+      // API call
+      await payslipApi.createPayslip(formData);
+
+      // Generate PDF only if API succeeds
+      const canvas = await html2canvas(input, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#FFFFFF'
+      });
+
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4'
       });
-      
+
       const imgWidth = 210;
       const imgHeight = canvas.height * imgWidth / canvas.width;
-      
+
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      
-      const fileName = `Pay_Slip_${formData.employeeName.replace(/\s+/g, '_')}_${formData.payDate}.pdf`;
+
+      const fileName = `Pay_Slip_${formData.employee_name.replace(/\s+/g, '_')}_${formData.pay_date}.pdf`;
       pdf.save(fileName);
-    });
+    } catch (err) {
+      console.error("Error generating payslip:", err);
+      setError(err.response?.data?.error || "Something went wrong while creating the payslip.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -77,12 +95,12 @@ const PaySlipGenerator = () => {
       // First update the changed field
       const updatedData = { ...prev, [name]: value };
       
-      // Then calculate netPay if earnings or deductions changed
+      // Then calculate net_pay if earnings or deductions changed
       if (name === 'earnings' || name === 'deductions') {
         const earnings = parseFloat(updatedData.earnings) || 0;
         const deductions = parseFloat(updatedData.deductions) || 0;
         if (!isNaN(earnings) && !isNaN(deductions)) {
-          updatedData.netPay = (earnings - deductions).toFixed(2);
+          updatedData.net_pay = (earnings - deductions).toFixed(2);
         }
       }
       
@@ -98,7 +116,7 @@ const PaySlipGenerator = () => {
         setFormData(prev => ({
           ...prev,
           logo: file,
-          logoUrl: reader.result
+          logo_url: reader.result
         }));
       };
       reader.readAsDataURL(file);
@@ -112,6 +130,9 @@ const PaySlipGenerator = () => {
         <h1>M^3TECHOPS Pay Slip Generator</h1>
         <p>Create pay slips in PDF format</p>
       </header>
+      {error && <div className="error-message">{error}</div>} {/* 🔹 Error display */}
+      {loading && <div className="loading-message">Processing...</div>} {/* 🔹 Loading */}
+
       
       <div className="content-container">
         <div className="form-section">
@@ -140,8 +161,8 @@ const PaySlipGenerator = () => {
               <label>Company Name</label>
               <input
                 type="text"
-                name="companyName"
-                value={formData.companyName}
+                name="company_name"
+                value={formData.company_name}
                 onChange={handleChange}
               />
             </div>
@@ -149,8 +170,8 @@ const PaySlipGenerator = () => {
             <div className="form-group">
               <label>Company Address</label>
               <textarea
-                name="companyAddress"
-                value={formData.companyAddress}
+                name="company_address"
+                value={formData.company_address}
                 onChange={handleChange}
                 rows="3"
               />
@@ -172,8 +193,8 @@ const PaySlipGenerator = () => {
               <label>Employee Name</label>
               <input
                 type="text"
-                name="employeeName"
-                value={formData.employeeName}
+                name="employee_name"
+                value={formData.employee_name}
                 onChange={handleChange}
               />
             </div>
@@ -192,8 +213,8 @@ const PaySlipGenerator = () => {
               <label>Employee ID</label>
               <input
                 type="text"
-                name="employeeId"
-                value={formData.employeeId}
+                name="employee_id"
+                value={formData.employee_id}
                 onChange={handleChange}
               />
             </div>
@@ -202,8 +223,8 @@ const PaySlipGenerator = () => {
               <label>Pay Date (DD-MM-YYYY)</label>
               <input
                 type="text"
-                name="payDate"
-                value={formData.payDate}
+                name="pay_date"
+                value={formData.pay_date}
                 onChange={handleChange}
               />
             </div>
@@ -236,8 +257,8 @@ const PaySlipGenerator = () => {
                 <label>Net Pay (৳)</label>
                 <input
                   type="number"
-                  name="netPay"
-                  value={formData.netPay}
+                  name="net_pay"
+                  value={formData.net_pay}
                   onChange={handleChange}
                   readOnly
                   className="read-only"
@@ -248,11 +269,11 @@ const PaySlipGenerator = () => {
             <div className="form-group">
               <label>Payment Mode</label>
               <select
-                name="paymentMode"
-                value={formData.paymentMode}
+                name="payment_mode"
+                value={formData.payment_mode}
                 onChange={handleChange}
               >
-                <option value="Bank">Bank Transfer</option>
+                <option value="Bank Transfer">Bank Transfer</option>
                 <option value="Cash">Cash</option>
                 <option value="Bkash">Bkash</option>
               </select>
@@ -261,21 +282,21 @@ const PaySlipGenerator = () => {
                 <label>Payment Month-Year</label>
                 <input
                   type="Text"
-                  name="paymentMonth"
-                  value={formData.paymentMonth}
+                  name="payment_month"
+                  value={formData.payment_month}
                   onChange={handleChange}
                 />
               </div>
             
-            {formData.paymentMode === 'Bank' && (
+            {formData.payment_mode === 'Bank Transfer' && (
               <>
                 <h3>Bank Details</h3>
                 <div className="form-group">
                   <label>Account Holder</label>
                   <input
                     type="text"
-                    name="accountHolder"
-                    value={formData.accountHolder}
+                    name="account_holder"
+                    value={formData.account_holder}
                     onChange={handleChange}
                   />
                 </div>
@@ -285,8 +306,8 @@ const PaySlipGenerator = () => {
                     <label>Bank Name</label>
                     <input
                       type="text"
-                      name="bankName"
-                      value={formData.bankName}
+                      name="bank_name"
+                      value={formData.bank_name}
                       onChange={handleChange}
                     />
                   </div>
@@ -295,8 +316,8 @@ const PaySlipGenerator = () => {
                     <label>Bank Branch</label>
                     <input
                       type="text"
-                      name="bankBranch"
-                      value={formData.bankBranch}
+                      name="bank_branch"
+                      value={formData.bank_branch}
                       onChange={handleChange}
                     />
                   </div>
@@ -306,21 +327,21 @@ const PaySlipGenerator = () => {
                   <label>Account Number</label>
                   <input
                     type="text"
-                    name="accountNumber"
-                    value={formData.accountNumber}
+                    name="account_number"
+                    value={formData.account_number}
                     onChange={handleChange}
                   />
                 </div>
               </>
             )}
             
-            {formData.paymentMode === 'Bkash' && (
+            {formData.payment_mode === 'Bkash' && (
               <div className="form-group">
                 <label>Bkash Transaction No.</label>
                 <input
                   type="text"
-                  name="bkashTransaction"
-                  value={formData.bkashTransaction}
+                  name="bkash_transaction"
+                  value={formData.bkash_transaction}
                   onChange={handleChange}
                   placeholder="TRXID___________"
                 />
@@ -334,8 +355,8 @@ const PaySlipGenerator = () => {
                 <label>Authorized By</label>
                 <input
                   type="text"
-                  name="authorizedBy"
-                  value={formData.authorizedBy}
+                  name="authorized_by"
+                  value={formData.authorized_by}
                   onChange={handleChange}
                 />
               </div>
@@ -405,7 +426,7 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
       <div className="left-header">
         <div className="company-logo">
           <img 
-            src={data.logoUrl} 
+            src={data.logo_url} 
             alt="Company Logo" 
             onError={(e) => {
               e.target.onerror = null;
@@ -420,18 +441,18 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
       </div>
 
       <div className="company-info">
-        <h1>{data.companyName}</h1>
-        <div className="company-address">{data.companyAddress}</div>
+        <h1>{data.company_name}</h1>
+        <div className="company-address">{data.company_address}</div>
       </div>
     </div>
       <div className="payslip-title">
-        <h2>Pay Slip - {data.paymentMonth}</h2>
+        <h2>Pay Slip - {data.payment_month}</h2>
       </div>
       
       <div className="employee-info">
         <div className="info-item">
           <span className="info-label">Name:</span>
-          <span className="info-value">{data.employeeName}</span>
+          <span className="info-value">{data.employee_name}</span>
         </div>
         <div className="info-item">
           <span className="info-label">A. Designation:</span>
@@ -439,11 +460,11 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
         </div>
         <div className="info-item">
           <span className="info-label">B. ID:</span>
-          <span className="info-value">{data.employeeId}</span>
+          <span className="info-value">{data.employee_id}</span>
         </div>
         <div className="info-item">
           <span className="info-label">C. Pay Date:</span>
-          <span className="info-value">{data.payDate}</span>
+          <span className="info-value">{data.pay_date}</span>
         </div>
       </div>
       
@@ -458,17 +479,17 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
         </div>
         <div className="payment-item net-pay">
           <span className="payment-label">B. Net Pay:</span>
-          <span className="payment-value">৳ {formatCurrency(data.netPay)}</span>
+          <span className="payment-value">৳ {formatCurrency(data.net_pay)}</span>
         </div>
       </div>
       
       <div className="payment-mode">
         <span className="mode-label">Payment Mode:</span>
         <div className="mode-options">
-          {['Bank', 'Cash', 'Bkash'].map(mode => (
+          {['Bank Transfer', 'Cash', 'Bkash'].map(mode => (
             <div key={mode} className="mode-option">
-              <div className={`mode-checkbox ${data.paymentMode === mode ? 'checked' : ''}`}>
-                {data.paymentMode === mode && '✓'}
+              <div className={`mode-checkbox ${data.payment_mode === mode ? 'checked' : ''}`}>
+                {data.payment_mode === mode && '✓'}
               </div>
               <span>{mode}</span>
             </div>
@@ -476,30 +497,30 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
         </div>
       </div>
       
-      {data.paymentMode === 'Bank' && (
+      {data.payment_mode === 'Bank Transfer' && (
         <div className="bank-details">
           <h4>Bank Details</h4>
           <div className="bank-grid">
             <div>Account Holder:</div>
-            <div>{data.accountHolder}</div>
+            <div>{data.account_holder}</div>
             <div>Bank Name:</div>
-            <div>{data.bankName}</div>
+            <div>{data.bank_name}</div>
             <div>Bank Branch:</div>
-            <div>{data.bankBranch}</div>
+            <div>{data.bank_branch}</div>
             <div>Account Number:</div>
-            <div>{data.accountNumber}</div>
+            <div>{data.account_number}</div>
             <div>Reference No.:</div>
             <div>{data.reference}</div>
           </div>
         </div>
       )}
       
-      {data.paymentMode === 'Bkash' && (
+      {data.payment_mode === 'Bkash' && (
         <div className="bkash-details">
           <h4>Bkash Details</h4>
           <div className="bkash-info">
             <span>Bkash Transaction No.:</span>
-            <span>{data.bkashTransaction || 'TRXID___________'}</span>
+            <span>{data.bkash_transaction || 'TRXID___________'}</span>
           </div>
           <div className="bkash-info">
             <span>Reference No.:</span>
@@ -511,7 +532,7 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
       <div className="signature-section">
         <div className="signature authorized">
           <div className="signature-line"></div>
-          <div>Authorized by: {data.authorizedBy}</div>
+          <div>Authorized by: {data.authorized_by}</div>
           <div>Place: Dhaka, Bangladesh</div>
         </div>
         

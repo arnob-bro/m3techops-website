@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react';
 import { FaImage, FaCode, FaEdit, FaToggleOn, FaToggleOff, FaPlus, FaTrash, FaExternalLinkAlt } from 'react-icons/fa';
 import Modal from 'react-modal';
 import './ManagePortfolio.css';
+import PortfolioApi from '../../../apis/portfolioApi';
+const portfolioApi = new PortfolioApi();
 
 const ManagePortfolio = () => {
   const [portfolioItems, setPortfolioItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [formData, setFormData] = useState({
+    portfolio_item_id: 0,
     title: '',
     category: '',
     description: '',
@@ -15,7 +18,7 @@ const ManagePortfolio = () => {
     problem: '',
     solution: '',
     results: '',
-    techStack: [''],
+    tech_stack: [''],
     active: true
   });
 
@@ -26,46 +29,9 @@ const ManagePortfolio = () => {
     // Fetch portfolio items from API
     const fetchPortfolioItems = async () => {
       try {
-        // Simulated data - replace with actual API call
-        const mockPortfolioItems = [
-          {
-            id: '1',
-            title: "E-commerce Platform",
-            category: "Web Development",
-            description: "A high-performance online store with custom checkout flow",
-            image: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-            problem: "Client needed a scalable e-commerce solution to replace their outdated platform that couldn't handle increased traffic.",
-            solution: "Built a custom React frontend with Node.js backend and MongoDB database, integrating Stripe for secure payments.",
-            techStack: ["React", "Node.js", "Express", "MongoDB", "Stripe API", "Redux"],
-            results: "Increased conversion rate by 35%, reduced page load time by 60%, and handled 2x more traffic during peak seasons.",
-            active: true
-          },
-          {
-            id: '2',
-            title: "Health & Fitness App",
-            category: "Mobile Development",
-            description: "Personalized workout and nutrition tracking application",
-            image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-            problem: "Fitness startup needed a cross-platform app to help users track workouts and nutrition with personalized recommendations.",
-            solution: "Developed a React Native app with Firebase backend, integrating with health APIs for comprehensive tracking.",
-            techStack: ["React Native", "Firebase", "Google Fit API", "Apple HealthKit", "Redux"],
-            results: "100,000+ downloads in first 3 months, 4.8/5 app store rating, and 75% user retention after 30 days.",
-            active: true
-          },
-          {
-            id: '3',
-            title: "Enterprise Dashboard",
-            category: "Cloud Solutions",
-            description: "Real-time analytics dashboard for business intelligence",
-            image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-            problem: "Large corporation needed a unified dashboard to visualize data from multiple sources in real-time.",
-            solution: "Created a cloud-based solution with AWS services and React frontend with advanced data visualization.",
-            techStack: ["AWS Lambda", "React", "D3.js", "Python", "Amazon QuickSight", "GraphQL"],
-            results: "Reduced decision-making time by 40%, consolidated 5 separate tools into one platform, saving $250k/year.",
-            active: false
-          }
-        ];
-        setPortfolioItems(mockPortfolioItems);
+
+        const result = await portfolioApi.getPortfolios();
+        setPortfolioItems(result.portfolios);
       } catch (error) {
         console.error('Error fetching portfolio items:', error);
       }
@@ -119,16 +85,29 @@ const ManagePortfolio = () => {
     }
   };
 
-  const handleToggleActive = (id) => {
-    setPortfolioItems(portfolioItems.map(item => 
-      item.id === id ? { ...item, active: !item.active } : item
-    ));
-    // Here you would also update the item status in your backend
+  const handleToggleActive = async (portfolio) => {
+
+    const updatedData = {
+      ...portfolio,
+      active: !portfolio.active
+    };
+
+    const result = await portfolioApi.updatePortfolio(portfolio.portfolio_item_id, updatedData);
+      const updatedPortfolio = result.updatedPortfolio;
+    if(result.success){
+      setPortfolioItems(portfolioItems.map(item => 
+        item.portfolio_item_id === portfolio.portfolio_item_id ? { ...item, active: !item.active } : item
+      ));
+    }else{
+      alert("Something went wrong. Falied to update the status");
+    }
+    
   };
 
   const openEditModal = (item) => {
     setCurrentItem(item);
     setFormData({
+      portfolio_item_id: item.portfolio_item_id,
       title: item.title,
       category: item.category,
       description: item.description,
@@ -136,7 +115,7 @@ const ManagePortfolio = () => {
       problem: item.problem,
       solution: item.solution,
       results: item.results,
-      techStack: item.techStack || [''],
+      tech_stack: item.tech_stack || [''],
       active: item.active
     });
     setIsModalOpen(true);
@@ -152,33 +131,47 @@ const ManagePortfolio = () => {
       problem: '',
       solution: '',
       results: '',
-      techStack: [''],
+      tech_stack: [''],
       active: true
     });
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Filter out empty strings from arrays
     const cleanedFormData = {
       ...formData,
-      techStack: formData.techStack.filter(tech => tech.trim() !== '')
+      tech_stack: formData.tech_stack.filter(tech => tech.trim() !== '')
     };
 
     if (currentItem) {
+
+      const result = await portfolioApi.updatePortfolio(cleanedFormData.portfolio_item_id, cleanedFormData);
+      const updatedPortfolio = result.updatedPortfolio;
       // Update existing item
-      setPortfolioItems(portfolioItems.map(item => 
-        item.id === currentItem.id ? { ...item, ...cleanedFormData } : item
-      ));
+      if(result.success){
+        // setPortfolioItems(portfolioItems.map(item => 
+        //   item.portfolio_item_id === updatedPortfolio.portfolio_item_id ? {...item, ...cleanedFormData } : item
+        // ));
+        alert("Update successful")
+        window.location.reload();
+      }else{
+        alert("Some error occured");
+      }
+      
     } else {
       // Add new item
-      const newItem = {
-        id: Date.now().toString(),
-        ...cleanedFormData
-      };
-      setPortfolioItems([...portfolioItems, newItem]);
+      const result = await portfolioApi.createPortfolio(cleanedFormData);
+      const newPortfolio = result.newPortfolio;
+      if(result.success){
+        setPortfolioItems([...portfolioItems, newPortfolio]);
+      }else{
+        alert("Some error occured");
+      }
+      
+      
     }
     setIsModalOpen(false);
   };
@@ -195,7 +188,7 @@ const ManagePortfolio = () => {
 
       <div className="portfolio-grid">
         {portfolioItems.map(item => (
-          <div key={item.id} className={`portfolio-card ${item.active ? 'portfolio-active' : 'portfolio-inactive'}`}>
+          <div key={item.portfolio_item_id} className={`portfolio-card ${item.active ? 'portfolio-active' : 'portfolio-inactive'}`}>
             <div className="portfolio-image-container">
               <img src={item.image} alt={item.title} className="portfolio-image" />
               <div className="portfolio-category-tag">{item.category}</div>
@@ -204,11 +197,11 @@ const ManagePortfolio = () => {
               <h3>{item.title}</h3>
               <p>{item.description}</p>
               <div className="portfolio-tech-stack">
-                {item.techStack.slice(0, 3).map((tech, index) => (
+                {item.tech_stack.slice(0, 3).map((tech, index) => (
                   <span key={index} className="portfolio-tech-tag">{tech}</span>
                 ))}
-                {item.techStack.length > 3 && (
-                  <span className="portfolio-tech-tag">+{item.techStack.length - 3} more</span>
+                {item.tech_stack.length > 3 && (
+                  <span className="portfolio-tech-tag">+{item.tech_stack.length - 3} more</span>
                 )}
               </div>
             </div>
@@ -221,7 +214,7 @@ const ManagePortfolio = () => {
                 <FaEdit />
               </button>
               <button 
-                onClick={() => handleToggleActive(item.id)} 
+                onClick={() => handleToggleActive(item)} 
                 className={`portfolio-btn-toggle ${item.active ? 'portfolio-active' : ''}`}
                 aria-label={item.active ? 'Deactivate project' : 'Activate project'}
               >
@@ -345,28 +338,28 @@ const ManagePortfolio = () => {
               <div className="portfolio-form-group">
                 <label>Tech Stack</label>
                 <div className="portfolio-array-inputs">
-                  {formData.techStack.map((tech, index) => (
+                  {formData.tech_stack.map((tech, index) => (
                     <div key={index} className="portfolio-array-input-row">
                       <input
                         type="text"
                         value={tech}
-                        onChange={(e) => handleArrayInputChange(index, 'techStack', e.target.value)}
+                        onChange={(e) => handleArrayInputChange(index, 'tech_stack', e.target.value)}
                         placeholder={`Technology ${index + 1}`}
                         required
                       />
                       <div className="portfolio-array-actions">
                         <button
                           type="button"
-                          onClick={() => addArrayItem('techStack')}
+                          onClick={() => addArrayItem('tech_stack')}
                           className="portfolio-btn-array-add"
                           aria-label="Add technology"
                         >
                           <FaPlus />
                         </button>
-                        {formData.techStack.length > 1 && (
+                        {formData.tech_stack.length > 1 && (
                           <button
                             type="button"
-                            onClick={() => removeArrayItem(index, 'techStack')}
+                            onClick={() => removeArrayItem(index, 'tech_stack')}
                             className="portfolio-btn-array-remove"
                             aria-label="Remove technology"
                           >

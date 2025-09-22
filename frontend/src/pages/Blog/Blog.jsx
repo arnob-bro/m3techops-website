@@ -1,91 +1,54 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import {
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import './Blog.css';
+import BlogApi from '../../apis/blogApi';
+const blogApi = new BlogApi();
 
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
+
+
+  const fetchBlogs = async () => {
+    try {
+      
+
+      const res = await blogApi.getBlogs({
+        page: page,
+        limit: limit,
+        title: searchTerm,
+        active: true
+      });
+      const blogs = res.data?.blogs;
+      
+      setBlogs(blogs);
+      setTotalPages(res.data?.pagination.totalPages);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Simulate API fetch
-    const fetchBlogs = async () => {
-      try {
-        // In a real app, you would fetch from your backend API
-        const mockBlogs = [
-          {
-            id: 1,
-            title: "The Future of Web Development in 2023",
-            excerpt: "Exploring the latest trends and technologies shaping web development this year.",
-            category: "Web Development",
-            date: "June 15, 2023",
-            readTime: "5 min read",
-            image: "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 2,
-            title: "Mobile App Security Best Practices",
-            excerpt: "Essential security measures every mobile app developer should implement.",
-            category: "Mobile Development",
-            date: "May 28, 2023",
-            readTime: "7 min read",
-            image: "https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 3,
-            title: "Cloud Computing: Cost Optimization Strategies",
-            excerpt: "How to maximize your cloud investment while minimizing expenses.",
-            category: "Cloud Solutions",
-            date: "April 10, 2023",
-            readTime: "6 min read",
-            image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 4,
-            title: "AI in Business: Practical Applications",
-            excerpt: "Real-world examples of how AI is transforming various industries.",
-            category: "AI & Automation",
-            date: "March 22, 2023",
-            readTime: "8 min read",
-            image: "https://images.unsplash.com/photo-1677442135136-760c813cd6d1?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 5,
-            title: "The Rise of Low-Code Development Platforms",
-            excerpt: "How low-code platforms are democratizing software development.",
-            category: "Custom Software",
-            date: "February 18, 2023",
-            readTime: "4 min read",
-            image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-          },
-          {
-            id: 6,
-            title: "Progressive Web Apps: The Best of Both Worlds",
-            excerpt: "Why PWAs are becoming the preferred choice for many businesses.",
-            category: "Web Development",
-            date: "January 5, 2023",
-            readTime: "5 min read",
-            image: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-          }
-        ];
-        
-        setBlogs(mockBlogs);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching blogs:", error);
-        setLoading(false);
-      }
-    };
-
+    
     fetchBlogs();
-  }, []);
+  }, [searchTerm,page]);
 
-  const filteredBlogs = blogs.filter(blog => 
-    blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    blog.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   return (
     <div className="blog-page">
@@ -113,7 +76,7 @@ const Blog = () => {
           >
             <input 
               type="text" 
-              placeholder="Search articles..." 
+              placeholder="Search articles by title..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -152,10 +115,10 @@ const Blog = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              {filteredBlogs.length > 0 ? (
-                filteredBlogs.map((blog, index) => (
+              {blogs.length > 0 ? (
+                blogs.map((blog, index) => (
                   <motion.article 
-                    key={blog.id}
+                    key={blog.blog_id}
                     className="blog-card"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -163,7 +126,7 @@ const Blog = () => {
                     whileHover={{ y: -5, boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)" }}
                   >
                     <Link 
-                      to={`/blog/${blog.id}`} 
+                      to={`/blog/${blog.blog_id}`} 
                       className="blog-card-link"
                       onClick={() => {
                         // Small delay to ensure navigation happens first
@@ -178,8 +141,8 @@ const Blog = () => {
                       </div>
                       <div className="blog-card-content">
                         <div className="blog-meta">
-                          <span className="blog-date">{blog.date}</span>
-                          <span className="blog-read-time">{blog.readTime}</span>
+                          <span className="blog-date">{formatDate(blog.date)}</span>
+                          <span className="blog-read-time">{blog.read_time}</span>
                         </div>
                         <h3 className="blog-title-header">{blog.title}</h3>
                         <p className="blog-excerpt">{blog.excerpt}</p>
@@ -201,6 +164,61 @@ const Blog = () => {
                 </div>
               )}
             </motion.div>
+          )}
+          {totalPages > 1 && (
+                <div className="pagination">
+                {/* Previous */}
+                <button
+                  onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                  disabled={page === 1}
+                  className="pagination-btn"
+                >
+                  <FiChevronLeft /> Previous
+                </button>
+              
+                {/* Page numbers with ellipsis */}
+                {(() => {
+                  const pages = [];
+                  const delta = 1; // show ±1 around current
+              
+                  for (let i = 1; i <= totalPages; i++) {
+                    if (
+                      i === 1 || 
+                      i === totalPages || 
+                      (i >= page - delta && i <= page + delta)
+                    ) {
+                      pages.push(i);
+                    } else if (pages[pages.length - 1] !== '...') {
+                      pages.push('...');
+                    }
+                  }
+              
+                  return pages.map((page, idx) =>
+                    page === '...' ? (
+                      <span key={idx} className="pagination-ellipsis">…</span>
+                    ) : (
+                      <button
+                        key={idx}
+                        onClick={() => setPage(page)}
+                        className={page === page ? 'active' : ''}
+                      >
+                        {page}
+                      </button>
+                    )
+                  );
+                })()}
+              
+                {/* Next */}
+                <button
+                  onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={page === totalPages}
+                  className="pagination-btn"
+                >
+                  Next <FiChevronRight />
+                </button>
+              </div>
+          
+          
           )}
         </div>
       </section>

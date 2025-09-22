@@ -3,24 +3,44 @@ import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Modal from 'react-modal';
 import './ServiceDetails.css';
+import ServiceApi from '../../apis/serviceApi';
+import ContactApi from '../../apis/contactApi';
+const contactApi = new ContactApi();
+const serviceApi = new ServiceApi();
 
 // Icons
-import { FaCode, FaMobileAlt, FaCloud, FaRobot, FaServer, FaCheck } from 'react-icons/fa';
+import { 
+  FaCode, FaMobileAlt, FaCloud, FaRobot, FaServer, 
+  FaEdit, FaToggleOn, FaToggleOff, FaPlus, FaTrash,FaGlobe, 
+  FaPaintBrush,FaShoppingCart,FaCheckCircle, FaBullhorn, 
+  FaBrain, FaLock, FaLaptopCode, FaCheck
+} from 'react-icons/fa';
 import { FiArrowLeft, FiX, FiMail, FiPhone, FiUser, FiBriefcase, FiGlobe, FiMessageSquare } from 'react-icons/fi';
 
 const ServiceDetails = () => {
-  const { id } = useParams();
-  const [service, setService] = useState(null);
+  const { service_id } = useParams();
+  const [service, setService] = useState({
+    service_id: null,
+    title: "",
+    short_desc: "",
+    key_benefits: [],
+    our_process: [],
+    technologies: [],
+    active: true,
+    icon: "",
+    created_at: "",
+    updated_at: ""
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     company: '',
-    jobTitle: '',
+    job_title: '',
     phone: '',
     country: '',
-    service: '',
+    serviceTitle: '',
     message: ''
   });
 
@@ -66,88 +86,59 @@ const ServiceDetails = () => {
         "App Store Deployment"
       ],
       technologies: ["React Native", "Flutter", "Swift", "Kotlin", "Firebase"]
-    },
-    'cloud-solutions': {
-      id: 'cloud-solutions',
-      icon: <FaCloud size={50} />,
-      title: "Cloud Solutions",
-      description: "Our cloud solutions provide scalable, secure, and cost-effective infrastructure for your business. We help you migrate, optimize, and manage your cloud environment for maximum efficiency.",
-      benefits: [
-        "Scalable infrastructure",
-        "Cost optimization",
-        "High availability",
-        "Disaster recovery",
-        "Automated backups"
-      ],
-      process: [
-        "Cloud Assessment",
-        "Migration Planning",
-        "Implementation",
-        "Optimization",
-        "Ongoing Management"
-      ],
-      technologies: ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes"]
-    },
-    'ai-automation': {
-      id: 'ai-automation',
-      icon: <FaRobot size={50} />,
-      title: "AI & Automation",
-      description: "We implement intelligent automation solutions that streamline your operations, reduce costs, and enhance decision-making through data-driven insights and machine learning.",
-      benefits: [
-        "Process automation",
-        "Predictive analytics",
-        "Chatbots & virtual assistants",
-        "Data mining & analysis",
-        "Custom AI solutions"
-      ],
-      process: [
-        "Problem Identification",
-        "Data Collection",
-        "Model Training",
-        "Implementation",
-        "Continuous Learning"
-      ],
-      technologies: ["Python", "TensorFlow", "PyTorch", "NLP", "Computer Vision"]
-    },
-    'custom-software': {
-      id: 'custom-software',
-      icon: <FaServer size={50} />,
-      title: "Custom Software",
-      description: "We develop bespoke software solutions designed specifically for your business requirements, helping you automate processes, improve efficiency, and gain competitive advantage.",
-      benefits: [
-        "Tailored to your workflow",
-        "Integration with existing systems",
-        "Improved operational efficiency",
-        "Scalable architecture",
-        "Ongoing support"
-      ],
-      process: [
-        "Requirement Gathering",
-        "System Design",
-        "Development",
-        "User Acceptance Testing",
-        "Deployment & Training"
-      ],
-      technologies: ["Java", ".NET", "Python", "SQL", "Microservices"]
     }
   };
 
-  const countries = [
-    "United States", "Canada", "United Kingdom", "Australia", "Germany", 
-    "France", "Japan", "South Korea", "Singapore", "Netherlands", 
-    "Sweden", "Norway", "Denmark", "Switzerland", "India", "China", 
-    "Brazil", "Mexico", "Spain", "Italy", "Other"
-  ];
+  const countries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", 
+    "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", 
+    "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", 
+    "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", 
+    "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", 
+    "Congo (Congo-Brazzaville)", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia (Czech Republic)", 
+    "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", 
+    "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini (fmr. Swaziland)", 
+    "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", 
+    "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Holy See", "Honduras", "Hungary", 
+    "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", 
+    "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", 
+    "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", 
+    "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", 
+    "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar (Burma)", 
+    "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", 
+    "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine State", "Panama", "Papua New Guinea",
+     "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", 
+     "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", 
+     "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", 
+     "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", 
+     "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Tajikistan", "Tanzania", 
+     "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan",
+      "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", 
+      "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe", "Other"];
 
-  useEffect(() => {
-    if (services[id]) {
-      setService(services[id]);
+
+  const fetchService = async () => {
+    const result = await serviceApi.getServiceById(service_id);
+    if(result.success){
+      const fetchedService = result.service;
+      setService(fetchedService);
       setFormData(prev => ({
         ...prev,
-        service: services[id].title
+        serviceTitle: fetchedService.title
       }));
     }
-  }, [id]);
+  }
+
+  useEffect(() => {
+    // if (services[service_id]) {
+    //   setService(services[service_id]);
+    //   setFormData(prev => ({
+    //     ...prev,
+    //     service: services[service_id].title
+    //   }));
+    // }
+    fetchService();
+    
+  }, [service_id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -157,23 +148,52 @@ const ServiceDetails = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
+    const response = await contactApi.makeInquiry({
+      first_name: formData.first_name,
+      last_name: formData.last_name,
+      email: formData.email,
+      company: formData.company,
+      job_title: formData.job_title,
+      phone: formData.phone,
+      country: formData.country,
+      serviceTitle: formData.serviceTitle,
+      message: `This is a message for availing the service-${formData.service}\n`+ formData.message
+    });
+
     setIsModalOpen(false);
     // Reset form
     setFormData({
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       email: '',
       company: '',
-      jobTitle: '',
+      job_title: '',
       phone: '',
       country: '',
-      service: service?.title || '',
+      serviceTitle: service?.title || '',
       message: ''
     });
   };
+
+  const iconMap = {
+    FaCode: <FaCode size={36} />,
+    FaMobileAlt: <FaMobileAlt size={36} />,
+    FaCloud: <FaCloud size={36} />,
+    FaRobot: <FaRobot size={36} />,
+    FaServer: <FaServer size={36} />,
+    FaGlobe: <FaGlobe size={36} />,
+    FaPaintBrush: <FaPaintBrush size={36} />,
+    FaShoppingCart: <FaShoppingCart size={36} />,
+    FaCheckCircle: <FaCheckCircle size={36} />,
+    FaBullhorn: <FaBullhorn size={36} />,
+    FaBrain: <FaBrain size={36} />,
+    FaLock: <FaLock size={36} />,
+    FaLaptopCode: <FaLaptopCode size={36} />
+  };
+  
 
   if (!service) {
     return (
@@ -254,14 +274,14 @@ const ServiceDetails = () => {
               className="service-details-icon-sd"
               variants={itemVariants}
             >
-              {service.icon}
+              {iconMap[service.icon]}
             </motion.div>
             <motion.h1 variants={itemVariants}>{service.title}</motion.h1>
             <motion.p 
               className="servicedetails-description"
               variants={itemVariants}
             >
-              {service.description}
+              {service.short_desc}
             </motion.p>
             <motion.button 
               className="servicedetails-btn-primary"
@@ -288,7 +308,7 @@ const ServiceDetails = () => {
             >
               <h2>Key Benefits</h2>
               <ul className="servicedetails-benefits-list">
-                {service.benefits.map((benefit, index) => (
+                {service.key_benefits.map((benefit, index) => (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
@@ -313,7 +333,7 @@ const ServiceDetails = () => {
             >
               <h2>Our Process</h2>
               <div className="servicedetails-process-steps">
-                {service.process.map((step, index) => (
+                {service.our_process.map((step, index) => (
                   <motion.div
                     key={index}
                     className="servicedetails-process-step"
@@ -333,7 +353,8 @@ const ServiceDetails = () => {
             </motion.div>
           </div>
 
-          <motion.div 
+          {service.technologies.length > 0  && (
+             <motion.div 
             className="servicedetails-technologies-section"
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -355,7 +376,8 @@ const ServiceDetails = () => {
                 </motion.span>
               ))}
             </div>
-          </motion.div>
+          </motion.div> 
+          )}
         </div>
       </section>
 
@@ -407,9 +429,9 @@ const ServiceDetails = () => {
                     </div>
                     <input
                       type="text"
-                      name="firstName"
+                      name="first_name"
                       placeholder="First Name *"
-                      value={formData.firstName}
+                      value={formData.first_name}
                       onChange={handleInputChange}
                       required
                     />
@@ -426,9 +448,9 @@ const ServiceDetails = () => {
                     </div>
                     <input
                       type="text"
-                      name="lastName"
+                      name="last_name"
                       placeholder="Last Name *"
-                      value={formData.lastName}
+                      value={formData.last_name}
                       onChange={handleInputChange}
                       required
                     />
@@ -484,9 +506,9 @@ const ServiceDetails = () => {
                     </div>
                     <input
                       type="text"
-                      name="jobTitle"
+                      name="job_title"
                       placeholder="Job Title"
-                      value={formData.jobTitle}
+                      value={formData.job_title}
                       onChange={handleInputChange}
                     />
                   </motion.div>
@@ -547,7 +569,7 @@ const ServiceDetails = () => {
                   <input
                     type="text"
                     name="service"
-                    value={formData.service}
+                    value={formData.serviceTitle}
                     readOnly
                     style={{ backgroundColor: 'rgba(var(--color-accent-rgb), 0.1)' }}
                   />

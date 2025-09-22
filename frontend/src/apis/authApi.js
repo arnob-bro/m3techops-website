@@ -42,4 +42,13 @@ export default class AuthApi {
     }
   }
 
+  async changePassword(oldPassword, newPassword) {
+    try {
+      const response = await this.authApi.get(`${this.baseURL}/change-password`, { oldPassword, newPassword });
+      return response.data;
+    } catch (err) {
+      throw err.response?.data || { error: "password change failed" };
+    }
+  }
+
 }

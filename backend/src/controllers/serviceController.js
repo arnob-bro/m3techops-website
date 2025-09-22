@@ -6,6 +6,7 @@ class ServiceController {
       this.createService = this.createService.bind(this);
       this.getServices = this.getServices.bind(this);
       this.updateService = this.updateService.bind(this);
+      this.getServiceById = this.getServiceById.bind(this);
 
     }
   
@@ -16,6 +17,7 @@ class ServiceController {
           short_desc,
           key_benefits,
           our_process,
+          technologies,
           active,
           icon
         } = req.body;
@@ -36,6 +38,10 @@ class ServiceController {
         if (!Array.isArray(our_process) || our_process.length === 0) {
           return res.status(400).json({ error: "Our process must be a non-empty array" });
         }
+
+        if (!Array.isArray(technologies) || technologies.length === 0) {
+          return res.status(400).json({ error: "Technologies must be a non-empty array" });
+        }
     
         if (active !== undefined && typeof active !== "boolean") {
           return res.status(400).json({ error: "Active must be true or false" });
@@ -51,6 +57,7 @@ class ServiceController {
           short_desc,
           key_benefits,
           our_process,
+          technologies,
           active,
           icon
         );
@@ -74,6 +81,20 @@ class ServiceController {
         }
       }
 
+      async getServiceById(req, res) {
+        try {
+
+          const { service_id } = req.params;
+          const service = await this.serviceService.getServiceById(service_id);
+          if(!service){
+            return res.status(404).json({ error: "Service not found" });
+          }
+          res.json({success: true, service});
+        } catch (error) {
+          res.status(500).json({success: false, error: error.message });
+        }
+      }
+
 
 
       async updateService(req, res) {
@@ -84,6 +105,7 @@ class ServiceController {
             short_desc,
             key_benefits,
             our_process,
+            technologies,
             active,
             icon
           } = req.body;
@@ -107,6 +129,9 @@ class ServiceController {
         if (!Array.isArray(our_process) || our_process.length === 0) {
           return res.status(400).json({ error: "Our process must be a non-empty array" });
         }
+        if (!Array.isArray(technologies) || our_process.length === 0) {
+          return res.status(400).json({ error: "Technologies must be a non-empty array" });
+        }
     
         if (active !== undefined && typeof active !== "boolean") {
           return res.status(400).json({ error: "Active must be true or false" });
@@ -118,7 +143,7 @@ class ServiceController {
 
 
 
-          const updatedService = await this.serviceService.updateService(service_id, title,short_desc,key_benefits,our_process,active,icon);
+          const updatedService = await this.serviceService.updateService(service_id, title,short_desc,key_benefits,our_process,technologies,active,icon);
           
           if (!updatedService) {
             return res.status(404).json({ error: "Service not found" });
