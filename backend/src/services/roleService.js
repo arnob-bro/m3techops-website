@@ -5,23 +5,40 @@ class RoleService {
   }
 
   // ----------Create Role---------------
-async createRole({name}) {
+  async createRole({ name, permissions = [] }) {
+    const client = await this.db.connect();
     try {
-
-      // Insert role
-      const result = await this.db.query(
+      await client.query("BEGIN");
+  
+      // 1. Insert the role
+      const roleResult = await client.query(
         `INSERT INTO roles (name) VALUES ($1) RETURNING id, name`,
         [name]
       );
-
-      const role = result.rows[0];
-
-      return role;
+      const role = roleResult.rows[0];
+  
+      // 2. Link permissions if provided
+      if (permissions.length > 0) {
+        const values = permissions.map((_, idx) => `($1, $${idx + 2})`).join(", ");
+        await client.query(
+          `INSERT INTO role_permissions (role_id, permission_id) VALUES ${values}`,
+          [role.id, ...permissions]
+        );
+      }
+  
+      await client.query("COMMIT");
+  
+      // Return role with assigned permissions
+      return { ...role, permissions };
     } catch (err) {
-      console.error("Error in creating role:", err.message);
+      await client.query("ROLLBACK");
+      console.error("Error creating role:", err.message);
       throw new Error("Failed to create role");
+    } finally {
+      client.release();
     }
   }
+  
 
   async getRoleByName(name) {
     try {
@@ -83,6 +100,77 @@ async createRole({name}) {
       throw new Error('Failed to fetch all roles with permissions');
     }
   }
+
+
+  async getAllPermissions() {
+    try {
+      const query = `
+        SELECT * FROM permissions ORDER BY id ASC
+      `;
+  
+      const result = await this.db.query(query);
+  
+      // Group permission IDs by role
+      const permissions = result.rows;
+  
+      return permissions;
+    } catch (error) {
+      console.error('Error in getAllPermissions service:', error);
+      throw new Error('Failed to fetch all permissions');
+    }
+  }
+
+  async updateRole(roleId, { name, permissions }) {
+    if (!roleId) throw new Error("Role ID is required");
+  
+    const client = await this.db.connect();
+    try {
+      await client.query("BEGIN");
+  
+      // Convert roleId to number
+      const roleIdNum = parseInt(roleId, 10);
+  
+      // Update role name
+      if (name !== undefined) {
+        await client.query(`UPDATE roles SET name = $1 WHERE id = $2`, [
+          name,
+          roleIdNum,
+        ]);
+      }
+  
+      // Update permissions if provided
+      if (permissions !== undefined) {
+        // Delete old permissions
+        await client.query(`DELETE FROM role_permissions WHERE role_id = $1`, [
+          roleIdNum,
+        ]);
+  
+        // Insert new permissions if array not empty
+        if (permissions.length > 0) {
+          // Convert permission IDs to numbers
+          const permIds = permissions.map((p) => parseInt(p, 10));
+  
+          const values = permIds.map((_, idx) => `($1, $${idx + 2})`).join(", ");
+          await client.query(
+            `INSERT INTO role_permissions (role_id, permission_id) VALUES ${values}`,
+            [roleIdNum, ...permIds]
+          );
+        }
+      }
+  
+      await client.query("COMMIT");
+  
+      return { id: roleIdNum, name, permissions: permissions || [] };
+    } catch (err) {
+      await client.query("ROLLBACK");
+      console.error("Error updating role:", err.message);
+      throw new Error("Failed to update role");
+    } finally {
+      client.release();
+    }
+  }
+  
+  
   
 
   

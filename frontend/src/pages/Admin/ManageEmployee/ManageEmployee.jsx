@@ -11,7 +11,9 @@ import Modal from 'react-modal';
 import './ManageEmployee.css';
 import { div } from 'framer-motion/client';
 import EmployeeApi from '../../../apis/employeeApi';
+import RoleApi from '../../../apis/roleApi';
 const employeeApi = new EmployeeApi();
+const roleApi = new RoleApi();
 
 const ManageEmployee = () => {
   const [activeTab, setActiveTab] = useState("employees"); // 👈 NEW
@@ -67,6 +69,28 @@ const ManageEmployee = () => {
     }
   };
 
+  const fetchRolesWithPermission = async () => {
+    try {
+
+      const res = await roleApi.getAllRolesWithPermissions({});
+        const roles = res.data;
+      setRoles(roles);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    }
+  };
+
+  const fetchAllPermission = async () => {
+    try {
+
+      const res = await roleApi.getAllPermissions({});
+        const permissions = res.data;
+      setPermissions(permissions);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+    }
+  };
+
   useEffect(() => {
     // Set up modal app element for react-modal
     Modal.setAppElement('#root');
@@ -75,27 +99,29 @@ const ManageEmployee = () => {
     // Fetch employees from API
     
 
-    const mockRoles = [
-      { id: 1, name: "Admin", permissions: [1, 2, 3, 4] },
-      { id: 2, name: "Manager", permissions: [2, 3] },
-      { id: 3, name: "HR", permissions: [5, 6] },
-    ];
+    // const mockRoles = [
+    //   { id: 1, name: "Admin", permissions: [1, 2, 3, 4] },
+    //   { id: 2, name: "Manager", permissions: [2, 3] },
+    //   { id: 3, name: "HR", permissions: [5, 6] },
+    // ];
 
     // Mock permissions
-    const mockPermissions = [
-      { id: 1, code: "USER_CREATE", description: "Can create users" },
-      { id: 2, code: "USER_EDIT", description: "Can edit users" },
-      { id: 3, code: "USER_DELETE", description: "Can delete users" },
-      { id: 4, code: "VIEW_REPORTS", description: "Can view reports" },
-      { id: 5, code: "MANAGE_PAYROLL", description: "Can manage payroll" },
-      { id: 6, code: "MANAGE_LEAVE", description: "Can manage leave" },
-    ];
+    // const mockPermissions = [
+    //   { id: 1, code: "USER_CREATE", description: "Can create users" },
+    //   { id: 2, code: "USER_EDIT", description: "Can edit users" },
+    //   { id: 3, code: "USER_DELETE", description: "Can delete users" },
+    //   { id: 4, code: "VIEW_REPORTS", description: "Can view reports" },
+    //   { id: 5, code: "MANAGE_PAYROLL", description: "Can manage payroll" },
+    //   { id: 6, code: "MANAGE_LEAVE", description: "Can manage leave" },
+    // ];
+
+
 
 
 
     fetchEmployees();
-    setRoles(mockRoles);
-    setPermissions(mockPermissions);
+    fetchRolesWithPermission();
+    fetchAllPermission();
   }, [page,searchTerm,statusFilter]);
 
   // Handle modal open/close body scroll lock
@@ -134,20 +160,38 @@ const ManageEmployee = () => {
       };
     });
   };
-  // 🟢 Save role (update or create new)
-  const handleSaveRole = () => {
-    if (selectedRole.id) {
-      setRoles((prev) =>
-        prev.map((r) => (r.id === selectedRole.id ? selectedRole : r))
-      );
-    } else {
-      setRoles((prev) => [
-        ...prev,
-        { ...selectedRole, id: Date.now().toString() },
-      ]);
+  //  Save role (update or create new)
+  const handleSaveRole = async () => {
+    try {
+      if (selectedRole.id) {
+        console.log(selectedRole);
+        // Existing role → update
+        const result = await roleApi.updateRole(selectedRole.id, {
+          name: selectedRole.name,
+          permissions: selectedRole.permissions || [],
+        });
+  
+        // Update local state
+        setRoles((prev) =>
+          prev.map((r) => (r.id === selectedRole.id ? result.data || result : r))
+        );
+      } else {
+        // New role → create
+        const result = await roleApi.createRole({
+          name: selectedRole.name,
+          permissions: selectedRole.permissions || [],
+        });
+  
+        setRoles((prev) => [...prev, result.data || result]);
+      }
+  
+      setIsRoleModalOpen(false);
+    } catch (err) {
+      console.error("Error saving role:", err);
+      alert(err.message || "Failed to save role");
     }
-    setIsRoleModalOpen(false);
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -206,7 +250,7 @@ const ManageEmployee = () => {
     setCurrentEmployee(null);
     setFormData({
       employee_id:'',
-      first_name: '',
+      first_name: '',  
       last_name: '',
       email: '',
       phone: '',
@@ -324,6 +368,7 @@ const ManageEmployee = () => {
               <tr>
                 <th>Employee</th>
                 <th>Position</th>
+                <th>Admin Role</th>
                 <th>Hire Date</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -355,6 +400,9 @@ const ManageEmployee = () => {
                     </td>
                     <td>
                       <span className="position-tag">{employee.position}</span>
+                    </td>
+                    <td>
+                      <span className="position-tag">{roles.find(role => role.id === employee.role_id)?.name || "Unknown"}</span>
                     </td>
                     
                     <td>{formatDate(employee.hire_date)}</td>
@@ -561,6 +609,26 @@ const ManageEmployee = () => {
                   </div>
                   
                 </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Admin Role</label>
+                    <select
+                      name="role_id"
+                      value={formData.role_id}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">-- Select Role --</option>
+                      {roles.map((role) => (
+                        <option key={role.id} value={role.id}>
+                          {role.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
 
                 <div className="form-row">
                   

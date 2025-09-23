@@ -6,6 +6,8 @@ function createRoleRouter(roleController) {
   router.post("/create-role", roleController.createRole);
   router.get("/", roleController.getAllRoles);
   router.get("/with-permission", roleController.getAllRolesWithPermissions);
+  router.get("/permissions", roleController.getAllPermissions);
+  router.put("/:id", roleController.updateRole);
 
 
   return router;

@@ -134,23 +134,27 @@ class EmployeeService {
   async getEmployees(page = 1, limit = 10, searchTerm = "", status = "") {
     const offset = (page - 1) * limit;
     const searchPattern = `%${searchTerm.trim()}%`;
-
+  
+    // Fetch employees with role info
     const employees = await this.db.query(`
-      SELECT *
-      FROM employees
-      WHERE ($1='' OR first_name ILIKE $2 OR last_name ILIKE $2 OR email ILIKE $2 OR employee_id ILIKE $2 OR position ILIKE $2)
-        AND ($3::text IS NULL OR status=$3)
-      ORDER BY created_at DESC
+      SELECT e.*, r.*
+      FROM employees e
+      JOIN roles r ON e.role_id = r.id
+      WHERE ($1='' OR e.first_name ILIKE $2 OR e.last_name ILIKE $2 OR e.email ILIKE $2 OR e.employee_id ILIKE $2 OR e.position ILIKE $2 OR r.name ILIKE $2)
+        AND ($3::text IS NULL OR e.status=$3)
+      ORDER BY e.created_at DESC
       LIMIT $4 OFFSET $5
     `, [searchTerm, searchPattern, status || null, limit, offset]);
-
+  
+    // Count for pagination
     const countResult = await this.db.query(`
       SELECT COUNT(*) AS total
-      FROM employees
-      WHERE ($1='' OR first_name ILIKE $2 OR last_name ILIKE $2 OR email ILIKE $2 OR employee_id ILIKE $2 OR position ILIKE $2)
-        AND ($3::text IS NULL OR status=$3)
+      FROM employees e
+      JOIN roles r ON e.role_id = r.id
+      WHERE ($1='' OR e.first_name ILIKE $2 OR e.last_name ILIKE $2 OR e.email ILIKE $2 OR e.employee_id ILIKE $2 OR e.position ILIKE $2 OR r.name ILIKE $2)
+        AND ($3::text IS NULL OR e.status=$3)
     `, [searchTerm, searchPattern, status || null]);
-
+  
     const total = parseInt(countResult.rows[0].total, 10);
     return {
       success: true,
@@ -158,6 +162,7 @@ class EmployeeService {
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
     };
   }
+  
 }
 
 module.exports = EmployeeService;
