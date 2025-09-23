@@ -32,6 +32,7 @@ const ManageEmployee = () => {
     email: '',
     phone: '',
     position: '',
+    role_id: '',
     hire_date: new Date().toISOString().split('T')[0],
     address: '',
     city: '',
