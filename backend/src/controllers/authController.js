@@ -101,6 +101,8 @@ class AuthController {
           const refreshToken = generateRefreshToken(user.user_id);
           console.log(accessToken);
           console.log(refreshToken);
+          const userPermissions = await this.userService.getUserPermissionsWithCodes(user.user_id);
+
           res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: false, // set true in production (HTTPS)
@@ -112,6 +114,8 @@ class AuthController {
             success: true, 
             message: "Login successful", 
             accessToken, 
+            permissions: userPermissions.permissions,
+				    permissionCodes: userPermissions.permissionCodes,
             user: {
               user_id: user.user_id,
               email: user.email,

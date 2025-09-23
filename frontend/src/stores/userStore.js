@@ -56,8 +56,8 @@ const useUserStore = create(
             set({
               user: result.user,
               accessToken: result.accessToken,
-              // permissions: result.permissions || [],
-              // permissionCodes: result.permissionCodes || [],
+              permissions: result.permissions || [],
+              permissionCodes: result.permissionCodes || [],
               isAuthenticated: true,
               isLoading: false,
               error: null
@@ -103,8 +103,8 @@ const useUserStore = create(
           set({
             user: null,
             accessToken: null,
-            // permissions: [],
-            // permissionCodes: [],
+            permissions: [],
+            permissionCodes: [],
             isAuthenticated: false,
             isLoading: false,
             error: null
@@ -121,8 +121,8 @@ const useUserStore = create(
           set({ 
             user: null,
             accessToken: null,
-            // permissions: [],
-            // permissionCodes: [],
+            permissions: [],
+            permissionCodes: [],
             isAuthenticated: false,
             isLoading: false,
             error: null 
@@ -148,8 +148,8 @@ const useUserStore = create(
           set({ 
             user: null, 
             accessToken: null, 
-            // permissions: [],
-            // permissionCodes: [],
+            permissions: [],
+            permissionCodes: [],
             loading: false 
           });
         }
