@@ -114,6 +114,76 @@ class UserService {
     return result.rows[0];
   }
 
+
+  async getUserPermissionsWithCodes(userId) {
+    try {
+
+      console.log("in permissions");
+      // 1. Get all permissions
+      const allPermissionsResult = await this.db.query(
+        "SELECT id, code FROM permissions ORDER BY id"
+      );
+      const allPermissions = allPermissionsResult.rows;
+      console.log(allPermissions);
+  
+      // 2. Get user's role
+      const userResult = await this.db.query(
+        "SELECT role_id FROM employees WHERE employee_id = $1",
+        [userId]
+      );
+      const user = userResult.rows[0];
+      
+  
+      if (!user) {
+        return {
+          permissions: new Array(allPermissions.length).fill(false),
+          permissionCodes: allPermissions.map((p) => p.code),
+        };
+      }
+      console.log(user);
+  
+      // 3. Get user's role permissions
+      const userPermissionsResult = await this.db.query(
+        `
+        SELECT p.id, p.code 
+        FROM permissions p
+        JOIN role_permissions rp ON p.id = rp.permission_id
+        WHERE rp.role_id = $1
+        `,
+        [user.role_id]
+      );
+      const userPermissions = userPermissionsResult.rows;
+      console.log(userPermissions);
+  
+      // 4. Map user's permissions
+      const userPermissionMap = {};
+      userPermissions.forEach((perm) => {
+        userPermissionMap[perm.id] = true;
+      });
+      console.log(userPermissionMap);
+  
+      // 5. Admin override: check for ALL permission
+      const hasAllPermission = userPermissions.some((perm) => perm.code === "ALL");
+  
+      // 6. Build boolean array for all permissions
+      const permissionsArray = allPermissions.map(
+        (perm) => hasAllPermission || userPermissionMap[perm.id] || false
+      );
+  
+      return {
+        permissions: permissionsArray,
+        permissionCodes: allPermissions.map((p) => p.code),
+      };
+    } catch (error) {
+      console.error("Error getting user permissions with codes:", error);
+      return {
+        permissions: [],
+        permissionCodes: [],
+      };
+    }
+  }
+  
+
 }
 
 module.exports = UserService;
