@@ -14,10 +14,13 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
 import { useSpring, animated } from '@react-spring/web';
 import ServiceApi from "../../apis/serviceApi";
+import PortfolioApi from '../../apis/portfolioApi';
 const serviceApi = new ServiceApi();
+const portfolioApi = new PortfolioApi();
 
 const Home = () => {
   const [services, setServices] = useState([]);
+  const [projects, setProjects] = useState([]);
   const fetchedOnce = useRef(false);
 
   const iconMap = {
@@ -46,9 +49,24 @@ const Home = () => {
     }
   };
 
+  const fetchProjects = async () => {
+    try {
+      const result = await portfolioApi.getPortfolios();
+      const allPortfolios = result.portfolios;
+  
+      // Filter only active portfolios
+      const activePortfolios = allPortfolios.filter(portfolio => portfolio.active);
+  
+      setProjects(activePortfolios);
+    } catch (error) {
+      console.error('Error fetching portfolios:', error);
+    }
+  };
+
   useEffect(() => {
     if (!fetchedOnce.current) {
       fetchServices();
+      fetchProjects();
       // fetchedOnce.current = true;
     }
   }, []); 
@@ -111,32 +129,32 @@ const Home = () => {
   //   },
   // ];
 
-  const projects = [
-    {
-      title: "E-commerce Platform",
-      category: "Web Development",
-      description: "A high-performance online store with custom checkout flow",
-      image: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      title: "Health & Fitness App",
-      category: "Mobile Development",
-      description: "Personalized workout and nutrition tracking application",
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      title: "Enterprise Dashboard",
-      category: "Cloud Solutions",
-      description: "Real-time analytics dashboard for business intelligence",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      title: "AI Chatbot",
-      category: "AI Solutions",
-      description: "Conversational AI assistant for customer support",
-      image: "https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-    }
-  ];
+  // const projects = [
+  //   {
+  //     title: "E-commerce Platform",
+  //     category: "Web Development",
+  //     description: "A high-performance online store with custom checkout flow",
+  //     image: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+  //   },
+  //   {
+  //     title: "Health & Fitness App",
+  //     category: "Mobile Development",
+  //     description: "Personalized workout and nutrition tracking application",
+  //     image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+  //   },
+  //   {
+  //     title: "Enterprise Dashboard",
+  //     category: "Cloud Solutions",
+  //     description: "Real-time analytics dashboard for business intelligence",
+  //     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+  //   },
+  //   {
+  //     title: "AI Chatbot",
+  //     category: "AI Solutions",
+  //     description: "Conversational AI assistant for customer support",
+  //     image: "https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+  //   }
+  // ];
 
   const testimonials = [
     {
