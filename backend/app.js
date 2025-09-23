@@ -12,6 +12,7 @@ const createPortfolioRouter = require("./src/routes/portfolioRoutes");
 const createBlogRouter = require("./src/routes/blogRoutes");
 const createEmployeeRouter = require("./src/routes/employeeRoutes");
 const createPayslipRouter = require("./src/routes/payslipRoutes");
+const createSchedulerRouter = require("./src/routes/schedulerRoutes");
 
 const AuthController = require("./src/controllers/authController");
 const InquiryController = require("./src/controllers/inquiryController");
@@ -23,6 +24,7 @@ const PortfolioController = require("./src/controllers/portfolioController");
 const BlogController = require("./src/controllers/blogController");
 const EmployeeController = require("./src/controllers/employeeController");
 const PayslipController = require("./src/controllers/payslipController");
+const SchedulerController = require("./src/controllers/schedulerController");
 
 const UserService = require("./src/services/userService");
 const InquiryService = require("./src/services/inquiryService");
@@ -34,6 +36,8 @@ const PortfolioService = require("./src/services/portfolioService");
 const BlogService = require("./src/services/blogService");
 const EmployeeService = require("./src/services/employeeService");
 const PayslipService = require("./src/services/payslipService");
+const PayslipService = require("./src/services/payslipService");
+const SchedulerService = require("./src/services/schedulerService");
 
 
 const db = require("./src/config/supabaseClient");
@@ -69,6 +73,7 @@ const portfolioService = new PortfolioService(db);
 const blogService = new BlogService(db);
 const employeeService = new EmployeeService(db, userService, roleService);
 const payslipService = new PayslipService(db);
+const schedulerService = new SchedulerService(db);
 
 const authController = new AuthController(userService);
 const inquiryController = new InquiryController(inquiryService);
@@ -80,6 +85,7 @@ const portfolioController = new PortfolioController(portfolioService);
 const blogController = new BlogController(blogService);
 const employeeController = new EmployeeController(employeeService);
 const payslipController = new PayslipController(payslipService);
+const schedulerController = new SchedulerController(schedulerService);
 
 const authRouter = createAuthRouter(authController);
 const inquiryRouter = createInquiryRouter(inquiryController);
@@ -91,6 +97,7 @@ const portfolioRouter = createPortfolioRouter(portfolioController);
 const blogRouter = createBlogRouter(blogController);
 const employeeRouter = createEmployeeRouter(employeeController);
 const payslipRouter = createPayslipRouter(payslipController);
+const schedulerRouter = createSchedulerRouter(schedulerController);
 
 
 
@@ -105,5 +112,6 @@ app.use("/portfolio", portfolioRouter);
 app.use("/blog", blogRouter);
 app.use("/employee", employeeRouter);
 app.use("/payslip", payslipRouter);
+app.use("/scheduler", schedulerRouter);
 
 module.exports = app;
