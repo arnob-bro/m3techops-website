@@ -36,7 +36,6 @@ const PortfolioService = require("./src/services/portfolioService");
 const BlogService = require("./src/services/blogService");
 const EmployeeService = require("./src/services/employeeService");
 const PayslipService = require("./src/services/payslipService");
-const PayslipService = require("./src/services/payslipService");
 const SchedulerService = require("./src/services/schedulerService");
 
 
