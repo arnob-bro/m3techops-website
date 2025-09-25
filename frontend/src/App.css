@@ -34,7 +34,17 @@
    --color-accent-rgb: 28, 176, 162;
    --color-accent-light-rgb: 6, 126, 204;
    --color-accent-warm-rgb: 251, 146, 39;
-   --color-home-header-text: #ffffff; */
+   --color-home-header-text: #ffffff; 
+   
+   --font-primary: system-ui, Avenir, Helvetica, Arial, sans-serif;
+   --font-secondary: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+   --container-width: 1200px;
+   --border-radius: 12px;
+   --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+   --section-padding: 8rem;
+   --header-height: 80px;
+   
+   */
 
 
 
@@ -58,7 +68,6 @@
   --color-accent-warm-rgb: 248, 143, 36;
   --color-home-header-text: #2D3748;
 
-  /* Additional variables for consistency */
   --font-primary: system-ui, Avenir, Helvetica, Arial, sans-serif;
   --font-secondary: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   --container-width: 1200px;

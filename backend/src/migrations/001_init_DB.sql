@@ -255,3 +255,21 @@ VALUES
 ('cookie', 'Cookie Policy', 'Your cookie policy content here...'),
 ('terms', 'Terms of Service', 'Your terms of service content here...');
 
+
+
+
+-- Add to your existing migrations file
+-- Make sure the scheduler_slots table has the correct columns
+CREATE TABLE IF NOT EXISTS scheduler_slots (
+    id BIGSERIAL PRIMARY KEY,
+    employee_id VARCHAR(50) NOT NULL,
+    start_time TIMESTAMP WITH TIME ZONE NOT NULL,  -- Use WITH TIME ZONE for better handling
+    end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    title VARCHAR(255),
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_scheduler_employee_id ON scheduler_slots(employee_id);
+CREATE INDEX idx_scheduler_time_range ON scheduler_slots(start_time, end_time);
