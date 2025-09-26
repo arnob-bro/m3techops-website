@@ -167,7 +167,14 @@ class AuthController {
       try {
         const user_id = req.user.user_id;
         const user = await this.userService.getUserById(user_id);
-        res.status(200).json({success: true, message: "Welcome!", user});
+        const userPermissions = await this.userService.getUserPermissionsWithCodes(user.user_id);
+        res.status(200).json({
+          success: true, 
+          message: "Welcome!", 
+          permissions: userPermissions.permissions,
+				  permissionCodes: userPermissions.permissionCodes,
+          user
+        });
       } catch (err) {
         console.error("Error getting profile:", err);
         res.status(500).json({ error: "Invalid request for fetching profile"});

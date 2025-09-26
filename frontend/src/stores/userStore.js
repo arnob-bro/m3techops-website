@@ -133,27 +133,37 @@ const useUserStore = create(
 
       initAuth: async () => {
         try {
+          set({ isLoading: true });
+      
+          // 1. Try refresh
           const result = await authApi.refresh();
           set({ accessToken: result.accessToken });
-    
-          // get user info with new token
+      
+          // 2. Get profile
           const profile = await authApi.getProfile();
+      
           set({
             user: profile.user,
-            isAuthenticated: true,
+            permissions: profile.permissions || [],
+            permissionCodes: profile.permissionCodes || [],
+            isAuthenticated: true,   // ✅ FIXED
             isLoading: false,
-            error: null 
+            error: null
           });
-        } catch {
+        } catch (err) {
+          console.error("initAuth failed:", err);
           set({ 
             user: null, 
             accessToken: null, 
             permissions: [],
             permissionCodes: [],
-            loading: false 
+            isAuthenticated: false,  // make sure it’s false only if refresh fails
+            isLoading: false,
+            error: null 
           });
         }
       },
+      
 
       // Validate session
       validateSession: async () => {

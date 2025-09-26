@@ -90,24 +90,72 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="manage-services" element={<ManageServices />} />
-          <Route path="manage-portfolio" element={<ManagePortfolio />} />
-          <Route path="manage-blog" element={<ManageBlog />} />
-          <Route path="pay-slip-generator" element={<PaySlipGenerator />} />
-          <Route path="manage-messages" element={<ManageContact />} />
-          <Route path="scheduler" element={<Scheduler />} />
-          <Route path="employee-management" element={<ManageEmployee />} />
-          <Route path="newsletter-management" element={<ManageNewsletter />} />
-          <Route path="policy-management/privacy" element={<ManagePrivacyPolicy />} />
-          <Route path="policy-management/cookies" element={<ManageCookiesPolicy />} />
-          <Route path="policy-management/terms" element={<ManageTermsOfService />} />
-          <Route path="pay-slip-manager" element={<ManagePaySlip />} />
-          <Route path="" element={<Dashboard />} />
+          <Route path="manage-services" element={
+            <ProtectedRoute requiredPermission="MANAGE_SERVICES">
+              <ManageServices />
+            </ProtectedRoute>
+          }/>
+          <Route path="manage-portfolio" element={
+            <ProtectedRoute requiredPermission="MANAGE_PORTFOLIO">
+              <ManagePortfolio />
+            </ProtectedRoute>
+            }/>
+          <Route path="manage-blog" element={
+            <ProtectedRoute requiredPermission="MANAGE_BLOG">
+              <ManageBlog />
+            </ProtectedRoute>
+            } />
+          <Route path="pay-slip-generator" element={
+            <ProtectedRoute requiredPermission="GENERATE_PAYSLIP">
+              <PaySlipGenerator />
+            </ProtectedRoute>
+            } />
+          <Route path="manage-messages" element={
+            <ProtectedRoute requiredPermission="MANAGE_MESSAGES">
+              <ManageContact />
+            </ProtectedRoute>
+            } />
+          <Route path="scheduler" element={
+            <ProtectedRoute requiredPermission="MANAGE_SCHEDULER">
+              <Scheduler />
+            </ProtectedRoute>
+            } />
+          <Route path="employee-management" element={
+            <ProtectedRoute requiredPermission="MANAGE_EMPLOYEES">
+              <ManageEmployee />
+            </ProtectedRoute>
+            } />
+          <Route path="newsletter-management" element={
+            <ProtectedRoute requiredPermission="MANAGE_NEWSLETTER">
+              <ManageNewsletter />
+            </ProtectedRoute>
+            } />
+          <Route path="policy-management/privacy" element={
+            <ProtectedRoute requiredPermission="MANAGE_PRIVACY_POLICY">
+              <ManagePrivacyPolicy />
+            </ProtectedRoute>
+            } />
+          <Route path="policy-management/cookies" element={
+            <ProtectedRoute requiredPermission="MANAGE_COOKIES_POLICY">
+              <ManageCookiesPolicy />
+            </ProtectedRoute>
+            } />
+          <Route path="policy-management/terms" element={
+            <ProtectedRoute requiredPermission="MANAGE_TERMS_POLICY">
+              <ManageTermsOfService />
+            </ProtectedRoute>
+            } />
+          <Route path="pay-slip-manager" element={
+            <ProtectedRoute requiredPermission="MANAGE_PAYSLIP">
+              <ManagePaySlip />
+            </ProtectedRoute>
+            } />
+          <Route path="" element={
+            <ProtectedRoute requiredPermission="VIEW_DASHBOARD">
+              <Dashboard />
+            </ProtectedRoute>
+            } />
 
-          
-          
-          
-          
         </Route>
 
         {/* Public routes wrapped in MainLayout */}
