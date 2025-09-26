@@ -154,12 +154,16 @@ CREATE TABLE blogs (
 -- 11. Testimonials
 CREATE TABLE testimonials (
     testimonial_id BIGSERIAL PRIMARY KEY,
-    client_name VARCHAR(100) NOT NULL,
-    company_name VARCHAR(100) NOT NULL,
+    client_name VARCHAR(100),
+    client_email VARCHAR(150) UNIQUE,
+    imageUrl TEXT,
+    company_name VARCHAR(100),
     designation VARCHAR(100),
-    feedback TEXT NOT NULL,
-    -- rating INT CHECK (rating >= 1 AND rating <= 5),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    feedback TEXT,
+    active BOOLEAN DEFAULT FALSE,
+    feedback_taken BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 12. Bookings
