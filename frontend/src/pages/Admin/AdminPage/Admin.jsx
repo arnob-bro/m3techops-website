@@ -17,6 +17,7 @@ const Admin = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const permissionCodes = useUserStore(state => state.permissionCodes);
+  const permissions = useUserStore(state => state.permissions);
   const logout = useUserStore((state) => state.logout);
   
 
@@ -121,10 +122,10 @@ const Admin = () => {
 
   const filteredNavItems = navItems.filter(item => {
     if (item.hasSubmenu) {
-      item.subItems = item.subItems.filter(sub => permissionCodes.includes(sub.requiredPermission) || permissionCodes.includes('ALL'));
+      item.subItems = item.subItems.filter(sub => permissions[permissionCodes.indexOf(sub.requiredPermission)]);
       return item.subItems.length > 0;
     }
-    return permissionCodes.includes(item.requiredPermission) || permissionCodes.includes('ALL');
+    return permissions[permissionCodes.indexOf(item.requiredPermission)];
   });
   
   
