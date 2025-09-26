@@ -140,7 +140,7 @@ const useUserStore = create(
           const profile = await authApi.getProfile();
           set({
             user: profile.user,
-            isAuthenticated: false,
+            isAuthenticated: true,
             isLoading: false,
             error: null 
           });

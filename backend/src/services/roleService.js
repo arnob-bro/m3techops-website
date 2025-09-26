@@ -54,6 +54,21 @@ class RoleService {
     }
   }
 
+
+  async getRoleById(id) {
+    try {
+        const query = `
+            SELECT * FROM roles 
+            WHERE id = $1
+        `;
+        const result = await this.db.query(query, [id]);
+        return result.rows[0] || null;
+    } catch (error) {
+        console.error('Error in getRoleById service:', error);
+        throw new Error('Failed to fetch role by id');
+    }
+  }
+
   async getAllRoles() {
     try {
         const query = `SELECT * FROM roles ORDER BY id ASC`; // or DESC if you want newest first

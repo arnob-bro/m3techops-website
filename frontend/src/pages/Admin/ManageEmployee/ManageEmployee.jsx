@@ -50,6 +50,8 @@ const ManageEmployee = () => {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
 
   const fetchEmployees = async () => {
@@ -205,25 +207,39 @@ const ManageEmployee = () => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      emergencyContact: {
-        ...prev.emergencyContact,
+      emergency_contact: {
+        ...prev.emergency_contact,
         [name]: value
       }
     }));
   };
 
-  const handleToggleStatus = (employee_id) => {
-    setEmployees(employees.map(employee => 
-      employee.employee_id === employee_id ? { 
-        ...employee, 
-        status: employee.status === 'active' ? 'inactive' : 'active' 
-      } : employee
-    ));
-    // Here you would also update the employee status in your backend
+  const handleToggleStatus = async (employee_id) => {
+    try {
+      const employee = employees.find(emp => emp.employee_id === employee_id);
+      if (!employee) return;
+      
+      const newStatus = employee.status === 'active' ? 'inactive' : 'active';
+      
+      // Update status via API
+      // await employeeApi.updateEmployeeStatus(employee_id, newStatus);
+      
+      // Update local state
+      setEmployees(employees.map(emp => 
+        emp.employee_id === employee_id ? { 
+          ...emp, 
+          status: newStatus 
+        } : emp
+      ));
+    } catch (error) {
+      console.error('Error updating employee status:', error);
+      alert(error.message || 'Failed to update employee status');
+    }
   };
 
   const openEditModal = (employee) => {
     setCurrentEmployee(employee);
+    setError(null);
     setFormData({
       employee_id: employee.employee_id,
       first_name: employee.first_name,
@@ -231,6 +247,7 @@ const ManageEmployee = () => {
       email: employee.email,
       phone: employee.phone,
       position: employee.position,
+      role_id: employee.role_id,
       hire_date: new Date(employee.hire_date).toISOString().split('T')[0],
       address: employee.address,
       city: employee.city,
@@ -248,6 +265,7 @@ const ManageEmployee = () => {
 
   const openAddModal = () => {
     setCurrentEmployee(null);
+    setError(null);
     setFormData({
       employee_id:'',
       first_name: '',  
@@ -255,6 +273,7 @@ const ManageEmployee = () => {
       email: '',
       phone: '',
       position: '',
+      role_id: '',
       hire_date: new Date().toISOString().split('T')[0],
       address: '',
       city: '',
@@ -270,28 +289,50 @@ const ManageEmployee = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
     
-    if (currentEmployee) {
-      // Update existing employee
-      setEmployees(employees.map(employee => 
-        employee.employee_id === currentEmployee.employee_id ? { ...employee, ...formData } : employee
-      ));
-    } else {
-      // Add new employee
-      const newEmployee = {
-        employee_id: Date.now().toString(),
-        ...formData
-      };
-      setEmployees([...employees, newEmployee]);
+    try {
+      if (currentEmployee) {
+        console.log(formData);
+        // Update existing employee
+        const result = await employeeApi.updateEmployee(currentEmployee.employee_id, formData);
+        
+        // Update local state with the response
+        setEmployees(employees.map(employee => 
+          employee.employee_id === currentEmployee.employee_id ? result.data.employee || result.employee : employee
+        ));
+      } else {
+        // Add new employee
+        console.log(formData);
+        const result = await employeeApi.createEmployee(formData);
+        
+        // Add to local state
+        setEmployees([...employees, result.data.employee || result.employee]);
+      }
+      
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error saving employee:', error);
+      setError(error.message || 'Failed to save employee');
+    } finally {
+      setIsLoading(false);
     }
-    setIsModalOpen(false);
   };
 
-  const deleteEmployee = (employee_id) => {
-    setEmployees(employees.filter(employee => employee.employee_id !== employee_id));
-    // Here you would also delete the employee from your backend
+  const deleteEmployee = async (employee_id) => {
+    try {
+      // Delete from backend
+      await employeeApi.deleteEmployee(employee_id);
+      
+      // Update local state
+      setEmployees(employees.filter(employee => employee.employee_id !== employee_id));
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+      alert(error.message || 'Failed to delete employee');
+    }
   };
 
   const formatDate = (dateString) => {
@@ -523,6 +564,18 @@ const ManageEmployee = () => {
                 <div className="form-section-title">Personal Information of {currentEmployee? currentEmployee.employee_id : ""}</div>
                 
                 <div className="form-row">
+                {!currentEmployee ? (<div className="form-group">
+                    <label>Employee ID</label>
+                    <input
+                      type="text"
+                      name="employee_id"
+                      value={formData.employee_id}
+                      onChange={handleInputChange}
+                      placeholder="Enter employee ID"
+                      required
+                    />
+                  </div>) : null}
+
                   <div className="form-group">
                     <label>First Name</label>
                     <input
@@ -737,12 +790,18 @@ const ManageEmployee = () => {
                   <label htmlFor="status">Active Employee</label>
                 </div>
                 
+                {error && (
+                  <div className="error-message" style={{ color: 'red', marginBottom: '1rem' }}>
+                    {error}
+                  </div>
+                )}
+                
                 <div className="form-actions">
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="cancel-btn">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="cancel-btn" disabled={isLoading}>
                     Cancel
                   </button>
-                  <button type="submit" className="save-btn">
-                    {currentEmployee ? 'Save Changes' : 'Add Employee'}
+                  <button type="submit" className="save-btn" disabled={isLoading}>
+                    {isLoading ? 'Saving...' : (currentEmployee ? 'Save Changes' : 'Add Employee')}
                   </button>
                 </div>
               </form>

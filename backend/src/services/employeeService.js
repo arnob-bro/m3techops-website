@@ -114,7 +114,7 @@ class EmployeeService {
       RETURNING *;
     `;
     const values = [
-      first_name, last_name, phone, position, role_id, hire_date,
+      first_name, last_name, phone, position, parseInt(role_id), hire_date,
       address, city, country, avatar, emergency_contact ? JSON.stringify(emergency_contact) : null, email,
       employee_id
     ];
