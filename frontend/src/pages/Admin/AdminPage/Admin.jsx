@@ -8,13 +8,17 @@ import {
 } from 'react-icons/fi';
 import useUserStore from "../../../stores/userStore";
 
+
+
 const Admin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [openSubmenus, setOpenSubmenus] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
+  const permissionCodes = useUserStore(state => state.permissionCodes);
   const logout = useUserStore((state) => state.logout);
+  
 
   // Enhanced active tab detection
   const getActiveTab = () => {
@@ -91,15 +95,15 @@ const Admin = () => {
   };
 
   const navItems = [
-    { id: 'dashboard', icon: <FiHome />, label: 'Dashboard', path: '/admin' },
-    { id: 'services', icon: <FiSettings />, label: 'Manage Services', path: '/admin/manage-services' },
-    { id: 'portfolio', icon: <FiBriefcase />, label: 'Portfolio Items', path: '/admin/manage-portfolio' },
-    { id: 'blog', icon: <FiFileText />, label: 'Blog Posts', path: '/admin/manage-blog' },
-    { id: 'messages', icon: <FiMail />, label: 'Contact Messages', path: '/admin/manage-messages' },
-    { id: 'create-payslip', icon: <FiPlusCircle />, label: 'Create Pay-slip', path: '/admin/pay-slip-generator' },
-    { id: 'payslip-manager', icon: <FiDollarSign />, label: 'Pay Slip Manager', path: '/admin/pay-slip-manager' },
-    { id: 'employees', icon: <FiUsers />, label: 'Employee Management', path: '/admin/employee-management' },
-    { id: 'newsletter', icon: <FiBook />, label: 'Newsletter Management', path: '/admin/newsletter-management' },
+    { id: 'dashboard', icon: <FiHome />, label: 'Dashboard', path: '/admin', requiredPermission: 'VIEW_DASHBOARD' },
+    { id: 'services', icon: <FiSettings />, label: 'Manage Services', path: '/admin/manage-services', requiredPermission: 'MANAGE_SERVICES' },
+    { id: 'portfolio', icon: <FiBriefcase />, label: 'Portfolio Items', path: '/admin/manage-portfolio', requiredPermission: 'MANAGE_PORTFOLIO' },
+    { id: 'blog', icon: <FiFileText />, label: 'Blog Posts', path: '/admin/manage-blog', requiredPermission: 'MANAGE_BLOG' },
+    { id: 'messages', icon: <FiMail />, label: 'Contact Messages', path: '/admin/manage-messages', requiredPermission: 'MANAGE_MESSAGES' },
+    { id: 'create-payslip', icon: <FiPlusCircle />, label: 'Create Pay-slip', path: '/admin/pay-slip-generator', requiredPermission: 'GENERATE_PAYSLIP' },
+    { id: 'payslip-manager', icon: <FiDollarSign />, label: 'Pay Slip Manager', path: '/admin/pay-slip-manager', requiredPermission: 'MANAGE_PAYSLIP' },
+    { id: 'employees', icon: <FiUsers />, label: 'Employee Management', path: '/admin/employee-management', requiredPermission: 'MANAGE_EMPLOYEES' },
+    { id: 'newsletter', icon: <FiBook />, label: 'Newsletter Management', path: '/admin/newsletter-management', requiredPermission: 'MANAGE_NEWSLETTER' },
     { 
       id: 'policy', 
       icon: <FiPieChart />, 
@@ -107,13 +111,23 @@ const Admin = () => {
       path: '/admin/policy-management',
       hasSubmenu: true,
       subItems: [
-        { id: 'privacy', label: 'Privacy Policy', path: '/admin/policy-management/privacy' },
-        { id: 'terms', label: 'Terms of Services', path: '/admin/policy-management/terms' },
-        { id: 'cookies', label: 'Cookies Policy', path: '/admin/policy-management/cookies' }
+        { id: 'privacy', label: 'Privacy Policy', path: '/admin/policy-management/privacy', requiredPermission: 'MANAGE_PRIVACY_POLICY' },
+        { id: 'terms', label: 'Terms of Services', path: '/admin/policy-management/terms', requiredPermission: 'MANAGE_TERMS_POLICY' },
+        { id: 'cookies', label: 'Cookies Policy', path: '/admin/policy-management/cookies', requiredPermission: 'MANAGE_COOKIES_POLICY' }
       ]
     },
-    { id: 'scheduler', icon: <FiCalendar />, label: 'Free Time Scheduler', path: '/admin/scheduler' },
+    { id: 'scheduler', icon: <FiCalendar />, label: 'Free Time Scheduler', path: '/admin/scheduler', requiredPermission: 'MANAGE_SCHEDULER' },
   ];
+
+  const filteredNavItems = navItems.filter(item => {
+    if (item.hasSubmenu) {
+      item.subItems = item.subItems.filter(sub => permissionCodes.includes(sub.requiredPermission) || permissionCodes.includes('ALL'));
+      return item.subItems.length > 0;
+    }
+    return permissionCodes.includes(item.requiredPermission) || permissionCodes.includes('ALL');
+  });
+  
+  
 
   const isPolicySubItemActive = navItems
     .find(item => item.id === 'policy')?.subItems
@@ -191,7 +205,7 @@ const Admin = () => {
         
         <nav className="sidebar-nav">
           <ul>
-            {navItems.map(renderNavItem)}
+            {filteredNavItems.map(renderNavItem)}
             
             {/* Logout Button */}
             <li className="logout-btn" onClick={handleLogout}>

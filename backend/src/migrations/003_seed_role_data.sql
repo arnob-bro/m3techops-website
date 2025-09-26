@@ -4,46 +4,58 @@ INSERT INTO roles (name) VALUES
   ('manager'),
   ('editor'),
   ('support'),
-  ('user');
+  ('basic');
 
 -- Insert Permissions
 INSERT INTO permissions (code, description) VALUES
-  ('CREATE_USER', 'Ability to create new users'),
-  ('DELETE_USER', 'Ability to delete users'),
-  ('UPDATE_USER', 'Ability to update user details'),
-  ('VIEW_USER', 'Ability to view user profiles'),
-  ('MANAGE_ROLES', 'Ability to assign and manage roles'),
-  ('VIEW_REPORTS', 'Access to view system reports'),
-  ('EXPORT_DATA', 'Permission to export data'),
-  ('IMPORT_DATA', 'Permission to import data'),
-  ('RESET_PASSWORD', 'Ability to reset user passwords'),
-  ('ACCESS_SUPPORT_TICKETS', 'Ability to view and manage support tickets');
+('VIEW_DASHBOARD', 'Access to view the admin dashboard'),
+('MANAGE_SERVICES', 'Create, edit, delete services'),
+('MANAGE_PORTFOLIO', 'Create, edit, delete portfolio items'),
+('MANAGE_BLOG', 'Create, edit, delete blog posts'),
+('GENERATE_PAYSLIP', 'Generate pay slips for employees'),
+('MANAGE_PAYSLIP', 'Manage generated pay slips'),
+('MANAGE_MESSAGES', 'View and respond to contact messages'),
+('MANAGE_SCHEDULER', 'Access and manage scheduler'),
+('MANAGE_EMPLOYEES', 'Create, edit, delete employee records'),
+('MANAGE_NEWSLETTER', 'Manage newsletter subscriptions and send emails'),
+('MANAGE_PRIVACY_POLICY', 'Edit the privacy policy page'),
+('MANAGE_COOKIES_POLICY', 'Edit the cookies policy page'),
+('MANAGE_TERMS_POLICY', 'Edit the terms of service page'),
+('ALL', 'Admin has all the access');
 
 -- Assign Role ↔ Permissions
--- Admin gets everything
+-- 1. Admin gets everything
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT 1, id FROM permissions;
 
--- Manager: manage users, view reports, export/import
-INSERT INTO role_permissions (role_id, permission_id) VALUES
-  (2, 1), -- CREATE_USER
-  (2, 3), -- UPDATE_USER
-  (2, 4), -- VIEW_USER
-  (2, 6), -- VIEW_REPORTS
-  (2, 7), -- EXPORT_DATA
-  (2, 8); -- IMPORT_DATA
+-- 2. Manager: dashboard, services, portfolio, blog, messages, scheduler
+INSERT INTO role_permissions (role_id, permission_id) 
+SELECT 2, id FROM permissions WHERE code IN (
+  'VIEW_DASHBOARD',
+  'MANAGE_SERVICES',
+  'MANAGE_PORTFOLIO',
+  'MANAGE_BLOG',
+  'MANAGE_MESSAGES',
+  'MANAGE_SCHEDULER'
+);
 
--- Editor: update & view users
-INSERT INTO role_permissions (role_id, permission_id) VALUES
-  (3, 3), -- UPDATE_USER
-  (3, 4); -- VIEW_USER
+-- 3. Editor: can manage portfolio and blog
+INSERT INTO role_permissions (role_id, permission_id) 
+SELECT 3, id FROM permissions WHERE code IN (
+  'MANAGE_PORTFOLIO',
+  'MANAGE_BLOG'
+);
 
--- Support: view users + support tickets + reset passwords
-INSERT INTO role_permissions (role_id, permission_id) VALUES
-  (4, 4),  -- VIEW_USER
-  (4, 9),  -- RESET_PASSWORD
-  (4, 10); -- ACCESS_SUPPORT_TICKETS
+-- 4. Support: can manage messages, scheduler, newsletter
+INSERT INTO role_permissions (role_id, permission_id) 
+SELECT 4, id FROM permissions WHERE code IN (
+  'MANAGE_MESSAGES',
+  'MANAGE_SCHEDULER',
+  'MANAGE_NEWSLETTER'
+);
 
--- User: can only view own profile
-INSERT INTO role_permissions (role_id, permission_id) VALUES
-  (5, 4); -- VIEW_USER
+-- 5. Basic employee: only view dashboard
+INSERT INTO role_permissions (role_id, permission_id) 
+SELECT 5, id FROM permissions WHERE code IN (
+  'VIEW_DASHBOARD'
+);
