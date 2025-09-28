@@ -53,23 +53,21 @@ const Scheduler = () => {
     fetchMySchedule();
   }, []);
 
-  // Fetch all schedules when week changes
   // Fetch all schedules when week changes or employees load
-// Fetch all schedules when week changes or employees list updates
-useEffect(() => {
-  if (employees.length > 0) {
-    fetchAllSchedules();
-  }
-}, [currentDate, employees]);
+  useEffect(() => {
+    if (employees.length > 0) {
+      fetchAllSchedules();
+    }
+  }, [currentDate, employees]);
 
-  // Fetch common slots when selected employees change
+  // Use the same API for common slots as the calendar
   useEffect(() => {
     if (selectedEmployees.length > 0) {
-      fetchCommonSlots();
+      fetchCommonSlotsUsingSameAPI();
     } else {
       setCommonSlots([]);
     }
-  }, [selectedEmployees]);
+  }, [selectedEmployees, currentDate, allSchedules]);
 
   const fetchEmployees = async () => {
     try {
@@ -82,6 +80,7 @@ useEffect(() => {
           color: colors[index % colors.length]
         }));
         setEmployees(employeesWithColors);
+        console.log('Employees loaded:', employeesWithColors.length);
       }
     } catch (error) {
       console.error('Error fetching employees:', error);
@@ -103,8 +102,103 @@ useEffect(() => {
     }
   };
 
-const fetchAllSchedules = async () => {
-  try {
+  const fetchAllSchedules = async () => {
+    try {
+      const startOfWeek = new Date(currentDate);
+      startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+      startOfWeek.setHours(0, 0, 0, 0);
+      
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      // Get ALL employee IDs including current user
+      const allEmployeeIds = employees.map(emp => emp.employee_id);
+      
+      // Ensure current user is included
+      if (user?.employee_id && !allEmployeeIds.includes(user.employee_id)) {
+        allEmployeeIds.push(user.employee_id);
+      }
+
+      const response = await schedulerApi.getEmployeeSchedules(
+        allEmployeeIds,
+        startOfWeek.toISOString(),
+        endOfWeek.toISOString()
+      );
+      
+      if (response.success) {
+        setAllSchedules(response.data || []);
+        console.log('All schedules loaded for calendar:', response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching all schedules:', error);
+    }
+  };
+
+  // FIXED: Using hour-based approach for better multi-employee detection
+  const fetchCommonSlotsUsingSameAPI = () => {
+    console.log('=== FETCHING COMMON SLOTS ===');
+    console.log('Selected employees:', selectedEmployees);
+    
+    if (!selectedEmployees || selectedEmployees.length === 0) {
+      console.log('No employees selected, clearing common slots');
+      setCommonSlots([]);
+      return;
+    }
+
+    try {
+      // Use the same data that's already loaded for the calendar
+      const selectedEmployeeSchedules = allSchedules.filter(schedule => 
+        selectedEmployees.includes(schedule.employee_id)
+      );
+
+      console.log('Selected employee schedules count:', selectedEmployeeSchedules.length);
+
+      if (selectedEmployeeSchedules.length === 0) {
+        setCommonSlots([]);
+        return;
+      }
+
+      let commonSlotsResult = [];
+
+      if (selectedEmployees.length === 1) {
+        // Single employee - show all their slots
+        commonSlotsResult = selectedEmployeeSchedules.map(schedule => ({
+          start_time: schedule.start_time,
+          end_time: schedule.end_time,
+          employee_count: 1,
+          employees: [schedule.employee_id]
+        }));
+      } else {
+        // Multiple employees - use hour-based approach
+        commonSlotsResult = findCommonSlotsByHour(selectedEmployeeSchedules, selectedEmployees);
+      }
+
+      console.log('Common slots found:', commonSlotsResult.length);
+      setCommonSlots(commonSlotsResult);
+
+      // Log each common slot for debugging
+      commonSlotsResult.forEach((slot, index) => {
+        console.log(`✅ Common Slot ${index + 1}:`, {
+          start: slot.start_time,
+          end: slot.end_time,
+          employees: slot.employees.length,
+          formatted: `${formatScheduleTime(slot.start_time)} - ${formatScheduleTime(slot.end_time)}`
+        });
+      });
+
+    } catch (error) {
+      console.error('❌ Error in fetchCommonSlotsUsingSameAPI:', error);
+      setCommonSlots([]);
+      setError('Failed to calculate common available times.');
+    }
+  };
+
+  // ALTERNATIVE: Simpler approach using hour-based intervals
+  const findCommonSlotsByHour = (schedules, employeeIds) => {
+    const commonSlots = [];
+    
+    // Create hourly intervals for the current week
     const startOfWeek = new Date(currentDate);
     startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
     startOfWeek.setHours(0, 0, 0, 0);
@@ -113,60 +207,73 @@ const fetchAllSchedules = async () => {
     endOfWeek.setDate(startOfWeek.getDate() + 6);
     endOfWeek.setHours(23, 59, 59, 999);
 
-    console.log('Fetching ALL schedules for week:', {
-      start: startOfWeek.toISOString(),
-      end: endOfWeek.toISOString(),
-      user: user?.employee_id
-    });
-
-    // Get ALL employee IDs including current user
-    const allEmployeeIds = employees.map(emp => emp.employee_id);
-    
-    // Ensure current user is included
-    if (user?.employee_id && !allEmployeeIds.includes(user.employee_id)) {
-      allEmployeeIds.push(user.employee_id);
-    }
-
-    console.log('Fetching schedules for employees:', allEmployeeIds);
-
-    const response = await schedulerApi.getEmployeeSchedules(
-      allEmployeeIds,
-      startOfWeek.toISOString(),
-      endOfWeek.toISOString()
-    );
-    
-    console.log('All schedules response:', response);
-    
-    if (response.success) {
-      setAllSchedules(response.data || []);
-      console.log('Total schedules loaded:', response.data.length);
+    // Check each hour of the week
+    for (let day = 0; day < 7; day++) {
+      const currentDay = new Date(startOfWeek);
+      currentDay.setDate(startOfWeek.getDate() + day);
       
-      // Debug info
-      const mySchedulesInAll = response.data.filter(slot => slot.employee_id === user?.employee_id);
-      console.log('My schedules in allSchedules:', mySchedulesInAll.length);
-    }
-  } catch (error) {
-    console.error('Error fetching all schedules:', error);
-  }
-};
+      for (let hour = 0; hour < 24; hour++) {
+        const slotStart = new Date(currentDay);
+        slotStart.setHours(hour, 0, 0, 0);
+        
+        const slotEnd = new Date(currentDay);
+        slotEnd.setHours(hour + 1, 0, 0, 0);
 
-  const fetchCommonSlots = async () => {
-    try {
-      const startOfWeek = new Date(currentDate);
-      startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
+        // Check if all selected employees are available during this hour
+        const allAvailable = employeeIds.every(empId => {
+          return schedules.some(schedule => {
+            const scheduleStart = new Date(schedule.start_time);
+            const scheduleEnd = new Date(schedule.end_time);
+            return schedule.employee_id === empId && 
+                   scheduleStart <= slotStart && 
+                   scheduleEnd >= slotEnd;
+          });
+        });
 
-      const response = await schedulerApi.getCommonSlots(selectedEmployees, {
-        start_date: startOfWeek.toISOString().split('T')[0],
-        end_date: endOfWeek.toISOString().split('T')[0]
-      });
-      if (response.success) {
-        setCommonSlots(response.data || []);
+        if (allAvailable) {
+          commonSlots.push({
+            start_time: slotStart.toISOString(),
+            end_time: slotEnd.toISOString(),
+            employee_count: employeeIds.length,
+            employees: employeeIds
+          });
+        }
       }
-    } catch (error) {
-      console.error('Error fetching common slots:', error);
     }
+
+    // Merge consecutive hourly slots
+    const mergedSlots = [];
+    commonSlots.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+
+    for (let i = 0; i < commonSlots.length; i++) {
+      const currentSlot = commonSlots[i];
+      
+      if (mergedSlots.length === 0) {
+        mergedSlots.push(currentSlot);
+        continue;
+      }
+
+      const lastSlot = mergedSlots[mergedSlots.length - 1];
+      const currentStart = new Date(currentSlot.start_time);
+      const lastEnd = new Date(lastSlot.end_time);
+
+      // If current slot starts when last slot ends, merge them
+      if (currentStart.getTime() === lastEnd.getTime()) {
+        lastSlot.end_time = currentSlot.end_time;
+      } else {
+        mergedSlots.push(currentSlot);
+      }
+    }
+
+    return mergedSlots;
+  };
+
+  // Helper function to get employee names for display
+  const getEmployeeNames = (employeeIds) => {
+    return employeeIds.map(empId => {
+      const employee = employees.find(emp => emp.employee_id === empId);
+      return employee ? `${employee.first_name} ${employee.last_name}` : 'Unknown';
+    }).join(', ');
   };
 
   // Calendar helper functions
@@ -192,33 +299,81 @@ const fetchAllSchedules = async () => {
     return `${i.toString().padStart(2, '0')}:00`;
   });
 
-  const formatDate = (date) => {
-    return date.toISOString().split('T')[0];
+  // FIXED: Enhanced time formatting with better error handling
+  const formatScheduleTime = (dateString) => {
+    try {
+      if (!dateString) return 'Invalid time';
+      const date = new Date(dateString);
+      if (date.toString() === 'Invalid Date') return 'Invalid time';
+      
+      return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (error) {
+      console.error('Error formatting time:', error, dateString);
+      return 'Invalid time';
+    }
   };
 
-  // Check if a slot should be displayed in a specific hour cell
-// Check if a slot should be displayed in a specific hour cell
-const getSlotsForTimeCell = (date, time) => {
-  const hour = parseInt(time.split(':')[0]);
-  
-  const cellStart = new Date(date);
-  cellStart.setHours(hour, 0, 0, 0);
-  
-  const cellEnd = new Date(date);
-  cellEnd.setHours(hour + 1, 0, 0, 0); // Changed to hour+1 to get the full hour range
-  
-  const filteredSlots = allSchedules.filter(slot => {
-    const slotStart = new Date(slot.start_time);
-    const slotEnd = new Date(slot.end_time);
+  // FIXED: Enhanced date formatting with better error handling
+  const formatScheduleDate = (dateString) => {
+    try {
+      if (!dateString) return 'Invalid date';
+      const date = new Date(dateString);
+      if (date.toString() === 'Invalid Date') return 'Invalid date';
+      
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error, dateString);
+      return 'Invalid date';
+    }
+  };
+
+  const getSlotsForTimeCell = (date, time) => {
+    const hour = parseInt(time.split(':')[0]);
     
-    // Check if slot overlaps with this hour cell
-    const overlaps = slotStart < cellEnd && slotEnd > cellStart;
+    const cellStart = new Date(date);
+    cellStart.setHours(hour, 0, 0, 0);
     
-    return overlaps;
-  });
-  
-  return filteredSlots;
-};
+    const cellEnd = new Date(date);
+    cellEnd.setHours(hour + 1, 0, 0, 0);
+    
+    const filteredSlots = allSchedules.filter(slot => {
+      const slotStart = new Date(slot.start_time);
+      const slotEnd = new Date(slot.end_time);
+      
+      // Check if slot overlaps with this hour cell
+      const overlaps = slotStart < cellEnd && slotEnd > cellStart;
+      
+      return overlaps;
+    });
+    
+    // Group by employee and return employee names
+    const employeeNames = [];
+    const processedEmployees = new Set();
+    
+    filteredSlots.forEach(slot => {
+      if (!processedEmployees.has(slot.employee_id)) {
+        const employee = employees.find(emp => emp.employee_id === slot.employee_id) || {};
+        if (employee.first_name) {
+          employeeNames.push(employee.first_name);
+        }
+        processedEmployees.add(slot.employee_id);
+      }
+    });
+    
+    return {
+      slots: filteredSlots,
+      employeeNames: employeeNames
+    };
+  };
 
   const handleStartDateChange = (date) => {
     setFormData(prev => ({
@@ -228,74 +383,68 @@ const getSlotsForTimeCell = (date, time) => {
     }));
   };
 
-
-
   const refreshAllData = async () => {
-  try {
-    await fetchMySchedule();
-    await fetchAllSchedules();
-    
-    if (selectedEmployees.length > 0) {
-      await fetchCommonSlots();
+    try {
+      await fetchMySchedule();
+      await fetchAllSchedules();
+      
+      if (selectedEmployees.length > 0) {
+        fetchCommonSlotsUsingSameAPI();
+      }
+    } catch (error) {
+      console.error('Error refreshing data:', error);
     }
-  } catch (error) {
-    console.error('Error refreshing data:', error);
-  }
-};
+  };
 
+  const handleSubmit = async () => {
+    setError('');
+    setLoading(true);
 
-// Update handleSubmit function
-const handleSubmit = async () => {
-  setError('');
-  setLoading(true);
+    try {
+      const startDateTime = new Date(`${formData.start_date}T${formData.start_time}`);
+      const endDateTime = new Date(`${formData.end_date}T${formData.end_time}`);
 
-  try {
-    const startDateTime = new Date(`${formData.start_date}T${formData.start_time}`);
-    const endDateTime = new Date(`${formData.end_date}T${formData.end_time}`);
+      // Adjust for timezone offset
+      const timezoneOffset = startDateTime.getTimezoneOffset() * 60000;
+      const startISODate = new Date(startDateTime.getTime() - timezoneOffset).toISOString();
+      const endISODate = new Date(endDateTime.getTime() - timezoneOffset).toISOString();
 
-    // Adjust for timezone offset
-    const timezoneOffset = startDateTime.getTimezoneOffset() * 60000;
-    const startISODate = new Date(startDateTime.getTime() - timezoneOffset).toISOString();
-    const endISODate = new Date(endDateTime.getTime() - timezoneOffset).toISOString();
+      if (startDateTime >= endDateTime) {
+        setError('End time must be after start time');
+        return;
+      }
 
-    if (startDateTime >= endDateTime) {
-      setError('End time must be after start time');
-      return;
+      const scheduleData = {
+        start_time: startISODate,
+        end_time: endISODate,
+        title: formData.title,
+        description: formData.description
+      };
+
+      if (editingSlot) {
+        await schedulerApi.updateSchedule(editingSlot.id, scheduleData);
+      } else {
+        await schedulerApi.createSchedule(scheduleData);
+      }
+
+      setShowAddModal(false);
+      setFormData({
+        start_date: '',
+        start_time: '',
+        end_date: '',
+        end_time: '',
+        title: '',
+        description: ''
+      });
+      setEditingSlot(null);
+      
+      await refreshAllData();
+    } catch (err) {
+      setError(err.response?.data?.error || err.error || 'Failed to save schedule');
+    } finally {
+      setLoading(false);
     }
-
-    const scheduleData = {
-      start_time: startISODate,
-      end_time: endISODate,
-      title: formData.title,
-      description: formData.description
-    };
-
-    if (editingSlot) {
-      await schedulerApi.updateSchedule(editingSlot.id, scheduleData);
-    } else {
-      await schedulerApi.createSchedule(scheduleData);
-    }
-
-    setShowAddModal(false);
-    setFormData({
-      start_date: '',
-      start_time: '',
-      end_date: '',
-      end_time: '',
-      title: '',
-      description: ''
-    });
-    setEditingSlot(null);
-    
-    // Use the new refresh function
-    await refreshAllData();
-  } catch (err) {
-    setError(err.response?.data?.error || err.error || 'Failed to save schedule');
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const handleEdit = (slot) => {
     const startDate = new Date(slot.start_time).toISOString().split('T')[0];
@@ -316,16 +465,16 @@ const handleSubmit = async () => {
     setError('');
   };
 
-const handleDelete = async (slotId) => {
-  if (window.confirm('Are you sure you want to delete this time slot?')) {
-    try {
-      await schedulerApi.deleteSchedule(slotId);
-      await refreshAllData(); // Use the new refresh function
-    } catch (error) {
-      setError('Failed to delete schedule');
+  const handleDelete = async (slotId) => {
+    if (window.confirm('Are you sure you want to delete this time slot?')) {
+      try {
+        await schedulerApi.deleteSchedule(slotId);
+        await refreshAllData();
+      } catch (error) {
+        setError('Failed to delete schedule');
+      }
     }
-  }
-};
+  };
 
   const toggleEmployeeSelection = (employeeId) => {
     setSelectedEmployees(prev => 
@@ -347,23 +496,6 @@ const handleDelete = async (slotId) => {
     const newDate = new Date(currentDate);
     newDate.setDate(currentDate.getDate() + (direction * 7));
     setCurrentDate(newDate);
-  };
-
-  const formatScheduleDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const formatScheduleTime = (dateString) => {
-    return new Date(dateString).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
   };
 
   return (
@@ -504,17 +636,34 @@ const handleDelete = async (slotId) => {
         )}
       </div>
 
-      {/* Common Available Slots */}
+      {/* FIXED: Common Available Slots Card - Now with better multi-employee support */}
       {selectedEmployees.length > 0 && (
         <div className="quick-view-card">
-          <h3>
-            <FiUsers /> Common Available Times
-            <span className="slot-count">({commonSlots.length} slots)</span>
-          </h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <FiUsers color="#1CB0A2" /> 
+              {selectedEmployees.length === 1 ? 'Available Times' : 'Common Available Times'}
+              <span className="slot-count">({commonSlots.length} slots)</span>
+            </h3>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <button 
+                onClick={fetchCommonSlotsUsingSameAPI}
+                className="today-btn"
+                style={{ fontSize: '12px', padding: '8px 12px' }}
+                title="Refresh common slots"
+              >
+                <FiRefreshCw /> Refresh
+              </button>
+              <div style={{ fontSize: '12px', color: '#64748b' }}>
+                {selectedEmployees.length} employee{selectedEmployees.length > 1 ? 's' : ''} selected
+              </div>
+            </div>
+          </div>
+
           {commonSlots.length > 0 ? (
             <div className="common-slots-grid">
               {commonSlots.map((slot, index) => (
-                <div key={index} className="common-slot-item highlight">
+                <div key={`common-slot-${index}`} className="common-slot-item highlight">
                   <div className="slot-date">
                     {formatScheduleDate(slot.start_time)}
                   </div>
@@ -522,35 +671,35 @@ const handleDelete = async (slotId) => {
                     {formatScheduleTime(slot.start_time)} - {formatScheduleTime(slot.end_time)}
                   </div>
                   <div className="slot-admins">
-                    {selectedEmployees.length} employees available
+                    {selectedEmployees.length === 1 
+                      ? `${getEmployeeNames(slot.employees)} available`
+                      : `All ${selectedEmployees.length} employees available`
+                    }
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="no-slots-message">No common available times found for selected employees.</p>
+            <div className="no-common-slots">
+              <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '16px' }}>
+                {selectedEmployees.length === 1
+                  ? "No available times found for this employee in the current week."
+                  : "No common available times found for all selected employees in this week."
+                }
+              </p>
+              <div style={{ textAlign: 'center' }}>
+                <button 
+                  onClick={refreshAllData}
+                  className="add-first-btn"
+                  style={{ fontSize: '14px' }}
+                >
+                  <FiRefreshCw /> Refresh Data
+                </button>
+              </div>
+            </div>
           )}
         </div>
       )}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       {/* Calendar Navigation */}
       <div className="calendar-nav">
@@ -572,85 +721,61 @@ const handleDelete = async (slotId) => {
         </div>
       </div>
 
+      {/* Weekly Calendar View */}
+      <div className="calendar-container">
+        <div className="calendar-grid">
+          {/* Time column */}
+          <div className="time-column">
+            <div className="time-header"></div>
+            {timeSlots.map(time => (
+              <div key={time} className="time-slot">
+                {time}
+              </div>
+            ))}
+          </div>
 
-
-
-
-
-{/* Weekly Calendar View */}
-<div className="calendar-container">
-  <div className="calendar-grid">
-    {/* Time column */}
-    <div className="time-column">
-      <div className="time-header"></div>
-      {timeSlots.map(time => (
-        <div key={time} className="time-slot">
-          {time}
-        </div>
-      ))}
-    </div>
-
-    {/* Day columns */}
-    {weekDates.map((date, dayIndex) => (
-      <div key={dayIndex} className="day-column">
-        <div className="day-header">
-          <div className="day-name">{dayNames[dayIndex]}</div>
-          <div className="day-number">{date.getDate()}</div>
-        </div>
-        
-        <div className="day-slots">
-          {timeSlots.map((time, timeIndex) => {
-            const slotsInCell = getSlotsForTimeCell(date, time);
-            
-            return (
-              <div key={timeIndex} className="time-cell">
-                {slotsInCell.map(slot => {
-                  const employee = employees.find(emp => emp.employee_id === slot.employee_id) || {};
-                  const isMySchedule = slot.employee_id === user?.employee_id;
+          {/* Day columns */}
+          {weekDates.map((date, dayIndex) => (
+            <div key={dayIndex} className="day-column">
+              <div className="day-header">
+                <div className="day-name">{dayNames[dayIndex]}</div>
+                <div className="day-number">{date.getDate()}</div>
+              </div>
+              
+              <div className="day-slots">
+                {timeSlots.map((time, timeIndex) => {
+                  const cellData = getSlotsForTimeCell(date, time);
+                  const { slots, employeeNames } = cellData;
                   
                   return (
-                    <div
-                      key={slot.id}
-                      className={`availability-slot ${isMySchedule ? 'my-schedule' : ''}`}
-                      style={{ 
-                        backgroundColor: isMySchedule 
-                          ? 'rgba(255, 138, 0, 0.3)' 
-                          : (employee.color || '#666') + '20',
-                        borderLeft: `3px solid ${isMySchedule ? '#FF8A00' : (employee.color || '#666')}`
-                      }}
-                      onClick={() => isMySchedule && handleEdit(slot)}
-                      title={`${employee.first_name || 'Unknown'} ${employee.last_name || ''}: ${formatScheduleTime(slot.start_time)} - ${formatScheduleTime(slot.end_time)}`}
-                    >
-                      <div className="slot-content">
-                        <div className="slot-employee">
-                          {employee.first_name} {employee.last_name}
+                    <div key={timeIndex} className="time-cell">
+                      {employeeNames.length > 0 && (
+                        <div
+                          className="availability-slot"
+                          style={{ 
+                            backgroundColor: 'rgba(28, 176, 162, 0.2)',
+                            borderLeft: '3px solid #1CB0A2',
+                            fontSize: '11px',
+                            padding: '4px',
+                            borderRadius: '6px'
+                          }}
+                          title={`Available: ${employeeNames.join(', ')}`}
+                        >
+                          <div className="slot-content">
+                            <div className="slot-employee" style={{ fontWeight: '600', color: '#1e293b' }}>
+                              {employeeNames.join(', ')}
+                            </div>
+                          </div>
                         </div>
-                        <div className="slot-time-range">
-                          {formatScheduleTime(slot.start_time)}-{formatScheduleTime(slot.end_time)}
-                        </div>
-                      </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
-    ))}
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-      
 
       {/* Add/Edit Modal */}
       {showAddModal && (
