@@ -79,6 +79,15 @@ const ContactUs = () => {
     }
   };
 
+  // Contact information
+  const contactInfo = {
+    address: "77/1, Siddeshwari Road, Anarkali Super Market, 4th floor shop No.26/A, Dhaka 1217",
+    phone: "+8801332112077",
+    email: "info@m3techops.com",
+    encodedAddress: encodeURIComponent("77/1, Siddeshwari Road, Anarkali Super Market, 4th floor shop No.26/A, Dhaka 1217"),
+    mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.598417814126!2d90.39931407485104!3d23.798506478632255!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c70c78f7e3a7%3A0xbd2b8e81b12f8b3e!2sSiddeshwari%20Road%2C%20Dhaka%201217!5e0!3m2!1sen!2sbd!4v1690000000000!5m2!1sen!2sbd"
+  };
+
   return (
     <div className="ContactUs">
       {/* Floating Background Elements */}
@@ -291,7 +300,7 @@ const ContactUs = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      placeholder="+1 (555) 123-4567"
+                      placeholder="+880 1332-112077"
                     />
                   </div>
                   <div className="form-group">
@@ -310,6 +319,7 @@ const ContactUs = () => {
                       <option value="CA">Canada</option>
                       <option value="UK">United Kingdom</option>
                       <option value="AU">Australia</option>
+                      <option value="BD">Bangladesh</option>
                       <option value="IN">India</option>
                       <option value="DE">Germany</option>
                       <option value="FR">France</option>
@@ -374,8 +384,15 @@ const ContactUs = () => {
                   </div>
                   <div className="info-content">
                     <h3>Visit Our Office</h3>
-                    <p>123 Tech Street<br />San Francisco, CA 94107<br />United States</p>
-                    <a href="#" className="info-link">Get directions →</a>
+                    <p>{contactInfo.address}</p>
+                    <a 
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${contactInfo.encodedAddress}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="info-link"
+                    >
+                      Get directions →
+                    </a>
                   </div>
                 </div>
 
@@ -385,8 +402,10 @@ const ContactUs = () => {
                   </div>
                   <div className="info-content">
                     <h3>Call Us</h3>
-                    <p>+1 (555) 123-4567</p>
-                    <a href="tel:+15551234567" className="info-link">Call now →</a>
+                    <p>{contactInfo.phone}</p>
+                    <a href={`tel:${contactInfo.phone}`} className="info-link">
+                      Call now →
+                    </a>
                   </div>
                 </div>
 
@@ -396,8 +415,10 @@ const ContactUs = () => {
                   </div>
                   <div className="info-content">
                     <h3>Email Us</h3>
-                    <p>info@m3techops.com</p>
-                    <a href="mailto:info@m3techops.com" className="info-link">Send email →</a>
+                    <p>{contactInfo.email}</p>
+                    <a href={`mailto:${contactInfo.email}`} className="info-link">
+                      Send email →
+                    </a>
                   </div>
                 </div>
               </div>
@@ -405,17 +426,18 @@ const ContactUs = () => {
               <div className="map-container">
                 <div className="map-header">
                   <h3>Find us on the map</h3>
-                  <p>Located in the heart of San Francisco's tech district</p>
+                  <p>Located in Siddeshwari, Dhaka</p>
                 </div>
                 <div className="map-wrapper">
                   <iframe 
                     title="Office Location"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.158581027691!2d-122.4036646846822!3d37.79097997975798!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085807f4b1a0a4f%3A0x4a501367f076adff!2s123%20Tech%20St%2C%20San%20Francisco%2C%20CA%2094107%2C%20USA!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin" 
+                    src={contactInfo.mapUrl}
                     width="100%" 
                     height="100%" 
                     style={{ border: 0 }} 
                     allowFullScreen="" 
                     loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
                   ></iframe>
                 </div>
               </div>

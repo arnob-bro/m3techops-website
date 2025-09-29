@@ -554,7 +554,7 @@
 .section-title {
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  
+  border-bottom: none !important;
   background: linear-gradient(to right,
       white 0%,
       var(--color-text-secondary) 100%);

@@ -32,6 +32,7 @@
     flex-wrap: wrap;
 }
 
+/* Search Styles */
 .MPS-payslip-search {
     position: relative;
     flex: 1;
@@ -65,6 +66,7 @@
     pointer-events: none;
 }
 
+/* Filter Styles */
 .MPS-payslip-filters {
     display: flex;
     gap: 12px;
@@ -89,7 +91,7 @@
     box-shadow: 0 0 0 3px rgba(28, 176, 162, 0.08);
 }
 
-/* ===== Pay Slips Table ===== */
+/* ===== Table Styles ===== */
 .MPS-payslip-table-container {
     overflow-x: auto;
     border-radius: 16px;
@@ -131,7 +133,7 @@
     background: var(--admin-pages-hover);
 }
 
-/* Table Cell Styles */
+/* Table Cell Variants */
 .MPS-employee-id {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     font-size: 14px;
@@ -201,15 +203,11 @@
     gap: 16px;
 }
 
-.MPS-view-icon,
-.MPS-download-icon {
+.MPS-view-icon {
     cursor: pointer;
     font-size: 18px;
-    transition: all 0.2s ease;
-}
-
-.MPS-view-icon {
     color: #3b82f6;
+    transition: all 0.2s ease;
 }
 
 .MPS-view-icon:hover {
@@ -218,15 +216,11 @@
 }
 
 .MPS-download-icon {
-    color: var(--admin-pages-accent);
+    display: none;
+    /* Removed from table */
 }
 
-.MPS-download-icon:hover {
-    color: var(--admin-pages-accent-light);
-    transform: scale(1.2);
-}
-
-/* No Results */
+/* No Results State */
 .MPS-no-results td {
     text-align: center;
     padding: 40px;
@@ -234,7 +228,7 @@
     font-weight: 500;
 }
 
-/* Modal Styles */
+/* ===== Modal Styles ===== */
 .MPS-modal-overlay {
     position: fixed;
     top: 0;
@@ -255,22 +249,20 @@
     background: var(--admin-pages-primary);
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
-    max-width: 600px;
+    max-width: 900px;
     width: 100%;
     max-height: 90vh;
-    outline: none;
-    animation: MPS-slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     border: 1px solid var(--admin-pages-border);
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    animation: MPS-slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .MPS-modal-header {
     padding: 24px 32px;
     border-bottom: 1px solid var(--admin-pages-border);
     background: linear-gradient(135deg, #ffffff 0%, var(--admin-pages-primary) 100%);
-    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -282,6 +274,12 @@
     color: var(--admin-pages-text-primary);
     margin: 0;
     letter-spacing: -0.025em;
+}
+
+.MPS-modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .MPS-modal-close {
@@ -304,25 +302,12 @@
     color: var(--admin-pages-accent);
 }
 
-.MPS-modal-body {
-    padding: 24px 32px;
-    overflow-y: auto;
-    flex: 1;
-}
-
-.MPS-modal-footer {
-    padding: 20px 32px;
-    border-top: 1px solid var(--admin-pages-border);
-    display: flex;
-    justify-content: flex-end;
-}
-
 .MPS-download-btn {
     background: var(--admin-pages-accent);
     color: #ffffff;
     border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
+    padding: 10px 20px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -337,38 +322,235 @@
     transform: translateY(-1px);
 }
 
-/* Pay Slip Details */
-.MPS-payslip-details {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.MPS-modal-body {
+    padding: 0;
+    overflow-y: auto;
+    flex: 1;
 }
 
-.MPS-detail-row {
+/* ===== Payslip Preview Styles ===== */
+.payslip-preview-container {
+    padding: 20px;
+    background: white;
+}
+
+.payslip-container {
+    width: 100%;
+    background: white;
+    padding: 20px;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Payslip Header */
+.payslip-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--admin-pages-border-light);
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #bdc3c7;
 }
 
-.MPS-detail-row:last-child {
-    border-bottom: none;
+.left-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-.MPS-detail-label {
+.company-logo {
+    margin-bottom: 1rem;
+    width: 120px;
+    height: 120px;
+}
+
+.company-logo img {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+}
+
+.reference-info {
+    text-align: left;
+}
+
+.reference-label {
     font-weight: 600;
-    color: var(--admin-pages-text-primary);
+    font-size: 0.9rem;
 }
 
-.MPS-detail-value {
-    color: var(--admin-pages-text-secondary);
+.reference-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3498db;
 }
 
-.MPS-detail-value.MPS-highlight {
-    color: var(--admin-pages-accent);
+.company-info {
+    text-align: right;
+    flex: 1;
+}
+
+.company-info h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.company-address {
+    font-size: 0.8rem;
+    color: #555;
+    white-space: pre-line;
+}
+
+/* Payslip Title */
+.payslip-title {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.payslip-title h2 {
+    font-size: 1.4rem;
+    color: #2c3e50;
+    text-decoration: underline;
+}
+
+/* Employee & Payment Info */
+.employee-info,
+.payment-info {
+    margin-bottom: 0.5rem;
+}
+
+.info-item,
+.payment-item {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.info-label,
+.payment-label {
+    width: 120px;
+    font-weight: 600;
+}
+
+.info-value,
+.payment-value {
+    flex: 1;
+}
+
+.payment-value {
+    text-align: right;
+}
+
+.net-pay {
     font-weight: 700;
-    font-size: 1.1em;
+    font-size: 1rem;
+    border-top: 2px solid #2c3e50;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+/* Payment Mode */
+.payment-mode {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.mode-label {
+    font-weight: 600;
+    margin-right: 1rem;
+}
+
+.mode-options {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.mode-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mode-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #bdc3c7;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.mode-checkbox.checked {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+/* Bank & Bkash Details */
+.bank-details,
+.bkash-details {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+}
+
+.bank-details h4,
+.bkash-details h4 {
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-size: large;
+}
+
+.bank-grid,
+.bkash-info {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0.5rem;
+}
+
+/* Signature Section */
+.signature-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+
+.signature {
+    width: 45%;
+    text-align: center;
+}
+
+.signature.authorized {
+    text-align: left;
+    padding-right: 2rem;
+}
+
+.signature-line {
+    width: 300px;
+    height: 1px;
+    background: #2c3e50;
+    margin: 1rem 0 0 auto;
+}
+
+/* Footer Notes */
+.footer-notes {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: #777;
+    border-top: 1px solid #bdc3c7;
+    padding-top: 0.8rem;
+    white-space: pre-line;
+}
+
+.footer-notes p {
+    font-size: inherit;
+    color: #777;
+    margin: 0.2rem 0;
 }
 
 /* ===== Animations ===== */
@@ -433,18 +615,28 @@
 
     .MPS-modal-content {
         margin: 10px;
+        max-width: calc(100vw - 20px);
     }
 
-    .MPS-modal-header,
-    .MPS-modal-body,
-    .MPS-modal-footer {
+    .MPS-modal-header {
         padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
     }
 
-    .MPS-detail-row {
+    .MPS-modal-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .payslip-header {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
+        gap: 15px;
+    }
+
+    .company-info {
+        text-align: left;
     }
 }
 
@@ -457,125 +649,7 @@
         gap: 12px;
     }
 
-    .MPS-view-icon,
-    .MPS-download-icon {
+    .MPS-view-icon {
         font-size: 16px;
     }
 }
-
-
-
-/* needs review */
-
-/* Payslip Container */
-.payslip-preview {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 30px;
-    background: #ffffff;
-    border: 2px solid #0e0e53; /* Navy border */
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: #222;
-    line-height: 1.6;
-  }
-  
-  /* Header Section */
-  .payslip-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 3px solid #ff8800; /* Accent orange */
-    padding-bottom: 15px;
-    margin-bottom: 25px;
-  }
-  
-  .payslip-header h2 {
-    font-size: 26px;
-    font-weight: bold;
-    color: #0e0e53;
-    margin: 0;
-  }
-  
-  .payslip-logo img {
-    max-height: 60px;
-    object-fit: contain;
-  }
-  
-  /* Company Info */
-  .company-info {
-    font-size: 14px;
-    white-space: pre-line; /* preserve line breaks */
-    margin-bottom: 25px;
-    color: #444;
-  }
-  
-  /* Section Titles */
-  .section-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #22577a; /* teal blue */
-    border-bottom: 2px solid #f2f2f2;
-    padding-bottom: 6px;
-    margin: 20px 0 10px;
-  }
-  
-  /* Info Grid */
-  .info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px 20px;
-    margin-bottom: 20px;
-  }
-  
-  .info-item {
-    font-size: 15px;
-  }
-  
-  .info-label {
-    font-weight: bold;
-    color: #0e0e53;
-    margin-right: 5px;
-  }
-  
-  /* Earnings & Deductions Table */
-  .payslip-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-  }
-  
-  .payslip-table th,
-  .payslip-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    font-size: 15px;
-    text-align: left;
-  }
-  
-  .payslip-table th {
-    background: #e7f3fe;
-    color: #0e0e53;
-    font-weight: 600;
-  }
-  
-  /* Net Pay Highlight */
-  .netpay-box {
-    text-align: right;
-    font-size: 20px;
-    font-weight: bold;
-    color: #ff8800;
-    margin-top: 15px;
-  }
-  
-  /* Footer Notes */
-  .payslip-footer {
-    margin-top: 30px;
-    font-size: 13px;
-    color: #555;
-    white-space: pre-line;
-    border-top: 2px solid #f2f2f2;
-    padding-top: 15px;
-  }
-  

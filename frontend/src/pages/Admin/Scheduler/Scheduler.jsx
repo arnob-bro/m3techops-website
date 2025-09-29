@@ -11,7 +11,8 @@ import {
   FiFilter,
   FiCheckSquare,
   FiSquare,
-  FiRefreshCw
+  FiRefreshCw,
+  FiArchive 
 } from 'react-icons/fi';
 import './Scheduler.css';
 import useUserStore from "../../../stores/userStore";
@@ -21,9 +22,11 @@ import EmployeeApi from "../../../apis/employeeApi";
 const Scheduler = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [editingSlot, setEditingSlot] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [availabilityDateFilter, setAvailabilityDateFilter] = useState('');
   
   const { user } = useUserStore();
   const schedulerApi = new SchedulerApi();
@@ -33,6 +36,7 @@ const Scheduler = () => {
   const [employees, setEmployees] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [mySchedules, setMySchedules] = useState([]);
+  const [scheduleHistory, setScheduleHistory] = useState([]);
   const [commonSlots, setCommonSlots] = useState([]);
   const [allSchedules, setAllSchedules] = useState([]);
   const [employeesLoading, setEmployeesLoading] = useState(true);
@@ -51,6 +55,7 @@ const Scheduler = () => {
   useEffect(() => {
     fetchEmployees();
     fetchMySchedule();
+    fetchScheduleHistory();
   }, []);
 
   // Fetch all schedules when week changes or employees load
@@ -67,7 +72,7 @@ const Scheduler = () => {
     } else {
       setCommonSlots([]);
     }
-  }, [selectedEmployees, currentDate, allSchedules]);
+  }, [selectedEmployees, currentDate, allSchedules, availabilityDateFilter]);
 
   const fetchEmployees = async () => {
     try {
@@ -94,11 +99,35 @@ const Scheduler = () => {
     try {
       const response = await schedulerApi.getMySchedule();
       if (response.success) {
-        setMySchedules(response.data || []);
-        console.log('My schedules loaded:', response.data);
+        const now = new Date();
+        // Filter out past schedules - only keep future and current schedules
+        const activeSchedules = (response.data || []).filter(schedule => {
+          const endTime = new Date(schedule.end_time);
+          return endTime >= now;
+        });
+        setMySchedules(activeSchedules);
+        console.log('My active schedules loaded:', activeSchedules.length);
       }
     } catch (error) {
       console.error('Error fetching my schedule:', error);
+    }
+  };
+
+  const fetchScheduleHistory = async () => {
+    try {
+      const response = await schedulerApi.getMySchedule();
+      if (response.success) {
+        const now = new Date();
+        // Filter for past schedules only
+        const pastSchedules = (response.data || []).filter(schedule => {
+          const endTime = new Date(schedule.end_time);
+          return endTime < now;
+        });
+        setScheduleHistory(pastSchedules);
+        console.log('Schedule history loaded:', pastSchedules.length);
+      }
+    } catch (error) {
+      console.error('Error fetching schedule history:', error);
     }
   };
 
@@ -148,11 +177,33 @@ const Scheduler = () => {
 
     try {
       // Use the same data that's already loaded for the calendar
-      const selectedEmployeeSchedules = allSchedules.filter(schedule => 
+      let selectedEmployeeSchedules = allSchedules.filter(schedule => 
         selectedEmployees.includes(schedule.employee_id)
       );
 
-      console.log('Selected employee schedules count:', selectedEmployeeSchedules.length);
+      // Filter by date if date filter is applied
+      if (availabilityDateFilter) {
+        const filterDate = new Date(availabilityDateFilter);
+        filterDate.setHours(0, 0, 0, 0);
+        
+        const nextDay = new Date(filterDate);
+        nextDay.setDate(filterDate.getDate() + 1);
+        
+        selectedEmployeeSchedules = selectedEmployeeSchedules.filter(schedule => {
+          const scheduleDate = new Date(schedule.start_time);
+          scheduleDate.setHours(0, 0, 0, 0);
+          return scheduleDate.getTime() === filterDate.getTime();
+        });
+      } else {
+        // Filter out past schedules when no date filter is applied
+        const now = new Date();
+        selectedEmployeeSchedules = selectedEmployeeSchedules.filter(schedule => {
+          const endTime = new Date(schedule.end_time);
+          return endTime >= now;
+        });
+      }
+
+      console.log('Filtered employee schedules count:', selectedEmployeeSchedules.length);
 
       if (selectedEmployeeSchedules.length === 0) {
         setCommonSlots([]);
@@ -198,26 +249,38 @@ const Scheduler = () => {
   const findCommonSlotsByHour = (schedules, employeeIds) => {
     const commonSlots = [];
     
-    // Create hourly intervals for the current week
-    const startOfWeek = new Date(currentDate);
-    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
-    startOfWeek.setHours(0, 0, 0, 0);
+    // Create hourly intervals for the current week or filtered date
+    let startDate, endDate;
     
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    // Check each hour of the week
-    for (let day = 0; day < 7; day++) {
-      const currentDay = new Date(startOfWeek);
-      currentDay.setDate(startOfWeek.getDate() + day);
+    if (availabilityDateFilter) {
+      startDate = new Date(availabilityDateFilter);
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date(availabilityDateFilter);
+      endDate.setHours(23, 59, 59, 999);
+    } else {
+      startDate = new Date(currentDate);
+      startDate.setDate(currentDate.getDate() - currentDate.getDay());
+      startDate.setHours(0, 0, 0, 0);
       
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6);
+      endDate.setHours(23, 59, 59, 999);
+    }
+
+    // Check each hour of the date range
+    const currentDay = new Date(startDate);
+    while (currentDay <= endDate) {
       for (let hour = 0; hour < 24; hour++) {
         const slotStart = new Date(currentDay);
         slotStart.setHours(hour, 0, 0, 0);
         
         const slotEnd = new Date(currentDay);
         slotEnd.setHours(hour + 1, 0, 0, 0);
+
+        // Skip if slot is in the past when no date filter is applied
+        if (!availabilityDateFilter && slotStart < new Date()) {
+          continue;
+        }
 
         // Check if all selected employees are available during this hour
         const allAvailable = employeeIds.every(empId => {
@@ -239,6 +302,7 @@ const Scheduler = () => {
           });
         }
       }
+      currentDay.setDate(currentDay.getDate() + 1);
     }
 
     // Merge consecutive hourly slots
@@ -345,14 +409,17 @@ const Scheduler = () => {
     const cellEnd = new Date(date);
     cellEnd.setHours(hour + 1, 0, 0, 0);
     
+    // Filter out past schedules for calendar display
+    const now = new Date();
     const filteredSlots = allSchedules.filter(slot => {
       const slotStart = new Date(slot.start_time);
       const slotEnd = new Date(slot.end_time);
       
-      // Check if slot overlaps with this hour cell
+      // Check if slot overlaps with this hour cell and is not in the past
       const overlaps = slotStart < cellEnd && slotEnd > cellStart;
+      const isFutureOrPresent = slotEnd >= now;
       
-      return overlaps;
+      return overlaps && isFutureOrPresent;
     });
     
     // Group by employee and return employee names
@@ -386,6 +453,7 @@ const Scheduler = () => {
   const refreshAllData = async () => {
     try {
       await fetchMySchedule();
+      await fetchScheduleHistory();
       await fetchAllSchedules();
       
       if (selectedEmployees.length > 0) {
@@ -403,6 +471,14 @@ const Scheduler = () => {
     try {
       const startDateTime = new Date(`${formData.start_date}T${formData.start_time}`);
       const endDateTime = new Date(`${formData.end_date}T${formData.end_time}`);
+      const now = new Date();
+
+      // Validation: Cannot schedule in the past
+      if (startDateTime < now) {
+        setError('Cannot schedule in the past. Please select a future date and time.');
+        setLoading(false);
+        return;
+      }
 
       // Adjust for timezone offset
       const timezoneOffset = startDateTime.getTimezoneOffset() * 60000;
@@ -447,6 +523,15 @@ const Scheduler = () => {
   };
 
   const handleEdit = (slot) => {
+    const now = new Date();
+    const slotEndTime = new Date(slot.end_time);
+    
+    // Check if the schedule has expired (end time is in the past)
+    if (slotEndTime < now) {
+      setError('Cannot edit expired schedules. This schedule has been moved to history.');
+      return;
+    }
+
     const startDate = new Date(slot.start_time).toISOString().split('T')[0];
     const startTime = new Date(slot.start_time).toTimeString().slice(0, 5);
     const endDate = new Date(slot.end_time).toISOString().split('T')[0];
@@ -507,6 +592,12 @@ const Scheduler = () => {
         </div>
         
         <div className="header-actions">
+          {/* <button 
+            onClick={() => setShowHistoryModal(true)}
+            className="history-btn"
+          >
+            <FiArchive /> Schedule History
+          </button> */}
           <button 
             onClick={() => {
               setShowAddModal(true);
@@ -536,6 +627,12 @@ const Scheduler = () => {
             <FiCalendar /> My Schedule
             <span className="schedule-count">({mySchedules.length} slots)</span>
           </h3>
+          <button 
+            onClick={() => setShowHistoryModal(true)}
+            className="view-history-btn"
+          >
+            <FiArchive /> View History ({scheduleHistory.length})
+          </button>
         </div>
         
         {mySchedules.length > 0 ? (
@@ -581,7 +678,7 @@ const Scheduler = () => {
           </div>
         ) : (
           <div className="no-schedules">
-            <p>No schedule slots added yet.</p>
+            <p>No active schedule slots. Add new availability or check history for past schedules.</p>
             <button onClick={() => setShowAddModal(true)} className="add-first-btn">
               <FiPlus /> Add Time Slot
             </button>
@@ -589,18 +686,50 @@ const Scheduler = () => {
         )}
       </div>
 
-      {/* Employee Filter Section */}
+      {/* Employee Filter Section with Integrated Date Filter */}
       <div className="employee-filter-card">
         <div className="filter-header">
           <h3>
             <FiFilter /> Select Employees to Check Common Availability
           </h3>
-          <button 
-            onClick={selectAllEmployees}
-            className="select-all-btn"
-          >
-            {selectedEmployees.length === employees.length ? 'Deselect All' : 'Select All'}
-          </button>
+          <div className="filter-controls">
+            <button 
+              onClick={selectAllEmployees}
+              className="select-all-btn"
+            >
+              {selectedEmployees.length === employees.length ? 'Deselect All' : 'Select All'}
+            </button>
+            
+            {/* Date Filter Button and Input - Only show when employees are selected */}
+            {selectedEmployees.length > 0 && (
+              <div className="date-filter-container">
+                <button 
+                  onClick={() => document.getElementById('date-filter-input').focus()}
+                  className="date-filter-btn"
+                  title="Filter by date"
+                >
+                  <FiCalendar /> Date Filter
+                </button>
+                <input
+                  id="date-filter-input"
+                  type="date"
+                  value={availabilityDateFilter}
+                  onChange={(e) => setAvailabilityDateFilter(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="date-filter-input"
+                />
+                {availabilityDateFilter && (
+                  <button 
+                    onClick={() => setAvailabilityDateFilter('')}
+                    className="clear-filter-btn"
+                    title="Clear date filter"
+                  >
+                    <FiX />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
         
         {employeesLoading ? (
@@ -632,6 +761,15 @@ const Scheduler = () => {
                 )}
               </label>
             ))}
+          </div>
+        )}
+        
+        {/* Filter Status */}
+        {selectedEmployees.length > 0 && availabilityDateFilter && (
+          <div className="filter-status">
+            <p>
+              Showing available times for <strong>{new Date(availabilityDateFilter).toLocaleDateString()}</strong>
+            </p>
           </div>
         )}
       </div>
@@ -682,9 +820,11 @@ const Scheduler = () => {
           ) : (
             <div className="no-common-slots">
               <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '16px' }}>
-                {selectedEmployees.length === 1
-                  ? "No available times found for this employee in the current week."
-                  : "No common available times found for all selected employees in this week."
+                {availabilityDateFilter
+                  ? `No available times found for ${selectedEmployees.length === 1 ? 'this employee' : 'the selected employees'} on ${new Date(availabilityDateFilter).toLocaleDateString()}.`
+                  : selectedEmployees.length === 1
+                    ? "No available times found for this employee in the current week."
+                    : "No common available times found for all selected employees in this week."
                 }
               </p>
               <div style={{ textAlign: 'center' }}>
@@ -798,6 +938,7 @@ const Scheduler = () => {
                     type="date"
                     name="start_date"
                     value={formData.start_date}
+                    min={new Date().toISOString().split('T')[0]}
                     onChange={(e) => handleStartDateChange(e.target.value)}
                     required
                   />
@@ -822,6 +963,7 @@ const Scheduler = () => {
                     type="date"
                     name="end_date"
                     value={formData.end_date}
+                    min={formData.start_date || new Date().toISOString().split('T')[0]}
                     onChange={(e) => setFormData(prev => ({...prev, end_date: e.target.value}))}
                     required
                   />
@@ -847,6 +989,72 @@ const Scheduler = () => {
                   <FiSave /> {loading ? 'Saving...' : (editingSlot ? 'Update' : 'Save')}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Schedule History Modal */}
+      {showHistoryModal && (
+        <div className="modal-overlay">
+          <div className="modal history-modal">
+            <div className="modal-header">
+              <h3>
+                <FiArchive /> Schedule History
+                <span className="history-count">({scheduleHistory.length} past schedules)</span>
+              </h3>
+              <button onClick={() => setShowHistoryModal(false)} className="close-btn">
+                <FiX />
+              </button>
+            </div>
+
+            <div className="modal-content">
+              {scheduleHistory.length > 0 ? (
+                <div className="history-list">
+                  {scheduleHistory.map(slot => (
+                    <div key={slot.id} className="history-item expired">
+                      <div className="schedule-period">
+                        <div className="time-section from-section">
+                          <div className="section-label">From:</div>
+                          <div className="date">date: {new Date(slot.start_time).toLocaleDateString('en-GB')}</div>
+                          <div className="day">day: {new Date(slot.start_time).toLocaleDateString('en-US', { weekday: 'long' })}</div>
+                          <div className="time">time: {new Date(slot.start_time).toLocaleTimeString('en-US', { 
+                            hour: '2-digit', 
+                            minute: '2-digit',
+                            hour12: true 
+                          }).toLowerCase()}</div>
+                        </div>
+                        
+                        <div className="arrow-separator">→</div>
+                        
+                        <div className="time-section to-section">
+                          <div className="section-label">To:</div>
+                          <div className="date">date: {new Date(slot.end_time).toLocaleDateString('en-GB')}</div>
+                          <div className="day">day: {new Date(slot.end_time).toLocaleDateString('en-US', { weekday: 'long' })}</div>
+                          <div className="time">time: {new Date(slot.end_time).toLocaleTimeString('en-US', { 
+                            hour: '2-digit', 
+                            minute: '2-digit',
+                            hour12: true 
+                          }).toLowerCase()}</div>
+                        </div>
+                      </div>
+                      <div className="history-badge">
+                        Expired
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="no-history">
+                  <p>No schedule history found.</p>
+                </div>
+              )}
+            </div>
+
+            <div className="modal-actions">
+              <button onClick={() => setShowHistoryModal(false)} className="cancel-btn">
+                Close
+              </button>
             </div>
           </div>
         </div>
