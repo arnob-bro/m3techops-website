@@ -5,6 +5,7 @@ function createTestimonialRouter(testimonialController) {
   const router = express.Router();
 
   router.post("/init", testimonialController.initTestimonial);
+  router.get("/", testimonialController.getTestimonials);
 
 
   return router;

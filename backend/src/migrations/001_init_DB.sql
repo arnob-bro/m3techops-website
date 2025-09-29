@@ -160,6 +160,7 @@ CREATE TABLE testimonials (
     company_name VARCHAR(100),
     designation VARCHAR(100),
     feedback TEXT,
+    token TEXT UNIQUE,
     active BOOLEAN DEFAULT FALSE,
     feedback_taken BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

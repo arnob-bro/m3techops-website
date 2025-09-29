@@ -5,6 +5,7 @@ class TestimonialController {
   
       // Bind methods so 'this' works in routes
       this.initTestimonial = this.initTestimonial.bind(this);
+      this.getTestimonials = this.getTestimonials.bind(this);
     }
   
     async initTestimonial(req, res) {
@@ -16,7 +17,7 @@ class TestimonialController {
           return res.status(400).json({error: "client email is required"});
         }
         // check if email is a valid email
-        if (!/^(?!.*\.\.)(?!.*\.$)[^\W][\w.+-]{0,63}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/.test(email)) {
+        if (!/^(?!.*\.\.)(?!.*\.$)[^\W][\w.+-]{0,63}@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/.test(client_email)) {
           return res.status(400).json({ error: "Invalid email" });
         }
 
@@ -26,6 +27,19 @@ class TestimonialController {
         res.status(400).json({ error: err.message });
       }
     }
+
+
+    async getTestimonials(req, res) {
+      try {
+          const { page, limit, searchTerm = "", status } = req.query;
+          const data = await this.testimonialService.getTestimonials(page, limit, searchTerm, status);
+          res.status(200).json(data);
+      } catch (err) {
+          console.error("Error fetching testimonials:", err);
+          res.status(500).json({ success: false, message: "Failed to fetch testimonials" });
+      }
+    }
+  
       
 }
   

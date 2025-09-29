@@ -35,6 +35,7 @@ import ManagePrivacyPolicy from "./pages/Admin/ManagePrivacyPolicy/ManagePrivacy
 import ManageCookiesPolicy from "./pages/Admin/ManageCookiesPolicy/ManageCookiesPolicy";
 import ManageTermsOfService from "./pages/Admin/ManageTermsOfService/ManageTermsOfService";
 import ManagePaySlip from "./pages/Admin/ManagePaySlip/ManagePaySlip";
+import ManageTestimonials from "./pages/Admin/ManageTestimonials/ManageTestimonials";
 import Dashboard from "./pages/Admin/Dashboard/Dashboard";
 
 
@@ -149,6 +150,11 @@ function App() {
             <ProtectedRoute requiredPermission="MANAGE_PAYSLIP">
               <ManagePaySlip />
             </ProtectedRoute>
+            } />
+          <Route path="testimonials-management" element={
+            // <ProtectedRoute requiredPermission="MANAGE_TESTIMONIALS">
+              <ManageTestimonials />
+            // </ProtectedRoute>
             } />
           <Route path="" element={
             <ProtectedRoute requiredPermission="VIEW_DASHBOARD">
