@@ -42,7 +42,7 @@ const SchedulerService = require("./src/services/schedulerService");
 const TestimonialService = require("./src/services/testimonialService");
 
 
-const db = require("./src/config/supabaseClient");
+const db = require("./src/config/database");
 
 // Controllers
 // const { getUsersByLetter, addUser } = require("./controllers/controller");

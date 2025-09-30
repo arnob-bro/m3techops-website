@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import "./ManageTestimonials.css"; 
 import TestimonialApi from "../../../apis/testimonialApi";
+
 const testimonialApi = new TestimonialApi();
 
 export default function TestimonialManagement() {
@@ -14,18 +15,25 @@ export default function TestimonialManagement() {
   const [testimonials, setTestimonials] = useState([]);
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedTestimonial, setSelectedTestimonial] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeStatusFilter, setActiveStatusFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // Fetch all testimonials
   const fetchTestimonials = async () => {
     try {
       const res = await testimonialApi.getTestimonials({
-        page: 1,
+        page,
         limit: 10,
-        searchTerm: "",
-        status: ""
+        searchTerm,
+        status: activeStatusFilter
       });
-      setTestimonials(res.testimonials);
+      if(res.success){
+        setTotalPages(res.pagination.totalPages);
+        setTestimonials(res.testimonials);
+      }
     } catch (err) {
       console.error("Error fetching testimonials:", err);
     }
@@ -33,14 +41,13 @@ export default function TestimonialManagement() {
 
   useEffect(() => {
     fetchTestimonials();
-  }, []);
+  }, [page, searchTerm, activeStatusFilter]);
 
-  // Handle form input
-  const handleChange = e =>
+  const handleChange = (e) =>{
     setForm({ ...form, [e.target.name]: e.target.value });
+  }
 
-  // Handle init submission
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await testimonialApi.initTestimonial(form);
@@ -58,61 +65,122 @@ export default function TestimonialManagement() {
     }
   };
 
-  // Filter testimonials
-  const filteredTestimonials = testimonials.filter(t => {
-    const term = search.toLowerCase();
-    return (
-      t.client_name?.toLowerCase().includes(term) ||
-      t.client_email?.toLowerCase().includes(term) ||
-      t.company_name?.toLowerCase().includes(term)
-    );
-  });
+  // Open view modal
+  const openViewModal = (testimonial) => {
+    setSelectedTestimonial(testimonial);
+    console.log(testimonial);
+    setViewModalOpen(true);
+  }
 
   return (
     <div className="testimonial-management">
       <h2>Manage Testimonials</h2>
 
-      {/* Search + Button */}
       <div className="top-bar">
         <input
           type="text"
-          placeholder="Search testimonials..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
+          placeholder="Search testimonials by client name, email, company, designation..."
+          value={searchTerm}
+          onChange={e => {
+            setPage(1);
+            setSearchTerm(e.target.value)
+          }}
         />
         <button onClick={() => setOpen(true)}>Init Testimonial</button>
+      </div>
+      <div className="MT-active-filters">
+        <select value={activeStatusFilter} onChange={(e) => {
+          setPage(1);
+          setActiveStatusFilter(e.target.value)
+          }}>
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
       </div>
 
       {message && <p className="message">{message}</p>}
 
-      {/* Testimonials List */}
-      <ul className="testimonial-list">
-        {filteredTestimonials.map(t => (
-          <li key={t.testimonial_id} className="testimonial-card">
-            <h3>{t.client_name || "Unnamed"}</h3>
-            <p>
-              <strong>Email:</strong> {t.client_email}
-            </p>
-            <p>
-              <strong>Company:</strong> {t.company_name || "N/A"}
-            </p>
-            <p>
-              <strong>Designation:</strong> {t.designation || "N/A"}
-            </p>
-            <p>
-              <strong>Status:</strong>{" "}
-              {t.feedback ? "✅ Feedback Given" : "❌ Awaiting Feedback"}
-            </p>
-            {t.feedback && (
-              <blockquote>
-                <em>{t.feedback}</em>
-              </blockquote>
-            )}
-          </li>
-        ))}
-      </ul>
+      <table className="testimonial-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Client Name</th>
+            <th>Email</th>
+            <th>Company</th>
+            <th>Designation</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {testimonials.length > 0 ? testimonials.map((t, idx) => (
+            <tr key={t.testimonial_id}>
+              <td>{(page - 1) * 10 + idx + 1}</td>
+              <td>{t.client_name || "Unnamed"}</td>
+              <td>{t.client_email}</td>
+              <td>{t.company_name || "N/A"}</td>
+              <td>{t.designation || "N/A"}</td>
+              <td>{t.feedback ? "✅ Feedback Given" : "❌ Awaiting Feedback"}</td>
+              <td>
+                <button onClick={() => openViewModal(t)}>View</button>
+              </td>
+            </tr>
+          )) : (
+            <tr>
+              <td colSpan={7} style={{ textAlign: "center" }}>No testimonials found</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
-      {/* Modal */}
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+            className="pagination-btn"
+          >
+            <FiChevronLeft /> Previous
+          </button>
+
+          {(() => {
+            const pages = [];
+            const delta = 1;
+            for (let i = 1; i <= totalPages; i++) {
+              if (i === 1 || i === totalPages || (i >= page - delta && i <= page + delta)) {
+                pages.push(i);
+              } else if (pages[pages.length - 1] !== '...') {
+                pages.push('...');
+              }
+            }
+            return pages.map((p, idx) =>
+              p === '...' ? (
+                <span key={idx} className="pagination-ellipsis">…</span>
+              ) : (
+                <button
+                  key={idx}
+                  onClick={() => setPage(p)}
+                  className={p === page ? 'active' : ''}
+                >
+                  {p}
+                </button>
+              )
+            );
+          })()}
+
+          <button
+            onClick={() => setPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={page === totalPages}
+            className="pagination-btn"
+          >
+            Next <FiChevronRight />
+          </button>
+        </div>
+      )}
+
+      {/* Initialize Modal */}
       {open && (
         <div className="modal-overlay">
           <div className="modal">
@@ -148,12 +216,37 @@ export default function TestimonialManagement() {
                 onChange={handleChange}
               />
               <div className="modal-actions">
-                <button type="button" onClick={() => setOpen(false)}>
-                  Cancel
-                </button>
+                <button type="button" onClick={() => setOpen(false)}>Cancel</button>
                 <button type="submit">Send Email</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Modal */}
+      {viewModalOpen && selectedTestimonial && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Testimonial Details</h3>
+            <p><strong>Client Name:</strong> {selectedTestimonial.client_name}</p>
+            <p><strong>Email:</strong> {selectedTestimonial.client_email}</p>
+            <p><strong>Company:</strong> {selectedTestimonial.company_name || "N/A"}</p>
+            <p><strong>Designation:</strong> {selectedTestimonial.designation || "N/A"}</p>
+            <p><strong>Feedback:</strong> {selectedTestimonial.feedback || "-"}</p>
+            
+              <div>
+                <strong>Image:</strong><br/>
+                <img src={selectedTestimonial.imageurl || `https://randomuser.me/api/portraits/men/32.jpg`} alt="Client" style={{ width: "150px", borderRadius: "8px", marginTop: "5px" }} />
+              </div>
+            
+            <p><strong>Active:</strong> {selectedTestimonial.active ? "✅ Visible" : "❌ Not Visible"}</p>
+            <p><strong>Feedback Taken:</strong> {selectedTestimonial.feedback_taken ? "✅ Feedback Given" : "❌ Awaiting Feedback"}</p>
+            <p><strong>Created At:</strong> {new Date(selectedTestimonial.created_at).toLocaleString()}</p>
+            <p><strong>Updated At:</strong> {new Date(selectedTestimonial.updated_at).toLocaleString()}</p>
+            <div className="modal-actions">
+              <button type="button" onClick={() => setViewModalOpen(false)}>Close</button>
+            </div>
           </div>
         </div>
       )}

@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const supabase = require("../config/supabaseClient.js");
 const crypto = require("crypto");
 class TestimonialService {
     constructor(db) {
@@ -122,11 +123,88 @@ class TestimonialService {
           }
       };
     }
+
+    async getTestimonialByToken(token) {
+      try {
+      const result = await this.db.query(
+        `SELECT * FROM testimonials WHERE token = $1`,
+        [token]
+      );
+      return result.rows[0] || null;
+      } catch (err) {
+        console.error("Error fetching testimonial by token:", err);
+        throw new Error("Failed to fetch testimonial by token");
+      }
+    }
+
+
+    async getTestimonialFeedbackStatusByToken(token) {
+      try {
+        const result = await this.db.query(
+          `SELECT feedback_taken FROM testimonials WHERE token = $1`,
+          [token]
+        );
+    
+        if (result.rows.length === 0) {
+          return null; // token not found
+        }
+    
+        // return the actual boolean value (true/false), not null unless no record
+        return result.rows[0].feedback_taken;
+      } catch (err) {
+        console.error("Error fetching testimonial feedback status by token:", err.message || err);
+        throw new Error("Failed to fetch testimonial feedback status by token");
+      }
+    }
+    
+
+    // Submit testimonial feedback
+    async submitTestimonial({ token, client_name, client_email, feedback, imageFile, company_name, designation }) {
+      try {
+        // Ensure the token is valid and testimonial not already taken
+        const check = await this.db.query(
+          `SELECT testimonial_id, feedback_taken 
+          FROM testimonials 
+          WHERE token = $1`,
+          [token]
+        );
+
+        if (check.rows.length === 0 || check.rows[0].feedback_taken) {
+          return null; // invalid or already submitted
+        }
+
+        const fileName = `testimonial_${Date.now()}_${imageFile.originalname}`;
+        const { data, error } = await supabase.storage
+          .from("testimonials")
+          .upload(fileName, imageFile.buffer, { contentType: imageFile.mimetype });
+        if (error) throw error;
+
+        const { data: publicUrlData } = supabase.storage
+          .from("testimonials")
+          .getPublicUrl(fileName);
+
+        const imageUrl = publicUrlData.publicUrl;
+
+        // Update the testimonial with feedback
+        await this.db.query(
+          `UPDATE testimonials 
+          SET feedback = $1, imageUrl = $2, company_name = $3, designation = $4, client_name = $5, client_email= $6,
+              feedback_taken = TRUE, active = TRUE, updated_at = CURRENT_TIMESTAMP
+          WHERE token = $7`,
+          [feedback, imageUrl, company_name, designation, client_name, client_email, token]
+        );
+
+        return true;
+      } catch (err) {
+        console.error("Error submitting testimonial in service:", err);
+        throw new Error("Failed to submit testimonial");
+      }
+    }
   
   
     
   
-  }
+}
   
   module.exports = TestimonialService;
   

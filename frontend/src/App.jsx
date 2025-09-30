@@ -18,6 +18,7 @@ import Footer from "./pages/Footer/Footer";
 import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy/CookiePolicy";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
+import SubmitTestimonial from "./pages/SubmitTestimonial/SubmitTestimonial";
 
 
 // Admin pages
@@ -178,9 +179,10 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/cookies" element={<CookiePolicy />} />
-          
 
         </Route>
+        
+        <Route path="/testimonial/:token" element={<SubmitTestimonial />} />
 
         {/* Catch-all 404 route */}
         <Route path="*" element={<NotFound />} />

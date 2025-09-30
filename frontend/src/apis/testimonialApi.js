@@ -25,6 +25,39 @@ export default class TestimonialApi {
     }
   }
 
+  async getTestimonialByToken(token) {
+    try {
+      const response = await this.testimonialApi.get(`${this.baseURL}/${token}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: "Failed to fetch testimonial by token" };
+    }
+  }
+
+  async getTestimonialFeedbackStatusByToken(token) {
+    try {
+      const response = await this.testimonialApi.get(`${this.baseURL}/feedback-status/${token}`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: "Failed to fetch testimonial feedback status by token" };
+    }
+  }
+
+  async submitTestimonial(token, testimonialData) {
+    try {
+      const response = await this.testimonialApi.post(
+        `${this.baseURL}/submit/${token}`,
+        testimonialData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      return response.data;
+    } catch (err) {
+        throw err.response?.data || { error: "Failed to submit testimonial" };
+    }
+  }
+
 
 
 }

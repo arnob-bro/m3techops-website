@@ -1,47 +1,19 @@
-const { Pool } = require("pg");
+// backend/src/config/supabaseClient.js
+const { createClient } = require("@supabase/supabase-js");
 const dotenv = require("dotenv");
 
 dotenv.config();
 
-const db = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  pool_mode: process.env.DB_POOL_MODE,
-  ssl: { rejectUnauthorized: false },
-});
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
-// Handle connection errors gracefully
-db.on('error', (err) => {
-  console.error('Unexpected database error:', err.message);
-  // Don't exit process, let the pool handle reconnections
-});
+console.log("SUPABASE_URL:", supabaseUrl);
+console.log("SUPABASE_SERVICE_KEY exists:", !!supabaseKey);
 
-db.on('connect', (client) => {
-  console.log('New database connection established');
-});
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error("Missing Supabase environment variables");
+}
 
-db.on('remove', (client) => {
-  console.log('Database connection removed');
-});
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Test connection function
-db.testConnection = async () => {
-  let client;
-  try {
-      client = await pool.connect();
-      const result = await client.query('SELECT NOW() as current_time, version() as db_version');
-      console.log('✅ Database connected successfully');
-      console.log('📊 Database time:', result.rows[0].current_time);
-      return true;
-  } catch (error) {
-      console.error('❌ Database connection failed:', error.message);
-      return false;
-  } finally {
-      if (client) client.release();
-  }
-};
-
-module.exports = db;
+module.exports = supabase;
