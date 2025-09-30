@@ -4,7 +4,7 @@ import './Admin.css';
 import { 
   FiMenu, FiX, FiHome, FiSettings, FiFileText, FiBriefcase, 
   FiMail, FiDollarSign, FiCalendar, FiUsers, FiBook, FiPieChart,
-  FiChevronDown, FiChevronRight, FiPlusCircle, FiLogOut
+  FiChevronDown, FiChevronRight, FiPlusCircle, FiLogOut,FiMessageCircle
 } from 'react-icons/fi';
 import useUserStore from "../../../stores/userStore";
 
@@ -51,7 +51,8 @@ const Admin = () => {
       'employee-management': 'employees',
       'newsletter-management': 'newsletter',
       'policy-management': 'policy',
-      'scheduler': 'scheduler'
+      'scheduler': 'scheduler',
+      'testimonials': 'testimonials-management'
     };
     
     return routeMapping[lastSegment] || lastSegment || 'dashboard';
@@ -103,7 +104,11 @@ const Admin = () => {
     { id: 'messages', icon: <FiMail />, label: 'Contact Messages', path: '/admin/manage-messages', requiredPermission: 'MANAGE_MESSAGES' },
     { id: 'create-payslip', icon: <FiPlusCircle />, label: 'Create Pay-slip', path: '/admin/pay-slip-generator', requiredPermission: 'GENERATE_PAYSLIP' },
     { id: 'payslip-manager', icon: <FiDollarSign />, label: 'Pay Slip Manager', path: '/admin/pay-slip-manager', requiredPermission: 'MANAGE_PAYSLIP' },
+
     { id: 'employees', icon: <FiUsers />, label: 'Employee Management', path: '/admin/employee-management', requiredPermission: 'MANAGE_EMPLOYEES' },
+
+    { id: 'testimonials', icon: <FiMessageCircle />, label: 'Testimonial Management', path: '/admin/testimonials-management', requiredPermission: 'MANAGE_EMPLOYEES' },
+
     { id: 'newsletter', icon: <FiBook />, label: 'Newsletter Management', path: '/admin/newsletter-management', requiredPermission: 'MANAGE_NEWSLETTER' },
     { 
       id: 'policy', 

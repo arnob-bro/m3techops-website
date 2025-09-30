@@ -35,6 +35,9 @@
    --color-accent-light-rgb: 6, 126, 204;
    --color-accent-warm-rgb: 251, 146, 39;
    --color-home-header-text: #ffffff; 
+  --color-accent-rgb-darker: 18,
+    140,
+    131;
    
    --font-primary: system-ui, Avenir, Helvetica, Arial, sans-serif;
    --font-secondary: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -42,9 +45,9 @@
    --border-radius: 12px;
    --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
    --section-padding: 8rem;
-   --header-height: 80px;
+   --header-height: 80px; */
    
-   */
+  
 
 
 
