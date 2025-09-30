@@ -123,7 +123,7 @@
 }
 
 .about-hero-AU h1 {
-  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   margin-bottom: 1.5rem;
   background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
@@ -134,11 +134,11 @@
 }
 
 .about-hero-AU p {
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   color: var(--color-text-secondary);
   max-width: 600px;
   margin: 0 auto 3rem;
-  line-height: 1.6;
+  line-height: 1.7;
   font-weight: 400;
 }
 
@@ -220,8 +220,7 @@
 }
 
 .mission-card-AU h2 {
-  font-size: 1.75rem;
-  /* Reduced from 2rem */
+  font-size: 1.5rem;
   margin-bottom: 1.5rem;
   color: var(--color-text);
   font-weight: 700;
@@ -229,7 +228,7 @@
 
 .mission-card-AU p {
   color: var(--color-text-secondary);
-  font-size: 1.1rem;
+  font-size: 1rem;
   line-height: 1.7;
   margin: 0;
 }
@@ -247,21 +246,22 @@
 .section-header-AU {
   text-align: center;
   margin-bottom: 4rem;
+ 
 }
 
 .section-header-AU h2 {
-  font-size: clamp(2rem, 4vw, 2.8rem);
-  /* Reduced from clamp(2.5rem, 5vw, 3.5rem) */
+  font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 1rem;
   background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  padding-bottom: 2.5px;
 }
 
 .section-header-AU p {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--color-text-secondary);
   max-width: 600px;
   margin: 0 auto;
@@ -324,7 +324,7 @@
 }
 
 .value-card-AU h3 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   margin-bottom: 1rem;
   color: var(--color-text);
   font-weight: 700;
@@ -334,6 +334,7 @@
   color: var(--color-text-secondary);
   line-height: 1.6;
   margin: 0;
+  font-size: 0.95rem;
 }
 
 /* Team Section */
@@ -439,7 +440,7 @@
 }
 
 .team-info-AU h3 {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   margin-bottom: 0.5rem;
   color: var(--color-text);
   font-weight: 700;
@@ -449,13 +450,13 @@
   color: var(--color-accent);
   font-weight: 600;
   margin-bottom: 1rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .team-bio-AU {
   color: var(--color-text-secondary);
   line-height: 1.6;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   margin: 0;
 }
 
@@ -507,6 +508,7 @@
   border-radius: 12px;
   border-left: 3px solid var(--color-accent);
   transition: all 0.3s ease;
+  font-size: 0.95rem;
 }
 
 .why-list-AU li:hover {
@@ -536,6 +538,7 @@
   font-weight: 600;
   transition: all 0.3s ease;
   box-shadow: 0 10px 25px rgba(var(--color-accent-rgb), 0.3);
+  font-size: 0.95rem;
 }
 
 .btn-AU:hover {
@@ -663,12 +666,12 @@
   }
 
   .about-hero-AU h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 1.25rem;
   }
 
   .about-hero-AU p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     line-height: 1.5;
   }
 
@@ -698,13 +701,11 @@
   }
 
   .mission-card-AU h2 {
-    font-size: 1.5rem;
-    /* Reduced from 1.75rem */
+    font-size: 1.35rem;
   }
 
   .section-header-AU h2 {
-    font-size: 1.9rem;
-    /* Reduced from 2.2rem */
+    font-size: 2rem;
   }
 
   .value-icon-AU {
@@ -740,11 +741,11 @@
 /* Small mobile devices */
 @media (max-width: 400px) {
   .about-hero-AU {
-    padding: 3.5rem 0 2.5rem;
+    padding: 5.5rem 0 2.5rem;
   }
 
   .about-hero-AU h1 {
-    font-size: 2.2rem;
+    font-size: 1.75rem;
   }
 
   .mission-card-AU,
@@ -753,13 +754,11 @@
   }
 
   .mission-card-AU h2 {
-    font-size: 1.4rem;
-    /* Reduced from 1.6rem */
+    font-size: 1.25rem;
   }
 
   .section-header-AU h2 {
-    font-size: 1.7rem;
-    /* Reduced from 1.9rem */
+    font-size: 1.75rem;
   }
 
   .team-info-AU {
