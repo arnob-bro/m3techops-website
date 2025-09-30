@@ -20,12 +20,18 @@ export default class EmployeeApi {
 
   // Create a new employee
   async createEmployee(employeeData) {
-    return this.employeeApi.post(`${this.baseURL}`, employeeData);
+    return this.employeeApi.post(`${this.baseURL}`, 
+      employeeData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
   }
 
   // Update an existing employee
   async updateEmployee(employee_id, employeeData) {
-    return this.employeeApi.put(`${this.baseURL}/${employee_id}`, employeeData);
+    return this.employeeApi.put(`${this.baseURL}/${employee_id}`, 
+      employeeData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
   }
   
 

@@ -17,6 +17,7 @@ const roleApi = new RoleApi();
 
 const ManageEmployee = () => {
   const [activeTab, setActiveTab] = useState("employees"); // 👈 NEW
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [roles, setRoles] = useState([]); // 👈 NEW
   const [permissions, setPermissions] = useState([]); // 👈 NEW
@@ -203,6 +204,14 @@ const ManageEmployee = () => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, avatar: file });
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
   const handleEmergencyContactChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -260,6 +269,7 @@ const ManageEmployee = () => {
         phone: employee.emergency_contact.phone
       }
     });
+    setPreviewUrl(employee.avatar);
     setIsModalOpen(true);
   };
 
@@ -286,6 +296,7 @@ const ManageEmployee = () => {
         phone: ''
       }
     });
+    setPreviewUrl(null);
     setIsModalOpen(true);
   };
 
@@ -314,6 +325,7 @@ const ManageEmployee = () => {
       }
       
       setIsModalOpen(false);
+      setPreviewUrl(null);
     } catch (error) {
       console.error('Error saving employee:', error);
       setError(error.message || 'Failed to save employee');
@@ -630,16 +642,17 @@ const ManageEmployee = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <label>Avatar URL</label>
-                    <input
-                      type="url"
-                      name="avatar"
-                      value={formData.avatar}
-                      onChange={handleInputChange}
-                      placeholder="Enter avatar image URL"
-                    />
+                    <input 
+                    type="file" 
+                    id="image"
+                    name="image" 
+                    accept="image/*" 
+                    onChange={handleImageChange} 
+                    required={!currentEmployee}
+                  />
                     {formData.avatar && (
                       <div className="avatar-preview">
-                        <img src={formData.avatar} alt="Avatar preview" />
+                        <img src={previewUrl} alt="Avatar preview" />
                         <span>Preview</span>
                       </div>
                     )}

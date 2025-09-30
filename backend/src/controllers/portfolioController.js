@@ -1,3 +1,5 @@
+const supabase = require("../config/supabaseClient.js");
+
 class PortfolioController {
     constructor(portfolioService) {
         this.portfolioService = portfolioService;
@@ -44,19 +46,19 @@ class PortfolioController {
                 title,
                 category,
                 description,
-                image,
                 problem,
                 solution,
                 results,
                 tech_stack,
                 active
             } = req.body;
+            const imageFile = req.file;
 
             // Validate required fields
-            if (!title || !category || !description || !problem || !solution || !results) {
+            if (!title || !category || !description || !imageFile || !problem || !solution || !results) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Title, category, description, problem, solution, and results are required'
+                    message: 'Title, category, description, image, problem, solution, and results are required'
                 });
             }
 
@@ -72,7 +74,7 @@ class PortfolioController {
                 title: title.trim(),
                 category: category.trim(),
                 description: description.trim(),
-                image: image ? image.trim() : null,
+                image: imageFile,
                 problem: problem.trim(),
                 solution: solution.trim(),
                 results: results.trim(),
@@ -96,13 +98,14 @@ class PortfolioController {
                 title,
                 category,
                 description,
-                image,
                 problem,
                 solution,
                 results,
                 tech_stack,
                 active
             } = req.body;
+
+            const imageFile = req.file;
 
             // Optional validation if fields are provided
             const updateData = {};
@@ -112,7 +115,18 @@ class PortfolioController {
             if (problem) updateData.problem = problem.trim();
             if (solution) updateData.solution = solution.trim();
             if (results) updateData.results = results.trim();
-            if (image !== undefined) updateData.image = image ? image.trim() : null;
+            if (imageFile) {
+                const imageFileName = `portfolio_${Date.now()}_${imageFile.originalname}`;
+                const { error: imgErr } = await supabase.storage
+                  .from("portfolios")
+                  .upload(imageFileName, imageFile.buffer, { contentType: imageFile.mimetype });
+                if (imgErr) throw imgErr;
+          
+                const { data: imgUrlData } = supabase.storage
+                  .from("portfolios")
+                  .getPublicUrl(imageFileName);
+                updateData.image = imgUrlData.publicUrl;
+            }
             if (tech_stack) {
                 if (!Array.isArray(tech_stack) || tech_stack.some(t => typeof t !== 'string' || t.trim() === '')) {
                     return res.status(400).json({

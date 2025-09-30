@@ -1,3 +1,4 @@
+const supabase = require("../config/supabaseClient.js");
 class EmployeeService {
   constructor(db, userService, roleService) {
     this.db = db;
@@ -33,7 +34,7 @@ class EmployeeService {
   async createEmployee({
     employee_id, first_name, last_name, email, phone, position,
     role_id, hire_date, address = null, city = null, country = null,
-    avatar = null, emergency_contact = null
+    avatar, emergency_contact = null
   }) {
     // Basic validations
     if (!employee_id || !first_name || !last_name || !email || !phone || !position || !role_id || !hire_date) {
@@ -56,6 +57,19 @@ class EmployeeService {
 
     // Create user account with default password
     const initialPassword = "123456";
+
+    const fileName = `profile_pic_${Date.now()}_${avatar.originalname}`;
+    const { data, error } = await supabase.storage
+      .from("profile_pics")
+      .upload(fileName, avatar.buffer, { contentType: avatar.mimetype });
+    if (error) throw error;
+
+    const { data: publicUrlData } = supabase.storage
+      .from("profile_pics")
+      .getPublicUrl(fileName);
+
+    const avatarUrl = publicUrlData.publicUrl;
+
     await this.userService.createUser(employee_id, email, initialPassword, "employee");
 
     // Insert employee into DB
@@ -67,7 +81,7 @@ class EmployeeService {
     `;
     const values = [
       employee_id, first_name, last_name, phone, position, role_id, hire_date,
-      address, city, country, avatar, emergency_contact ? JSON.stringify(emergency_contact) : null, email
+      address, city, country, avatarUrl, emergency_contact ? JSON.stringify(emergency_contact) : null, email
     ];
 
     const result = await this.db.query(query, values);
@@ -104,6 +118,8 @@ class EmployeeService {
     if (existingEmployee.email !== email) {
       await this.userService.updateUserEmail(employee_id, email);
     }
+
+    
 
     // Update employee
     const query = `

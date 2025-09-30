@@ -14,6 +14,8 @@ const blogApi = new BlogApi();
 
 const ManageBlog = () => {
   const [blogPosts, setBlogPosts] = useState([]);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewAvatarUrl, setPreviewAvatarUrl] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -96,6 +98,22 @@ const ManageBlog = () => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, image: file });
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, author_avatar: file });
+      setPreviewAvatarUrl(URL.createObjectURL(file));
+    }
+  };
+
   const handleToggleActive = async (blog_id) => {
     try {
       
@@ -129,6 +147,8 @@ const ManageBlog = () => {
       author_role: post.author_role,
       active: post.active
     });
+    setPreviewUrl(post.image);
+    setPreviewAvatarUrl(post.author_avatar);
     setIsModalOpen(true);
   };
 
@@ -147,6 +167,8 @@ const ManageBlog = () => {
       author_role: "",
       active: true
     });
+    setPreviewUrl(null);
+    setPreviewAvatarUrl(null);
     setIsModalOpen(true);
   };
 
@@ -167,8 +189,9 @@ const ManageBlog = () => {
         const newBlog = res.blog; // backend returns the created blog with blog_id
         setBlogPosts([...blogPosts, newBlog]);
       }
-  
       setIsModalOpen(false);
+      setPreviewUrl(null);
+      setPreviewAvatarUrl(null);
     } catch (error) {
       console.error("Error saving blog post:", error);
     }
@@ -180,6 +203,11 @@ const ManageBlog = () => {
   //   // Here you would also delete the post from your backend
   // };
 
+  // const filteredPosts = blogPosts.filter(post => 
+  //   post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   post.category.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -364,7 +392,10 @@ const ManageBlog = () => {
       {/* Edit/Add Modal */}
       <Modal
         isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        onRequestClose={() => {
+          setPreviewUrl(null);
+          setIsModalOpen(false);
+        }}
         className="blog-modal"
         overlayClassName="blog-modal-overlay"
       >
@@ -372,7 +403,10 @@ const ManageBlog = () => {
           <div className="blog-modal-header">
             <h3>{currentPost ? 'Edit Blog Post' : 'Add New Blog Post'}</h3>
             <button 
-              onClick={() => setIsModalOpen(false)} 
+              onClick={() => {
+                setPreviewUrl(null);
+                setIsModalOpen(false);
+              }} 
               className="blog-modal-close"
               aria-label="Close modal"
             >
@@ -453,18 +487,18 @@ const ManageBlog = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Featured Image URL</label>
-                  <input
-                    type="url"
-                    name="image"
-                    value={formData.image}
-                    onChange={handleInputChange}
-                    placeholder="Enter image URL"
-                    required
+                  <label>Featured Image</label>
+                  <input 
+                    type="file" 
+                    id="image"
+                    name="image" 
+                    accept="image/*" 
+                    onChange={handleImageChange} 
+                    required={!currentPost}
                   />
                   {formData.image && (
                     <div className="image-preview">
-                      <img src={formData.image} alt="Preview" />
+                      <img src={previewUrl} alt="Preview" />
                       <span>Preview</span>
                     </div>
                   )}
@@ -526,18 +560,18 @@ const ManageBlog = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Author Avatar URL</label>
-                  <input
-                    type="url"
-                    name="author_avatar"
-                    value={formData.author_avatar}
-                    onChange={handleInputChange}
-                    placeholder="Enter avatar image URL"
-                    required
+                  <label>Author Avatar</label>
+                  <input 
+                    type="file" 
+                    id="image"
+                    name="image" 
+                    accept="image/*" 
+                    onChange={handleAvatarChange} 
+                    required={!currentPost}
                   />
                   {formData.author_avatar && (
                     <div className="avatar-preview">
-                      <img src={formData.author_avatar} alt="Author preview" />
+                      <img src={previewAvatarUrl} alt="Author preview" />
                       <span>Preview</span>
                     </div>
                   )}
@@ -556,7 +590,11 @@ const ManageBlog = () => {
               </div>
               
               <div className="form-actions">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="cancel-btn">
+                <button type="button" onClick={() => {
+                  setPreviewUrl(null);
+                  setIsModalOpen(false);
+                }}
+                   className="cancel-btn">
                   Cancel
                 </button>
                 <button type="submit" className="save-btn">

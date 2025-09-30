@@ -1,3 +1,5 @@
+const supabase = require("../config/supabaseClient.js");
+
 class EmployeeController {
   constructor(employeeService) {
     this.employeeService = employeeService;
@@ -35,12 +37,14 @@ class EmployeeController {
     try {
       const {
         employee_id, first_name, last_name, email, phone, position,
-        role_id, hire_date, address, city, country, avatar, emergency_contact
+        role_id, hire_date, address, city, country, emergency_contact
       } = req.body;
+
+      const imageFile = req.file;
 
       const result = await this.employeeService.createEmployee({
         employee_id, first_name, last_name, email, phone, position,
-        role_id, hire_date, address, city, country, avatar, emergency_contact
+        role_id, hire_date, address, city, country, avatar:imageFile, emergency_contact
       });
 
       res.status(201).json({
@@ -59,14 +63,38 @@ class EmployeeController {
       const { employee_id } = req.params;
       const {
         first_name, last_name, email, phone, position,
-        role_id, hire_date, address, city, country, avatar, emergency_contact
+        role_id, hire_date, address, city, country, emergency_contact
       } = req.body;
-
-      const updatedEmployee = await this.employeeService.updateEmployee({
-        employee_id, first_name, last_name, email, phone, position,
-        role_id, hire_date, address, city, country, avatar, emergency_contact
-      });
-
+      const imageFile = req.file;
+  
+      const updateData = { employee_id };
+  
+      if (first_name) updateData.first_name = first_name.trim();
+      if (last_name) updateData.last_name = last_name.trim();
+      if (email) updateData.email = email.trim();
+      if (phone) updateData.phone = phone.trim();
+      if (position) updateData.position = position.trim();
+      if (role_id) updateData.role_id = role_id;
+      if (hire_date) updateData.hire_date = hire_date;
+      if (address) updateData.address = address.trim();
+      if (city) updateData.city = city.trim();
+      if (country) updateData.country = country.trim();
+      if (emergency_contact) updateData.emergency_contact = emergency_contact;
+      if (imageFile) {
+        const imageFileName = `profile_pic_${Date.now()}_${imageFile.originalname}`;
+        const { error: imgErr } = await supabase.storage
+          .from("profile_pics")
+          .upload(imageFileName, imageFile.buffer, { contentType: imageFile.mimetype });
+        if (imgErr) throw imgErr;
+          
+        const { data: imgUrlData } = supabase.storage
+          .from("profile_pics")
+          .getPublicUrl(imageFileName);
+        updateData.avatar = imgUrlData.publicUrl;
+      }
+  
+      const updatedEmployee = await this.employeeService.updateEmployee(updateData);
+  
       res.status(200).json({
         success: true,
         message: "Employee updated successfully",
@@ -76,6 +104,7 @@ class EmployeeController {
       res.status(err.statusCode || 400).json({ error: err.message });
     }
   }
+  
 }
 
 module.exports = EmployeeController;

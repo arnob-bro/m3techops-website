@@ -1,4 +1,4 @@
-
+const supabase = require("../config/supabaseClient.js");
 
 class PortfolioService {
   constructor(db) {
@@ -41,7 +41,23 @@ class PortfolioService {
         tech_stack,
         active
       } = data;
-
+  
+      const fileName = `portfolio_${Date.now()}_${image.originalname}`;
+  
+      // Upload image
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("portfolios")
+        .upload(fileName, image.buffer, { contentType: image.mimetype });
+      if (uploadError) throw uploadError;
+  
+      // Get public URL
+      const { data: publicUrlData } = supabase.storage
+        .from("portfolios")
+        .getPublicUrl(fileName);
+  
+      const imageUrl = publicUrlData.publicUrl;
+  
+      // Insert into DB
       const result = await this.db.query(
         `INSERT INTO portfolio_items
         (title, category, description, image, problem, solution, results, tech_stack, active)
@@ -51,7 +67,7 @@ class PortfolioService {
           title,
           category,
           description,
-          image,
+          imageUrl,
           problem,
           solution,
           results,
@@ -59,16 +75,18 @@ class PortfolioService {
           active
         ]
       );
-
+  
       return result.rows[0];
     } catch (err) {
       console.error('Error creating portfolio:', err);
       throw err;
     }
   }
+  
 
   // Update a portfolio item
   async update(id, updateData) {
+    console.log(updateData);
     try {
       const fields = [];
       const values = [];

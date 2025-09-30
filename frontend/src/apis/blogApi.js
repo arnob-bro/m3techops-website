@@ -31,7 +31,9 @@ export default class BlogApi {
         author_avatar,
         author_role,
         active,
-      });
+      },
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
       console.log(response.data);
       return response.data;
     } catch (err) {
@@ -68,7 +70,8 @@ export default class BlogApi {
     try {
       const response = await this.blogApi.put(
         `${this.baseURL}/${blog_id}`,
-        updateData
+        updateData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       return response.data;
     } catch (err) {

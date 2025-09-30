@@ -1,3 +1,4 @@
+const supabase = require("../config/supabaseClient.js")
 class BlogController {
     constructor(blogService) {
         this.blogService = blogService;
@@ -39,13 +40,13 @@ class BlogController {
                 category,
                 excerpt,
                 content,
-                image,
                 read_time,
                 author_name,
-                author_avatar,
                 author_role,
                 active
             } = req.body;
+            const imageFile = req.files?.image ? req.files.image[0] : null;
+            const author_avatar = req.files?.author_avatar ? req.files.author_avatar[0] : null;
 
             // Validation
             if (!title || typeof title !== 'string' || title.trim().length < 3) {
@@ -68,11 +69,11 @@ class BlogController {
             if (read_time && typeof read_time !== 'string') {
                 return res.status(400).json({ success: false, message: 'Read time must be a string (e.g., "5 min read")' });
             }
-            if (image && typeof image !== 'string') {
-                return res.status(400).json({ success: false, message: 'Image must be a string (URL)' });
+            if (!imageFile) {
+                return res.status(400).json({ success: false, message: 'Image must be a provided' });
             }
-            if (author_avatar && typeof author_avatar !== 'string') {
-                return res.status(400).json({ success: false, message: 'Author avatar must be a string (URL)' });
+            if (!author_avatar ) {
+                return res.status(400).json({ success: false, message: 'Author avatar must be provided' });
             }
             if (author_role && typeof author_role !== 'string') {
                 return res.status(400).json({ success: false, message: 'Author role must be a string' });
@@ -83,10 +84,10 @@ class BlogController {
                 category: category.trim(),
                 excerpt: excerpt.trim(),
                 content: content.trim(),
-                image: image ? image.trim() : null,
+                image: imageFile,
                 read_time: read_time ? read_time.trim() : '5 min read',
                 author_name: author_name.trim(),
-                author_avatar: author_avatar ? author_avatar.trim() : null,
+                author_avatar: author_avatar,
                 author_role: author_role ? author_role.trim() : null,
                 active: active ?? true
             });
@@ -100,91 +101,115 @@ class BlogController {
 
     async updateBlog(req, res) {
         try {
-            const { blog_id } = req.params;
-            const updateData = {};
-            const {
-                title,
-                category,
-                excerpt,
-                content,
-                image,
-                read_time,
-                author_name,
-                author_avatar,
-                author_role,
-                active
-            } = req.body;
-
-            // Apply validation only if fields exist
-            if (title !== undefined) {
-                if (typeof title !== 'string' || title.trim().length < 3) {
-                    return res.status(400).json({ success: false, message: 'Title must be at least 3 characters' });
-                }
-                updateData.title = title.trim();
+          const { blog_id } = req.params;
+          const updateData = {};
+          const {
+            title,
+            category,
+            excerpt,
+            content,
+            read_time,
+            author_name,
+            author_role,
+            active
+          } = req.body;
+      
+          const imageFile = req.files?.image ? req.files.image[0] : null;
+          const avatarFile = req.files?.author_avatar ? req.files.author_avatar[0] : null;
+      
+          // Text validations (unchanged)
+          if (title !== undefined) {
+            if (typeof title !== 'string' || title.trim().length < 3) {
+              return res.status(400).json({ success: false, message: 'Title must be at least 3 characters' });
             }
-            if (category !== undefined) {
-                if (typeof category !== 'string' || category.trim().length === 0) {
-                    return res.status(400).json({ success: false, message: 'Category must be a non-empty string' });
-                }
-                updateData.category = category.trim();
+            updateData.title = title.trim();
+          }
+      
+          if (category !== undefined) {
+            if (typeof category !== 'string' || category.trim().length === 0) {
+              return res.status(400).json({ success: false, message: 'Category must be a non-empty string' });
             }
-            if (excerpt !== undefined) {
-                if (typeof excerpt !== 'string' || excerpt.trim().length < 10) {
-                    return res.status(400).json({ success: false, message: 'Excerpt must be at least 10 characters' });
-                }
-                updateData.excerpt = excerpt.trim();
+            updateData.category = category.trim();
+          }
+      
+          if (excerpt !== undefined) {
+            if (typeof excerpt !== 'string' || excerpt.trim().length < 10) {
+              return res.status(400).json({ success: false, message: 'Excerpt must be at least 10 characters' });
             }
-            if (content !== undefined) {
-                if (typeof content !== 'string' || content.trim().length < 20) {
-                    return res.status(400).json({ success: false, message: 'Content must be at least 20 characters' });
-                }
-                updateData.content = content.trim();
+            updateData.excerpt = excerpt.trim();
+          }
+      
+          if (content !== undefined) {
+            if (typeof content !== 'string' || content.trim().length < 20) {
+              return res.status(400).json({ success: false, message: 'Content must be at least 20 characters' });
             }
-            if (author_name !== undefined) {
-                if (typeof author_name !== 'string' || author_name.trim().length < 2) {
-                    return res.status(400).json({ success: false, message: 'Author name must be at least 2 characters' });
-                }
-                updateData.author_name = author_name.trim();
+            updateData.content = content.trim();
+          }
+      
+          if (author_name !== undefined) {
+            if (typeof author_name !== 'string' || author_name.trim().length < 2) {
+              return res.status(400).json({ success: false, message: 'Author name must be at least 2 characters' });
             }
-
-            // Optional fields
-            if (read_time !== undefined) {
-                if (typeof read_time !== 'string') {
-                    return res.status(400).json({ success: false, message: 'Read time must be a string' });
-                }
-                updateData.read_time = read_time.trim();
+            updateData.author_name = author_name.trim();
+          }
+      
+          if (read_time !== undefined) {
+            if (typeof read_time !== 'string') {
+              return res.status(400).json({ success: false, message: 'Read time must be a string' });
             }
-            if (image !== undefined) {
-                if (image && typeof image !== 'string') {
-                    return res.status(400).json({ success: false, message: 'Image must be a string (URL)' });
-                }
-                updateData.image = image ? image.trim() : null;
+            updateData.read_time = read_time.trim();
+          }
+      
+          if (author_role !== undefined) {
+            if (author_role && typeof author_role !== 'string') {
+              return res.status(400).json({ success: false, message: 'Author role must be a string' });
             }
-            if (author_avatar !== undefined) {
-                if (author_avatar && typeof author_avatar !== 'string') {
-                    return res.status(400).json({ success: false, message: 'Author avatar must be a string (URL)' });
-                }
-                updateData.author_avatar = author_avatar ? author_avatar.trim() : null;
-            }
-            if (author_role !== undefined) {
-                if (author_role && typeof author_role !== 'string') {
-                    return res.status(400).json({ success: false, message: 'Author role must be a string' });
-                }
-                updateData.author_role = author_role ? author_role.trim() : null;
-            }
-            if (active !== undefined) {
-                updateData.active = !!active;
-            }
-
-            const updated = await this.blogService.update(blog_id, updateData);
-            if (!updated) return res.status(404).json({ success: false, message: 'Blog not found' });
-
-            return res.json({ success: true, blog: updated });
+            updateData.author_role = author_role ? author_role.trim() : null;
+          }
+      
+          if (active !== undefined) {
+            updateData.active = !!active;
+          }
+      
+          // ✅ Handle Supabase uploads if new files provided
+          if (imageFile) {
+            const imageFileName = `blog_${Date.now()}_${imageFile.originalname}`;
+            const { error: imgErr } = await supabase.storage
+              .from("blogs")
+              .upload(imageFileName, imageFile.buffer, { contentType: imageFile.mimetype });
+            if (imgErr) throw imgErr;
+      
+            const { data: imgUrlData } = supabase.storage
+              .from("blogs")
+              .getPublicUrl(imageFileName);
+            updateData.image = imgUrlData.publicUrl;
+          }
+      
+          if (avatarFile) {
+            const avatarFileName = `avatar_${Date.now()}_${avatarFile.originalname}`;
+            const { error: avErr } = await supabase.storage
+              .from("avatars")
+              .upload(avatarFileName, avatarFile.buffer, { contentType: avatarFile.mimetype });
+            if (avErr) throw avErr;
+      
+            const { data: avUrlData } = supabase.storage
+              .from("avatars")
+              .getPublicUrl(avatarFileName);
+            updateData.author_avatar = avUrlData.publicUrl;
+          }
+      
+          const updated = await this.blogService.update(blog_id, updateData);
+          if (!updated) {
+            return res.status(404).json({ success: false, message: 'Blog not found' });
+          }
+      
+          return res.json({ success: true, blog: updated });
         } catch (err) {
-            console.error(err);
-            return res.status(500).json({ success: false, message: 'Internal server error' });
+          console.error(err);
+          return res.status(500).json({ success: false, message: 'Internal server error' });
         }
     }
+      
 
     async toggleActive(req, res) {
         try {
