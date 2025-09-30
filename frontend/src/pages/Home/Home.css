@@ -1370,10 +1370,6 @@
 
 
 
-
-
-
-
 /* Statistics Section - Consistent with Page Style */
 .home-statistics {
   position: relative;
@@ -1398,35 +1394,34 @@
   aspect-ratio: 1/1;
   padding: 2rem;
   text-align: center;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-stat-card-bg);
   border-radius: 16px;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 2px solid rgba(var(--color-accent-rgb), 0.3);
-  box-shadow: 
+  border: 2px solid var(--color-stat-card-border);
+  box-shadow:
     0 10px 30px rgba(var(--color-accent-rgb), 0.15),
-    0 4px 12px rgba(0, 0, 0, 0.08);
+    0 4px 12px var(--color-stat-card-shadow);
   cursor: default;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(10px);
 }
 
 .stat-card:hover {
   transform: translateY(-8px) scale(1.03);
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(var(--color-accent-rgb), 0.25),
-    0 8px 20px rgba(0, 0, 0, 0.12);
+    0 8px 20px var(--color-stat-card-shadow);
   border-color: rgba(var(--color-accent-rgb), 0.6);
-  background: rgba(255, 255, 255, 0.98);
+  background: var(--color-stat-card-bg-hover);
 }
 
 .stat-icon {
   width: 70px;
   height: 70px;
-  background: linear-gradient(135deg, 
-    rgba(var(--color-accent-rgb), 0.2) 0%,
-    rgba(var(--color-accent-light-rgb), 0.15) 100%);
+  background: var(--color-stat-icon-bg);
   border-radius: 16px;
   display: flex;
   justify-content: center;
@@ -1441,9 +1436,7 @@
 
 .stat-card:hover .stat-icon {
   transform: scale(1.15) rotate(5deg);
-  background: linear-gradient(135deg, 
-    rgba(var(--color-accent-rgb), 0.25) 0%,
-    rgba(var(--color-accent-light-rgb), 0.2) 100%);
+  background: var(--color-stat-icon-bg-hover);
   box-shadow: 0 6px 20px rgba(var(--color-accent-rgb), 0.3);
   color: var(--color-accent-light);
   border-color: rgba(var(--color-accent-rgb), 0.5);
@@ -1452,7 +1445,7 @@
 .stat-number {
   font-size: 2.8rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+  background: var(--color-stat-number);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1464,7 +1457,7 @@
 
 .stat-label {
   font-size: 1.1rem;
-  color: var(--color-text);
+  color: var(--color-stat-label);
   font-weight: 600;
   line-height: 1.4;
   max-width: 120px;
@@ -1505,15 +1498,18 @@
 
 /* Pulsing glow effect */
 @keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 
+
+  0%,
+  100% {
+    box-shadow:
       0 10px 30px rgba(var(--color-accent-rgb), 0.15),
-      0 4px 12px rgba(0, 0, 0, 0.08);
+      0 4px 12px var(--color-stat-card-shadow);
   }
+
   50% {
-    box-shadow: 
+    box-shadow:
       0 12px 35px rgba(var(--color-accent-rgb), 0.2),
-      0 6px 15px rgba(0, 0, 0, 0.1);
+      0 6px 15px var(--color-stat-card-shadow);
   }
 }
 
@@ -1523,90 +1519,6 @@
 
 .stat-card:hover {
   animation: none;
-}
-
-/* Responsive styles */
-@media (max-width: 1024px) {
-  .stats-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    padding: 0 1.5rem;
-  }
-  
-  .stat-card {
-    padding: 1.75rem;
-  }
-  
-  .stat-number {
-    font-size: 2.5rem;
-  }
-  
-  .stat-icon {
-    width: 60px;
-    height: 60px;
-    font-size: 1.6rem;
-    margin-bottom: 1.25rem;
-  }
-  
-  .stat-label {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    max-width: 500px;
-  }
-  
-  .stat-card {
-    padding: 1.75rem;
-  }
-  
-  .stat-number {
-    font-size: 2.4rem;
-  }
-  
-  .stat-icon {
-    width: 55px;
-    height: 55px;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .stat-label {
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-    max-width: 300px;
-    gap: 1.25rem;
-  }
-  
-  .stat-card {
-    padding: 2rem;
-    aspect-ratio: 1/0.9;
-  }
-  
-  .stat-number {
-    font-size: 2.6rem;
-  }
-  
-  .stat-icon {
-    width: 60px;
-    height: 60px;
-    font-size: 1.6rem;
-    margin-bottom: 1.25rem;
-  }
-  
-  .stat-label {
-    font-size: 1.05rem;
-    max-width: none;
-  }
 }
 
 /* Section header styles */
@@ -1624,7 +1536,7 @@
 }
 
 .home-statistics .section-title .accent {
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+  background: var(--color-stat-number);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1636,14 +1548,16 @@
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.7;
-  
 }
 
 /* Animation for cards */
 @keyframes cardFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-5px);
   }
@@ -1655,4 +1569,88 @@
 
 .stat-card:hover {
   animation: none;
+}
+
+/* Responsive styles remain the same */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 0 1.5rem;
+  }
+
+  .stat-card {
+    padding: 1.75rem;
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+  }
+
+  .stat-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.6rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 500px;
+  }
+
+  .stat-card {
+    padding: 1.75rem;
+  }
+
+  .stat-number {
+    font-size: 2.4rem;
+  }
+
+  .stat-icon {
+    width: 55px;
+    height: 55px;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-label {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+    gap: 1.25rem;
+  }
+
+  .stat-card {
+    padding: 2rem;
+    aspect-ratio: 1/0.9;
+  }
+
+  .stat-number {
+    font-size: 2.6rem;
+  }
+
+  .stat-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.6rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 1.05rem;
+    max-width: none;
+  }
 }
