@@ -17,14 +17,6 @@ const Navbar = () => {
   const location = useLocation();
   const [serviceItems, setServiceItems] = useState([]);
 
-  // const serviceItems = [
-  //   { name: 'Web Development', id: 'web-development' },
-  //   { name: 'Mobile App Development', id: 'mobile-development' },
-  //   { name: 'Cloud Solutions', id: 'cloud-solutions' },
-  //   { name: 'AI & Automation', id: 'ai-automation' },
-  //   { name: 'Custom Software', id: 'custom-software' }
-  // ];
-
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Services', path: null, dropdown: true },
@@ -34,8 +26,20 @@ const Navbar = () => {
     { name: 'Contact', path: '/contact' }
   ];
 
+  // Function to split services into columns
+  const getServiceColumns = () => {
+    if (serviceItems.length <= 6) {
+      return [serviceItems];
+    }
+    
+    const midPoint = Math.ceil(serviceItems.length / 2);
+    return [
+      serviceItems.slice(0, midPoint),
+      serviceItems.slice(midPoint)
+    ];
+  };
 
-
+  const serviceColumns = getServiceColumns();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,8 +49,6 @@ const Navbar = () => {
       setScrolled(isScrolled);
       setAtTop(isAtTop);
     };
-
-    
 
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -69,8 +71,6 @@ const Navbar = () => {
   }, [mobileMenuOpen]);
 
   useEffect(() => {
-    
-
     const fetchServices = async () => {
       try {
         const result = await serviceApi.getServices();
@@ -115,8 +115,6 @@ const Navbar = () => {
     }
     return location.pathname.startsWith(path);
   };
-
-  
 
   return (
     <motion.nav 
@@ -260,22 +258,43 @@ const Navbar = () => {
                   <AnimatePresence>
                     {servicesDropdownOpen && (
                       <motion.div
-                        className="services-dropdown"
+                        className={`services-dropdown ${serviceColumns.length > 1 ? 'multi-column' : ''}`}
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                       >
-                        {serviceItems.map((service, i) => (
-                          <Link
-                            key={i}
-                            to={`/services/${service.service_id}`}
-                            className={`dropdown-item ${isActiveLink(`/services/${service.service_id}`) ? 'active' : ''}`}
-                            onClick={closeAllMenus}
-                          >
-                            {service.title}
-                          </Link>
-                        ))}
+                        {serviceColumns.length === 1 ? (
+                          // Single column layout
+                          serviceColumns[0].map((service, i) => (
+                            <Link
+                              key={i}
+                              to={`/services/${service.service_id}`}
+                              className={`dropdown-item ${isActiveLink(`/services/${service.service_id}`) ? 'active' : ''}`}
+                              onClick={closeAllMenus}
+                            >
+                              {service.title}
+                            </Link>
+                          ))
+                        ) : (
+                          // Multi-column layout
+                          <div className="dropdown-columns">
+                            {serviceColumns.map((column, columnIndex) => (
+                              <div key={columnIndex} className="dropdown-column">
+                                {column.map((service, i) => (
+                                  <Link
+                                    key={i}
+                                    to={`/services/${service.service_id}`}
+                                    className={`dropdown-item ${isActiveLink(`/services/${service.service_id}`) ? 'active' : ''}`}
+                                    onClick={closeAllMenus}
+                                  >
+                                    {service.title}
+                                  </Link>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </motion.div>
                     )}
                   </AnimatePresence>

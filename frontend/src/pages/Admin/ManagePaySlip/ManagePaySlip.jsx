@@ -42,8 +42,6 @@ const ManagePaySlip = () => {
     fetchPaySlips();
   }, [page, searchTerm, statusFilter]);
 
-  
-
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -77,44 +75,75 @@ const ManagePaySlip = () => {
     setIsModalOpen(true);
   };
 
-  const handleDownload = (paySlip) => {
-    const pdfContent = `
-      PAY SLIP - ${paySlip.paymentMonth}
-      ==================================
-      Company: ${paySlip.companyName}
-      Address: ${paySlip.companyAddress}
-      ----------------------------------
-      Employee: ${paySlip.employeeName} (${paySlip.employeeId})
-      Designation: ${paySlip.designation || 'N/A'}
-      Reference: ${paySlip.reference}
-      Pay Date: ${formatDate(paySlip.payDate)}
-      ----------------------------------
-      Earnings: ${formatCurrency(paySlip.earnings)}
-      Deductions: ${formatCurrency(paySlip.deductions)}
-      Net Pay: ${formatCurrency(paySlip.netPay)}
-      ----------------------------------
-      Payment Mode: ${paySlip.paymentMode}
-      ${paySlip.accountHolder ? `Account Holder: ${paySlip.accountHolder}` : ''}
-      ${paySlip.bankName ? `Bank: ${paySlip.bankName}` : ''}
-      ${paySlip.bankBranch ? `Branch: ${paySlip.bankBranch}` : ''}
-      ${paySlip.accountNumber ? `Account: ${paySlip.accountNumber}` : ''}
-      ${paySlip.bkashTransaction ? `Bkash Transaction: ${paySlip.bkashTransaction}` : ''}
-      ----------------------------------
-      Authorized By: ${paySlip.authorizedBy}
-      Payee: ${paySlip.payee}
+  const handleDownload = async (paySlip) => {
+    try {
+      // Generate PDF using html2canvas and jsPDF
+      const { jsPDF } = await import('jspdf');
+      const html2canvas = await import('html2canvas');
       
-      Notes: ${paySlip.note || 'N/A'}
-    `;
+      const element = document.getElementById('payslip-preview-content');
+      const canvas = await html2canvas.default(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#FFFFFF'
+      });
 
-    const blob = new Blob([pdfContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `payslip-${paySlip.employeeId}-${paySlip.paymentMonth}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const imgWidth = 210;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+      const fileName = `Pay_Slip_${paySlip.employee_name.replace(/\s+/g, '_')}_${paySlip.payment_month}.pdf`;
+      pdf.save(fileName);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      // Fallback to text download if PDF generation fails
+      const pdfContent = `
+        PAY SLIP - ${paySlip.paymentMonth}
+        ==================================
+        Company: ${paySlip.companyName}
+        Address: ${paySlip.companyAddress}
+        ----------------------------------
+        Employee: ${paySlip.employeeName} (${paySlip.employeeId})
+        Designation: ${paySlip.designation || 'N/A'}
+        Reference: ${paySlip.reference}
+        Pay Date: ${formatDate(paySlip.payDate)}
+        ----------------------------------
+        Earnings: ${formatCurrency(paySlip.earnings)}
+        Deductions: ${formatCurrency(paySlip.deductions)}
+        Net Pay: ${formatCurrency(paySlip.netPay)}
+        ----------------------------------
+        Payment Mode: ${paySlip.paymentMode}
+        ${paySlip.accountHolder ? `Account Holder: ${paySlip.accountHolder}` : ''}
+        ${paySlip.bankName ? `Bank: ${paySlip.bankName}` : ''}
+        ${paySlip.bankBranch ? `Branch: ${paySlip.bankBranch}` : ''}
+        ${paySlip.accountNumber ? `Account: ${paySlip.accountNumber}` : ''}
+        ${paySlip.bkashTransaction ? `Bkash Transaction: ${paySlip.bkashTransaction}` : ''}
+        ----------------------------------
+        Authorized By: ${paySlip.authorizedBy}
+        Payee: ${paySlip.payee}
+        
+        Notes: ${paySlip.note || 'N/A'}
+      `;
+
+      const blob = new Blob([pdfContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `payslip-${paySlip.employeeId}-${paySlip.paymentMonth}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
   };
 
   const closeModal = () => {
@@ -182,11 +211,6 @@ const ManagePaySlip = () => {
                   <td>{getStatusBadge(paySlip.status)}</td>
                   <td>
                     <FiEye className="MPS-view-icon" onClick={() => handleView(paySlip)} title="View" />
-                    <FiDownload
-                      className="MPS-download-icon"
-                      onClick={() => handleDownload(paySlip)}
-                      title="Download"
-                    />
                   </td>
                 </tr>
               ))
@@ -257,123 +281,156 @@ const ManagePaySlip = () => {
 
           {isModalOpen && selectedPaySlip && (
             <div className="MPS-modal-overlay" onClick={closeModal}>
-              <div className="MPS-modal-content payslip-generator" onClick={(e) => e.stopPropagation()}>
-                <div className="payslip-container">
-                  
-                  {/* Header */}
-                  <div className="payslip-header">
-                    <div className="company-logo">
-                      <img
-                        src={selectedPaySlip.logo_url}
-                        alt="Company Logo"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.parentNode.innerHTML =
-                            '<div class="logo-placeholder">LOGO</div>';
-                        }}
-                      />
-                    </div>
-                    <div className="company-info-container">
-                      <div className="company-info">
-                        <h1>{selectedPaySlip.company_name}</h1>
-                        <p className="company-address">{selectedPaySlip.company_address}</p>
+              <div className="MPS-modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="MPS-modal-header">
+                  <h3>Pay Slip Preview</h3>
+                  <div className="MPS-modal-actions">
+                    <button 
+                      className="MPS-download-btn"
+                      onClick={() => handleDownload(selectedPaySlip)}
+                    >
+                      <FiDownload /> Download PDF
+                    </button>
+                    <button className="MPS-modal-close" onClick={closeModal}>
+                      <FiX />
+                    </button>
+                  </div>
+                </div>
+                <div className="MPS-modal-body">
+                  <div id="payslip-preview-content" className="payslip-preview-container">
+                    <div className="payslip-container">
+                      
+                      {/* Header */}
+                      <div className="payslip-header">
+                        <div className="left-header">
+                          <div className="company-logo">
+                            <img
+                              src={selectedPaySlip.logo_url}
+                              alt="Company Logo"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.parentNode.innerHTML =
+                                  '<div class="logo-placeholder">LOGO</div>';
+                              }}
+                            />
+                          </div>
+                          <div className="reference-info">
+                            <div className="reference-label">REFERENCE:</div>
+                            <div className="reference-value">{selectedPaySlip.reference}</div>
+                          </div>
+                        </div>
+
+                        <div className="company-info">
+                          <h1>{selectedPaySlip.company_name}</h1>
+                          <div className="company-address">{selectedPaySlip.company_address}</div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Title */}
-                  <div className="payslip-title">
-                    <h2>PAY SLIP – {selectedPaySlip.payment_month}</h2>
-                  </div>
-
-                  {/* Employee Info */}
-                  <div className="employee-info">
-                    <div className="info-item">
-                      <span className="info-label">Employee Name:</span>
-                      <span className="info-value">{selectedPaySlip.employee_name}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Employee ID:</span>
-                      <span className="info-value">{selectedPaySlip.employee_id}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Designation:</span>
-                      <span className="info-value">{selectedPaySlip.designation || 'N/A'}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Pay Date:</span>
-                      <span className="info-value">{formatDate(selectedPaySlip.pay_date)}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Reference:</span>
-                      <span className="info-value">{selectedPaySlip.reference}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Status:</span>
-                      <span className="info-value">{getStatusBadge(selectedPaySlip.status)}</span>
-                    </div>
-                  </div>
-
-                  {/* Salary Breakdown */}
-                  <div className="payment-info">
-                    <div className="payment-item">
-                      <span className="payment-label">Earnings:</span>
-                      <span className="payment-value">৳ {selectedPaySlip.earnings}</span>
-                    </div>
-                    <div className="payment-item">
-                      <span className="payment-label">Deductions:</span>
-                      <span className="payment-value">৳ {selectedPaySlip.deductions}</span>
-                    </div>
-                    <div className="payment-item net-pay">
-                      <span className="payment-label">Net Pay:</span>
-                      <span className="payment-value">৳ {selectedPaySlip.net_pay}</span>
-                    </div>
-                  </div>
-
-                  {/* Payment Mode */}
-                  <div className="payment-mode">
-                    <span className="mode-label">Payment Mode:</span>
-                    <span>{selectedPaySlip.payment_mode}</span>
-                  </div>
-                  {selectedPaySlip.payment_mode === 'Bank Transfer' && (
-                    <div className="bank-details">
-                      <h4>Bank Details</h4>
-                      <div className="bank-grid">
-                        <span>Account Holder:</span> <span>{selectedPaySlip.account_holder}</span>
-                        <span>Bank:</span> <span>{selectedPaySlip.bank_name}, {selectedPaySlip.bank_branch}</span>
-                        <span>Account No.:</span> <span>{selectedPaySlip.account_number}</span>
+                      {/* Title */}
+                      <div className="payslip-title">
+                        <h2>Pay Slip - {selectedPaySlip.payment_month}</h2>
                       </div>
-                    </div>
-                  )}
-                  {selectedPaySlip.payment_mode === 'Bkash' && (
-                    <div className="bkash-details">
-                      <h4>Bkash Details</h4>
-                      <div className="bkash-info">
-                        <span>Transaction:</span> <span>{selectedPaySlip.bkash_transaction}</span>
-                        <span>Reference:</span> <span>{selectedPaySlip.reference}</span>
+
+                      {/* Employee Info */}
+                      <div className="employee-info">
+                        <div className="info-item">
+                          <span className="info-label">Name:</span>
+                          <span className="info-value">{selectedPaySlip.employee_name}</span>
+                        </div>
+                        <div className="info-item">
+                          <span className="info-label">A. Designation:</span>
+                          <span className="info-value">{selectedPaySlip.designation || 'N/A'}</span>
+                        </div>
+                        <div className="info-item">
+                          <span className="info-label">B. ID:</span>
+                          <span className="info-value">{selectedPaySlip.employee_id}</span>
+                        </div>
+                        <div className="info-item">
+                          <span className="info-label">C. Pay Date:</span>
+                          <span className="info-value">{formatDate(selectedPaySlip.pay_date)}</span>
+                        </div>
                       </div>
-                    </div>
-                  )}
 
-                  {/* Notes */}
-                  {selectedPaySlip.note && (
-                    <div className="footer-notes">
-                      <strong>Notes:</strong>
-                      <p>{selectedPaySlip.note}</p>
-                    </div>
-                  )}
+                      {/* Payment Info */}
+                      <div className="payment-info">
+                        <div className="payment-item">
+                          <span className="payment-label">Earnings:</span>
+                          <span className="payment-value">৳ {selectedPaySlip.earnings}</span>
+                        </div>
+                        <div className="payment-item">
+                          <span className="payment-label">A. Deductions:</span>
+                          <span className="payment-value">৳ {selectedPaySlip.deductions}</span>
+                        </div>
+                        <div className="payment-item net-pay">
+                          <span className="payment-label">B. Net Pay:</span>
+                          <span className="payment-value">৳ {selectedPaySlip.net_pay}</span>
+                        </div>
+                      </div>
 
-                  {/* Signatures */}
-                  <div className="signature-section">
-                    <div className="signature authorized">
-                      <div className="signature-line"></div>
-                      <p>Authorized By</p>
-                      <p>{selectedPaySlip.authorized_by}</p>
-                    </div>
-                    <div className="signature">
-                      <div className="signature-line"></div>
-                      <p>Employee / Payee</p>
-                      <p>{selectedPaySlip.payee || selectedPaySlip.employee_name}</p>
+                      {/* Payment Mode */}
+                      <div className="payment-mode">
+                        <span className="mode-label">Payment Mode:</span>
+                        <div className="mode-options">
+                          {['Bank Transfer', 'Cash', 'Bkash'].map(mode => (
+                            <div key={mode} className="mode-option">
+                              <div className={`mode-checkbox ${selectedPaySlip.payment_mode === mode ? 'checked' : ''}`}>
+                                {selectedPaySlip.payment_mode === mode && '✓'}
+                              </div>
+                              <span>{mode}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Bank Details */}
+                      {selectedPaySlip.payment_mode === 'Bank Transfer' && (
+                        <div className="bank-details">
+                          <h4>Bank Details</h4>
+                          <div className="bank-grid">
+                            <div>Account Holder:</div>
+                            <div>{selectedPaySlip.account_holder}</div>
+                            <div>Bank Name:</div>
+                            <div>{selectedPaySlip.bank_name}</div>
+                            <div>Bank Branch:</div>
+                            <div>{selectedPaySlip.bank_branch}</div>
+                            <div>Account Number:</div>
+                            <div>{selectedPaySlip.account_number}</div>
+                            <div>Reference No.:</div>
+                            <div>{selectedPaySlip.reference}</div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Bkash Details */}
+                      {selectedPaySlip.payment_mode === 'Bkash' && (
+                        <div className="bkash-details">
+                          <h4>Bkash Details</h4>
+                          <div className="bkash-info">
+                            <span>Bkash Transaction No.:</span>
+                            <span>{selectedPaySlip.bkash_transaction || 'TRXID___________'}</span>
+                          </div>
+                          <div className="bkash-info">
+                            <span>Reference No.:</span>
+                            <span>{selectedPaySlip.reference}</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Signatures */}
+                      <div className="signature-section">
+                        <div className="signature authorized">
+                          <div className="signature-line"></div>
+                          <div>Authorized by: {selectedPaySlip.authorized_by}</div>
+                          <div>Place: Dhaka, Bangladesh</div>
+                        </div>
+                      </div>
+
+                      {/* Notes */}
+                      <div className="footer-notes">
+                        {selectedPaySlip.note && selectedPaySlip.note.split('\n').map((line, index) => (
+                          <p key={index}>{line}</p>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -384,7 +441,5 @@ const ManagePaySlip = () => {
     </div>
   );
 };
-
-
 
 export default ManagePaySlip;

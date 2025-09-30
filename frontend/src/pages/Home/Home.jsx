@@ -601,7 +601,9 @@ useEffect(() => {
                     </motion.li>
                   ))}
                 </ul>
-                <Link to={`/services/${service.service_id}`} className="home-service-link">
+                <Link to={`/services/${service.service_id}`} className="home-service-link"
+                onClick={() => window.scrollTo(0, 0)} >
+
                   Learn More 
                 </Link>
               </motion.div>
@@ -660,7 +662,8 @@ useEffect(() => {
                       <span className="project-category">{project.category}</span>
                       <h3 className="project-title">{project.title}</h3>
                       <p className="project-description">{project.description}</p>
-                      <Link to="/projects" className="project-link">
+                      <Link to="/projects" className="project-link"
+                      onClick={() => window.scrollTo(0, 0)} >
                         View Project 
                       </Link>
                     </div>

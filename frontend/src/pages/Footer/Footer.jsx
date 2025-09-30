@@ -65,12 +65,15 @@ const Footer = () => {
                 <a href="mailto:contact@m3techops.com">contact@m3techops.com</a>
               </div>
               <div className="footer-contact-item">
-                <FiPhone className="footer-contact-icon" />
-                <a href="tel:+15551234567">+1 (555) 123-4567</a>
-              </div>
+  <FiPhone className="footer-contact-icon" />
+  <a href="tel:+8801332112077">+880 1332-112077</a>
+</div>
               <div className="footer-contact-item">
                 <FiMapPin className="footer-contact-icon" />
-                <span>San Francisco, CA</span>
+                <span>77/1, Siddeshwari Road
+Anarkali Super Market
+4th floor shop No.26/A
+Dhaka 1217</span>
               </div>
             </div>
 

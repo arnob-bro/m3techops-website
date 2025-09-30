@@ -435,3 +435,51 @@
     right: -100%;
   }
 }
+
+
+
+/* Multi-column dropdown styles */
+.services-dropdown.multi-column {
+  min-width: 400px;
+  padding: 1rem 0;
+}
+
+.dropdown-columns {
+  display: flex;
+  gap: 0;
+}
+
+.dropdown-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-column:not(:last-child) {
+  border-right: 1px solid rgba(var(--color-border-rgb), 0.1);
+}
+
+/* Ensure dropdown items in multi-column layout maintain proper spacing */
+.services-dropdown.multi-column .dropdown-item {
+  padding: 0.75rem 1.5rem;
+  border-left: none;
+  border-right: none;
+}
+
+/* Responsive adjustments for multi-column dropdown */
+@media (max-width: 480px) {
+  .services-dropdown.multi-column {
+    min-width: 300px;
+  }
+}
+
+@media (max-width: 360px) {
+  .services-dropdown.multi-column {
+    min-width: 280px;
+  }
+}
+
+/* Keep existing styles for single column dropdown */
+.services-dropdown:not(.multi-column) {
+  min-width: 220px;
+}
