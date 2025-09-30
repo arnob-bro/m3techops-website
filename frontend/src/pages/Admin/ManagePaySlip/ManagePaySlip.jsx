@@ -161,12 +161,18 @@ const ManagePaySlip = () => {
               type="text"
               placeholder="Search pay slips..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setPage(1);
+                setSearchTerm(e.target.value);
+              }}
             />
             <FiSearch className="MPS-search-icon" />
           </div>
           <div className="MPS-payslip-filters">
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <select value={statusFilter} onChange={(e) => {
+              setPage(1);
+              setStatusFilter(e.target.value);
+              }}>
               <option value="">All Status</option>
               <option value="Paid">Paid</option>
               <option value="Pending">Pending</option>

@@ -16,7 +16,8 @@ const employeeApi = new EmployeeApi();
 const roleApi = new RoleApi();
 
 const ManageEmployee = () => {
-  const [activeTab, setActiveTab] = useState("employees");
+  const [activeTab, setActiveTab] = useState("employees"); // 👈 NEW
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
@@ -165,6 +166,14 @@ const ManageEmployee = () => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, avatar: file });
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
   const handleEmergencyContactChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -199,6 +208,7 @@ const ManageEmployee = () => {
         phone: employee.emergency_contact?.phone || ''
       }
     });
+    setPreviewUrl(employee.avatar);
     setIsModalOpen(true);
   };
 
@@ -225,6 +235,7 @@ const ManageEmployee = () => {
         phone: ''
       }
     });
+    setPreviewUrl(null);
     setIsModalOpen(true);
   };
 
@@ -265,6 +276,7 @@ const handleSubmit = async (e) => {
     }
     
     setIsModalOpen(false);
+    setPreviewUrl(null);
     
     // Refresh the list to ensure data consistency
     setTimeout(() => {
@@ -280,15 +292,18 @@ const handleSubmit = async (e) => {
   }
 };
 
-  const deleteEmployee = async (employee_id) => {
-    try {
-      await employeeApi.deleteEmployee(employee_id);
-      setEmployees(employees.filter(employee => employee.employee_id !== employee_id));
-    } catch (error) {
-      console.error('Error deleting employee:', error);
-      alert(error.message || 'Failed to delete employee');
-    }
-  };
+  // const deleteEmployee = async (employee_id) => {
+  //   try {
+  //     // Delete from backend
+  //     await employeeApi.deleteEmployee(employee_id);
+      
+  //     // Update local state
+  //     setEmployees(employees.filter(employee => employee.employee_id !== employee_id));
+  //   } catch (error) {
+  //     console.error('Error deleting employee:', error);
+  //     alert(error.message || 'Failed to delete employee');
+  //   }
+  // };
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -572,6 +587,7 @@ const handleSubmit = async (e) => {
                     </div>
                   </div>
 
+<<<<<<< HEAD
                   <div className="form-row">
                     <div className="form-group-me">
                       <label>Avatar URL</label>
@@ -589,7 +605,27 @@ const handleSubmit = async (e) => {
                         </div>
                       )}
                     </div>
+=======
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Avatar URL</label>
+                    <input 
+                    type="file" 
+                    id="image"
+                    name="image" 
+                    accept="image/*" 
+                    onChange={handleImageChange} 
+                    required={!currentEmployee}
+                  />
+                    {formData.avatar && (
+                      <div className="avatar-preview">
+                        <img src={previewUrl} alt="Avatar preview" />
+                        <span>Preview</span>
+                      </div>
+                    )}
+>>>>>>> fee510e2e6b5690e0c67ff3f01609830c34de93c
                   </div>
+                </div>
 
                   <div className="form-section-title">Employment Details</div>
                   

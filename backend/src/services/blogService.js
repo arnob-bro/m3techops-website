@@ -1,3 +1,4 @@
+const supabase = require("../config/supabaseClient.js")
 class BlogService {
     constructor(db) {
         this.db = db; // injected pg pool
@@ -65,17 +66,47 @@ class BlogService {
 
     async create(data) {
         try {
+
             const {
                 title, category, excerpt, content, image, 
                 read_time, author_name, author_avatar,
                 author_role, active
             } = data;
 
+            // Image upload
+            const imageFileName = `blog_${Date.now()}_${image.originalname}`;
+            const { data: imageUploadData, error: imageError } = await supabase.storage
+            .from("blogs")
+            .upload(imageFileName, image.buffer, { contentType: image.mimetype });
+
+            if (imageError) throw imageError;
+
+            const { data: imagePublicUrlData } = supabase.storage
+            .from("blogs")
+            .getPublicUrl(imageFileName);
+
+            const imageUrl = imagePublicUrlData.publicUrl;
+
+            // Avatar upload
+            const avatarFileName = `avatar_${Date.now()}_${author_avatar.originalname}`;
+            const { data: avatarUploadData, error: avatarError } = await supabase.storage
+            .from("avatars")
+            .upload(avatarFileName, author_avatar.buffer, { contentType: author_avatar.mimetype });
+
+            if (avatarError) throw avatarError;
+
+            const { data: avatarPublicUrlData } = supabase.storage
+            .from("avatars") // ✅ FIXED (was blogs before)
+            .getPublicUrl(avatarFileName);
+
+            const avatarUrl = avatarPublicUrlData.publicUrl;
+
+
             const res = await this.db.query(
                 `INSERT INTO blogs
                 (title, category, excerpt, content, image, read_time, author_name, author_avatar, author_role, active)
                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
-                [title, category, excerpt, content, image, read_time, author_name, author_avatar, author_role, active]
+                [title, category, excerpt, content, imageUrl, read_time, author_name, avatarUrl, author_role, active]
             );
             return res.rows[0];
         } catch (err) {

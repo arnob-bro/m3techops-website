@@ -18,15 +18,10 @@ const ManageNewsletter = () => {
   const [totalSubscribers, setTotalSubscribers] = useState(0);
   const [newsletters, setNewsletters] = useState([]);
   const [totalNewsletters, setTotalNewsletters] = useState(0);
-  const [searchEmail, setSearchEmail] = useState("");
   const [isSubscriberModalOpen, setIsSubscriberModalOpen] = useState(false);
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState(false);
   const [currentSubscriber, setCurrentSubscriber] = useState(null);
   const [currentNewsletter, setCurrentNewsletter] = useState(null);
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [totalPages, setTotalPages] = useState(1);
-  // const [searchTerm, setSearchTerm] = useState('');
-  // const [subscribersStatusFilter, setSubscribersStatusFilter] = useState('');
   const [subscriberPage, setSubscriberPage] = useState(1);
   const [subscriberTotalPages, setSubscriberTotalPages] = useState(1);
   const [subscriberSearch, setSubscriberSearch] = useState('');
@@ -328,14 +323,20 @@ const ManageNewsletter = () => {
                 type="text"
                 placeholder="Search subscribers..."
                 value={subscriberSearch}
-                onChange={(e) => setSubscriberSearch(e.target.value)}
+                onChange={(e) => {
+                  setSubscriberPage(1);
+                  setSubscriberSearch(e.target.value);
+                }}
               />
               <FaSearch className="search-icon" />
             </div>
             <div className="newsletter-filters">
               <select 
                 value={subscriberStatusFilter} 
-                onChange={(e) => setSubscriberStatusFilter(e.target.value)}
+                onChange={(e) => {
+                  setSubscriberPage(1);
+                  setSubscriberStatusFilter(e.target.value);
+                }}
               >
                 <option value="">All Status</option>
                 <option value="Active">Active</option>
@@ -568,14 +569,20 @@ const ManageNewsletter = () => {
                 type="text"
                 placeholder="Search newsletters..."
                 value={newsletterSearch}
-                onChange={(e) => setNewsletterSearch(e.target.value)}
+                onChange={(e) => {
+                  setNewsletterPage(1);
+                  setNewsletterSearch(e.target.value);
+                }}
               />
               <FaSearch className="search-icon" />
             </div>
             <div className="newsletter-filters">
               <select 
                 value={newsletterStatusFilter} 
-                onChange={(e) => setNewsletterStatusFilter(e.target.value)}
+                onChange={(e) => {
+                  setNewsletterPage(1);
+                  setNewsletterStatusFilter(e.target.value);
+                }}
               >
                 <option value="">All Status</option>
                 <option value="Draft">Draft</option>
@@ -612,7 +619,6 @@ const ManageNewsletter = () => {
                       <td>
                         <span className={getNewsletterStatusBadge(newsletter.status)}>
                           {newsletter.status === 'Sent' && <FaCheckCircle />}
-                          {/* {newsletter.status === 'scheduled' && <FaCalendarAlt />} */}
                           {newsletter.status === 'Draft' && <FaEdit />}
                           {newsletter.status.charAt(0).toUpperCase() + newsletter.status.slice(1)}
                         </span>
@@ -620,7 +626,6 @@ const ManageNewsletter = () => {
                       <td>
                         <span className="newsletter-date">
                           {newsletter.status === 'Sent' && formatDate(newsletter.sent_date)}
-                          {/* {newsletter.status === 'scheduled' && formatDate(newsletter.scheduledFor)} */}
                           {newsletter.status === 'Draft' && 'Not sent yet'}
                         </span>
                       </td>

@@ -7,6 +7,7 @@ const portfolioApi = new PortfolioApi();
 
 const ManagePortfolio = () => {
   const [portfolioItems, setPortfolioItems] = useState([]);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [formData, setFormData] = useState({
@@ -60,6 +61,14 @@ const ManagePortfolio = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, image: file });
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
   const handleArrayInputChange = (index, field, value) => {
@@ -118,6 +127,9 @@ const ManagePortfolio = () => {
       tech_stack: item.tech_stack || [''],
       active: item.active
     });
+    console.log(item);
+    
+    setPreviewUrl(item.image);
     setIsModalOpen(true);
   };
 
@@ -134,6 +146,7 @@ const ManagePortfolio = () => {
       tech_stack: [''],
       active: true
     });
+    setPreviewUrl(null);
     setIsModalOpen(true);
   };
 
@@ -174,6 +187,7 @@ const ManagePortfolio = () => {
       
     }
     setIsModalOpen(false);
+    setPreviewUrl(null);
   };
 
   return (
@@ -271,17 +285,17 @@ const ManagePortfolio = () => {
               
               <div className="portfolio-form-group">
                 <label>Image URL</label>
-                <input
-                  type="url"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  placeholder="Enter image URL"
-                  required
-                />
+                <input 
+                    type="file" 
+                    id="image"
+                    name="image" 
+                    accept="image/*" 
+                    onChange={handleImageChange} 
+                    required={!currentItem}
+                  />
                 {formData.image && (
                   <div className="portfolio-image-preview">
-                    <img src={formData.image} alt="Preview" />
+                    <img src={previewUrl} alt="Preview" />
                     <span>Preview</span>
                   </div>
                 )}

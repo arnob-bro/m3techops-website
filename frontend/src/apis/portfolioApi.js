@@ -29,7 +29,9 @@ export default class PortfolioApi {
         results,
         tech_stack,
         active
-      });
+      },
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
       return response.data;
     } catch (err) {
       throw err.response?.data || { error: "Failed to create portfolio item" };
@@ -83,7 +85,9 @@ export default class PortfolioApi {
         results,
         tech_stack,
         active
-      });
+      },
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
       console.log(response.data);
       return response.data;
     } catch (err) {

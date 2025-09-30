@@ -29,36 +29,35 @@ export default class EmployeeApi {
   }
 
   async createEmployee(employeeData) {
-    try {
-      console.log('Creating employee:', employeeData);
-      const response = await this.employeeApi.post(`${this.baseURL}`, employeeData);
-      console.log('Create employee response:', response.data);
+    try{
+      const response = await this.employeeApi.post(`${this.baseURL}`, 
+        employeeData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log(response.data);
       return response.data;
-    } catch (error) {
+    }catch(error){
       console.error('Error creating employee:', error);
       throw error;
     }
   }
 
+  // Update an existing employee
   async updateEmployee(employee_id, employeeData) {
-    try {
-      console.log('Updating employee:', employee_id, employeeData);
-      const response = await this.employeeApi.put(`${this.baseURL}/${employee_id}`, employeeData);
-      console.log('Update employee response:', response.data);
+    try{
+      const response = await this.employeeApi.put(`${this.baseURL}/${employee_id}`, 
+        employeeData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log(response.data);
       return response.data;
-    } catch (error) {
-      console.error('Error updating employee:', error);
+    }catch(error){
+      console.error('Error creating employee:', error);
       throw error;
     }
   }
+  
 
-  async deleteEmployee(employee_id) {
-    try {
-      const response = await this.employeeApi.delete(`${this.baseURL}/${employee_id}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error deleting employee:', error);
-      throw error;
-    }
-  }
+  
+
 }
