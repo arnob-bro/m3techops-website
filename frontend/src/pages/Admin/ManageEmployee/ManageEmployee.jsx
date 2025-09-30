@@ -587,25 +587,6 @@ const handleSubmit = async (e) => {
                     </div>
                   </div>
 
-<<<<<<< HEAD
-                  <div className="form-row">
-                    <div className="form-group-me">
-                      <label>Avatar URL</label>
-                      <input
-                        type="url"
-                        name="avatar"
-                        value={formData.avatar}
-                        onChange={handleInputChange}
-                        placeholder="Enter avatar image URL"
-                      />
-                      {formData.avatar && (
-                        <div className="avatar-preview">
-                          <img src={formData.avatar} alt="Avatar preview" />
-                          <span>Preview</span>
-                        </div>
-                      )}
-                    </div>
-=======
                 <div className="form-row">
                   <div className="form-group">
                     <label>Avatar URL</label>
@@ -623,7 +604,6 @@ const handleSubmit = async (e) => {
                         <span>Preview</span>
                       </div>
                     )}
->>>>>>> fee510e2e6b5690e0c67ff3f01609830c34de93c
                   </div>
                 </div>
 
