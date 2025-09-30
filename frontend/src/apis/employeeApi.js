@@ -29,18 +29,32 @@ export default class EmployeeApi {
   }
 
   async createEmployee(employeeData) {
-    return this.employeeApi.post(`${this.baseURL}`, 
-      employeeData,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    );
+    try{
+      const response = await this.employeeApi.post(`${this.baseURL}`, 
+        employeeData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log(response.data);
+      return response.data;
+    }catch(error){
+      console.error('Error creating employee:', error);
+      throw error;
+    }
   }
 
   // Update an existing employee
   async updateEmployee(employee_id, employeeData) {
-    return this.employeeApi.put(`${this.baseURL}/${employee_id}`, 
-      employeeData,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    );
+    try{
+      const response = await this.employeeApi.put(`${this.baseURL}/${employee_id}`, 
+        employeeData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log(response.data);
+      return response.data;
+    }catch(error){
+      console.error('Error creating employee:', error);
+      throw error;
+    }
   }
   
 

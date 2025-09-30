@@ -42,9 +42,8 @@ class EmployeeService {
     role_id, hire_date, address = null, city = null, country = null,
     avatar, emergency_contact = null, status = 'active'
   }) {
-    console.log('Creating employee with data:', {
-      employee_id, first_name, last_name, email, status
-    });
+    try{
+    
 
     // Basic validations
     if (!employee_id || !first_name || !last_name || !email || !phone || !position || !role_id || !hire_date) {
@@ -114,74 +113,73 @@ class EmployeeService {
     role_id, hire_date, address = null, city = null, country = null,
     avatar = null, emergency_contact = null, status = 'active'
   }) {
-    console.log('Updating employee with data:', {
-      employee_id, first_name, last_name, email, status
-    });
-
-    // Basic validations
-    if (!employee_id || !first_name || !last_name || !email || !phone || !position || !role_id || !hire_date || !status) {
-      throw new Error("All fields are required");
-    }
-    if (!this.validateEmail(email)) throw new Error("Invalid email");
-    if (!this.validatePhone(phone)) throw new Error("Invalid phone number");
-    if (!this.validateName(first_name)) throw new Error("Invalid first name");
-    if (!this.validateName(last_name)) throw new Error("Invalid last name");
-    if (!this.validateStatus(status)) throw new Error("Invalid status");
-    
-    await this.validateRole(role_id);
-
-    // Check if employee exists
-    const existingEmployee = await this.getEmployeeById(employee_id);
-    if (!existingEmployee) throw new Error("No employee exists with this employee_id");
-
-    // Check if email belongs to another user
-    const existingUser = await this.userService.getUserByEmail(email);
-    if (existingUser && existingUser.user_id !== employee_id) {
-      throw new Error("User already exists with this email");
-    }
-
-    // Update user email if changed
-    if (existingEmployee.email !== email) {
-      await this.userService.updateUserEmail(employee_id, email);
-    }
-
-    
-
-      // Update employee
-      const query = `
-        UPDATE employees
-        SET first_name=$1, last_name=$2, phone=$3, position=$4, role_id=$5, hire_date=$6,
-            address=$7, city=$8, country=$9, avatar=$10, emergency_contact=$11, email=$12, status=$13,
-            updated_at=CURRENT_TIMESTAMP
-        WHERE employee_id=$14
-        RETURNING *;
-      `;
-      const values = [
-        first_name, 
-        last_name, 
-        phone, 
-        position, 
-        role_id, 
-        hire_date,
-        address, 
-        city, 
-        country, 
-        avatar, 
-        emergency_contact ? JSON.stringify(emergency_contact) : null, 
-        email,
-        status,
-        employee_id
-      ];
+    try{
       
-      console.log('Executing update query with values:', values);
-      const result = await this.db.query(query, values);
-      
-      if (result.rows.length === 0) {
-        throw new Error("Employee not found or update failed");
+
+      // Basic validations
+      if (!employee_id || !first_name || !last_name || !email || !phone || !position || !role_id || !hire_date || !status) {
+        throw new Error("All fields are required");
       }
+      if (!this.validateEmail(email)) throw new Error("Invalid email");
+      if (!this.validatePhone(phone)) throw new Error("Invalid phone number");
+      if (!this.validateName(first_name)) throw new Error("Invalid first name");
+      if (!this.validateName(last_name)) throw new Error("Invalid last name");
+      if (!this.validateStatus(status)) throw new Error("Invalid status");
       
-      console.log('Employee updated successfully:', result.rows[0]);
-      return result.rows[0];
+      await this.validateRole(role_id);
+
+      // Check if employee exists
+      const existingEmployee = await this.getEmployeeById(employee_id);
+      if (!existingEmployee) throw new Error("No employee exists with this employee_id");
+
+      // Check if email belongs to another user
+      const existingUser = await this.userService.getUserByEmail(email);
+      if (existingUser && existingUser.user_id !== employee_id) {
+        throw new Error("User already exists with this email");
+      }
+
+      // Update user email if changed
+      if (existingEmployee.email !== email) {
+        await this.userService.updateUserEmail(employee_id, email);
+      }
+
+      
+
+        // Update employee
+        const query = `
+          UPDATE employees
+          SET first_name=$1, last_name=$2, phone=$3, position=$4, role_id=$5, hire_date=$6,
+              address=$7, city=$8, country=$9, avatar=$10, emergency_contact=$11, email=$12, status=$13,
+              updated_at=CURRENT_TIMESTAMP
+          WHERE employee_id=$14
+          RETURNING *;
+        `;
+        const values = [
+          first_name, 
+          last_name, 
+          phone, 
+          position, 
+          role_id, 
+          hire_date,
+          address, 
+          city, 
+          country, 
+          avatar, 
+          emergency_contact ? JSON.stringify(emergency_contact) : null, 
+          email,
+          status,
+          employee_id
+        ];
+        
+        console.log('Executing update query with values:', values);
+        const result = await this.db.query(query, values);
+        
+        if (result.rows.length === 0) {
+          throw new Error("Employee not found or update failed");
+        }
+        
+        console.log('Employee updated successfully:', result.rows[0]);
+        return result.rows[0];
     } catch (error) {
       console.error('Database error in updateEmployee:', error);
       throw new Error(`Failed to update employee: ${error.message}`);
@@ -253,9 +251,6 @@ class EmployeeService {
         ORDER BY e.created_at DESC
         LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}
       `;
-
-      console.log('Executing employees query:', employeesQuery);
-      console.log('With parameters:', queryParams);
 
       const employees = await this.db.query(employeesQuery, queryParams);
     
