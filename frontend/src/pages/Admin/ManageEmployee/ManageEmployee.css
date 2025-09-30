@@ -795,27 +795,37 @@
   background: #163c55;
 }
 
+
+
+
+
+
+
+
 /* ========== Role Modal ========== */
+/* ===== Role Modal Styles ===== */
 .role-modal {
   position: relative;
   background: #fff;
   border-radius: 12px;
-  padding: 20px;
+  padding: 0;
   max-width: 600px;
   margin: auto;
   outline: none;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--admin-pages-border);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
 }
 
-.role-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+.role-modal-content {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+  overflow: hidden;
 }
 
 .role-modal-header {
@@ -823,67 +833,167 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  padding: 24px 32px 0;
+  flex-shrink: 0;
 }
 
 .role-modal-header h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: rgb(14, 14, 83);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--admin-pages-text-primary);
+  margin: 0;
+  letter-spacing: -0.025em;
 }
 
 .role-modal-close {
   background: none;
   border: none;
-  font-size: 22px;
+  font-size: 24px;
   cursor: pointer;
-  color: #666;
-  transition: color 0.3s;
+  color: var(--admin-pages-text-primary);
+  transition: all 0.2s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  position: absolute;
+  top: 24px;
+  right: 24px;
 }
 
 .role-modal-close:hover {
-  color: #000;
+  background: var(--admin-pages-hover);
+  color: var(--admin-pages-accent);
 }
 
-.permission-list {
+/* Scrollable permissions area */
+.permissions-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 12px;
   margin-top: 15px;
+  padding: 0 32px;
+  overflow-y: auto;
+  flex: 1;
+  max-height: 400px;
+  /* Adjust this value as needed */
 }
 
 .permission-item {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #f2f2f2;
-  padding: 6px 10px;
-  border-radius: 6px;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(28, 176, 162, 0.04);
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(28, 176, 162, 0.15);
+  transition: all 0.2s ease;
+}
+
+.permission-item:hover {
+  background: rgba(28, 176, 162, 0.08);
+  border-color: rgba(28, 176, 162, 0.3);
 }
 
 .permission-item input {
   transform: scale(1.1);
+  margin-top: 2px;
+  accent-color: var(--admin-pages-accent);
 }
 
 .permission-item label {
   font-size: 14px;
-  color: #333;
+  color: var(--admin-pages-text-primary);
+  line-height: 1.4;
+  flex: 1;
+  cursor: pointer;
 }
 
-/* Responsive */
+.permission-item label b {
+  color: var(--admin-pages-accent);
+  font-weight: 600;
+}
+
+/* Role modal form actions */
+.role-modal .form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 20px 32px 24px;
+  border-top: 1px solid var(--admin-pages-border-light);
+  margin-top: 20px;
+  flex-shrink: 0;
+  background: var(--admin-pages-primary);
+}
+
+/* Role modal form group */
+.role-modal .form-group {
+  padding: 0 32px;
+  margin-bottom: 20px;
+}
+
+.role-modal .form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--admin-pages-text-primary);
+  margin-bottom: 8px;
+}
+
+.role-modal .form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--admin-pages-border);
+  border-radius: 12px;
+  font-size: 15px;
+  color: var(--admin-pages-text-primary);
+  background: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.role-modal .form-group input:focus {
+  outline: none;
+  border-color: var(--admin-pages-accent);
+  box-shadow: 0 0 0 3px rgba(28, 176, 162, 0.08);
+}
+
+/* Scrollbar styling for permissions list */
+.permissions-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.permissions-list::-webkit-scrollbar-track {
+  background: var(--admin-pages-border-light);
+  border-radius: 3px;
+}
+
+.permissions-list::-webkit-scrollbar-thumb {
+  background: var(--admin-pages-accent);
+  border-radius: 3px;
+}
+
+.permissions-list::-webkit-scrollbar-thumb:hover {
+  background: var(--admin-pages-accent-light);
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
-  .role-table th,
-  .role-table td {
-    font-size: 12px;
-    padding: 8px 10px;
-  }
-
-  .tab-btn {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-
   .role-modal {
     width: 90%;
-    padding: 15px;
+    max-height: 80vh;
+  }
+
+  .role-modal-header,
+  .role-modal .form-group,
+  .permissions-list,
+  .role-modal .form-actions {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .permissions-list {
+    max-height: 300px;
   }
 }
