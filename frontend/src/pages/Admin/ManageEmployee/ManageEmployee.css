@@ -386,7 +386,30 @@
   background: var(--admin-pages-primary);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Form Styles */
+
+
+
 .form-section-title {
   font-size: 18px;
   font-weight: 600;
@@ -406,12 +429,12 @@
   margin-bottom: 20px;
 }
 
-.form-group {
+.form-group-me {
   flex: 1;
   margin-bottom: 0;
 }
 
-.form-group label {
+.form-group-me label {
   display: block;
   font-size: 14px;
   font-weight: 600;
@@ -420,9 +443,9 @@
   letter-spacing: -0.01em;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.form-group-me input,
+.form-group-me select,
+.form-group-me textarea {
   width: 100%;
   padding: 12px 16px;
   border: 1.5px solid var(--admin-pages-border);
@@ -436,16 +459,16 @@
   font-weight: 400;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.form-group-me input:focus,
+.form-group-me select:focus,
+.form-group-me textarea:focus {
   outline: none;
   border-color: var(--admin-pages-accent);
   box-shadow: 0 0 0 3px rgba(28, 176, 162, 0.08);
   background: #ffffff;
 }
 
-.form-group select {
+.form-group-me select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -549,6 +572,22 @@
   background: var(--admin-pages-accent-light);
   transform: translateY(-1px);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ===== Animations ===== */
 @keyframes fadeInOverlay {
@@ -929,12 +968,12 @@
 }
 
 /* Role modal form group */
-.role-modal .form-group {
+.role-modal .form-group-me {
   padding: 0 32px;
   margin-bottom: 20px;
 }
 
-.role-modal .form-group label {
+.role-modal .form-group-me label {
   display: block;
   font-size: 14px;
   font-weight: 600;
@@ -942,7 +981,7 @@
   margin-bottom: 8px;
 }
 
-.role-modal .form-group input {
+.role-modal .form-group-me input {
   width: 100%;
   padding: 12px 16px;
   border: 1.5px solid var(--admin-pages-border);
@@ -953,7 +992,7 @@
   transition: all 0.3s ease;
 }
 
-.role-modal .form-group input:focus {
+.role-modal .form-group-me input:focus {
   outline: none;
   border-color: var(--admin-pages-accent);
   box-shadow: 0 0 0 3px rgba(28, 176, 162, 0.08);
@@ -986,7 +1025,7 @@
   }
 
   .role-modal-header,
-  .role-modal .form-group,
+  .role-modal .form-group-me,
   .permissions-list,
   .role-modal .form-actions {
     padding-left: 20px;

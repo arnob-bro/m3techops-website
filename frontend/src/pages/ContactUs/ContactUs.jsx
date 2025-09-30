@@ -209,7 +209,7 @@ const ContactUs = () => {
 
               <form onSubmit={handleSubmit} className="contact-form">
                 <div className="form-row">
-                  <div className="form-group">
+                  <div className="form-group-cu">
                     <label htmlFor="first_name">
                       <FiUser className="label-icon" />
                       First Name*
@@ -224,7 +224,7 @@ const ContactUs = () => {
                       required
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-cu">
                     <label htmlFor="last_name">
                       <FiUser className="label-icon" />
                       Last Name*
@@ -241,7 +241,7 @@ const ContactUs = () => {
                   </div>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group-cu">
                   <label htmlFor="email">
                     <FiMail className="label-icon" />
                     Email Address*
@@ -258,7 +258,7 @@ const ContactUs = () => {
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group">
+                  <div className="form-group-cu">
                     <label htmlFor="company">
                       <FiBriefcase className="label-icon" />
                       Company
@@ -272,7 +272,7 @@ const ContactUs = () => {
                       placeholder="Acme Inc."
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-cu">
                     <label htmlFor="job_title">
                       <FiBriefcase className="label-icon" />
                       Job Title
@@ -289,7 +289,7 @@ const ContactUs = () => {
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group">
+                  <div className="form-group-cu">
                     <label htmlFor="phone">
                       <FiPhone className="label-icon" />
                       Phone
@@ -303,7 +303,7 @@ const ContactUs = () => {
                       placeholder="+880 1332-112077"
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-cu">
                     <label htmlFor="country">
                       <FiGlobe className="label-icon" />
                       Country
@@ -329,7 +329,7 @@ const ContactUs = () => {
                   </div>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group-cu">
                   <label htmlFor="message">
                     <FiMail className="label-icon" />
                     Message*

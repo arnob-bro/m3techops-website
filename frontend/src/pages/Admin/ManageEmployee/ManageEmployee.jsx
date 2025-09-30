@@ -508,7 +508,7 @@ const handleSubmit = async (e) => {
                   
                   <div className="form-row">
                     {!currentEmployee ? (
-                      <div className="form-group">
+                      <div className="form-group-me">
                         <label>Employee ID</label>
                         <input
                           type="text"
@@ -521,7 +521,7 @@ const handleSubmit = async (e) => {
                       </div>
                     ) : null}
 
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>First Name</label>
                       <input
                         type="text"
@@ -533,7 +533,7 @@ const handleSubmit = async (e) => {
                       />
                     </div>
                     
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Last Name</label>
                       <input
                         type="text"
@@ -547,7 +547,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Email Address</label>
                       <input
                         type="email"
@@ -559,7 +559,7 @@ const handleSubmit = async (e) => {
                       />
                     </div>
                     
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Phone Number</label>
                       <input
                         type="tel"
@@ -573,7 +573,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Avatar URL</label>
                       <input
                         type="url"
@@ -594,7 +594,7 @@ const handleSubmit = async (e) => {
                   <div className="form-section-title">Employment Details</div>
                   
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Position</label>
                       <input
                         type="text"
@@ -608,7 +608,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Admin Role</label>
                       <select
                         name="role_id"
@@ -627,7 +627,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Status</label>
                       <select
                         name="status"
@@ -643,7 +643,7 @@ const handleSubmit = async (e) => {
                       </select>
                     </div>
                     
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Hire Date</label>
                       <input
                         type="date"
@@ -658,7 +658,7 @@ const handleSubmit = async (e) => {
                   <div className="form-section-title">Address Information</div>
                   
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Address</label>
                       <input
                         type="text"
@@ -671,7 +671,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>City</label>
                       <input
                         type="text"
@@ -682,7 +682,7 @@ const handleSubmit = async (e) => {
                       />
                     </div>
                     
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Country</label>
                       <input
                         type="text"
@@ -697,7 +697,7 @@ const handleSubmit = async (e) => {
                   <div className="form-section-title">Emergency Contact</div>
                   
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Contact Name</label>
                       <input
                         type="text"
@@ -708,7 +708,7 @@ const handleSubmit = async (e) => {
                       />
                     </div>
                     
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Relationship</label>
                       <input
                         type="text"
@@ -721,7 +721,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-me">
                       <label>Contact Phone</label>
                       <input
                         type="tel"
@@ -812,7 +812,7 @@ const handleSubmit = async (e) => {
             <h3>
               {selectedRole.id ? `Edit Role: ${selectedRole.name}` : "Add Role"}
             </h3>
-            <div className="form-group">
+            <div className="form-group-me">
               <label>Role Name</label>
               <input
                 type="text"

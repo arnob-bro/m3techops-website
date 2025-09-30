@@ -97,10 +97,11 @@
 
    /* Light Theme Colors */
   
-       --color-primary: #ffffff;
+    --color-primary: #ffffff;
     --color-secondary: #f8f9fa;
     --color-form-background: #e9f5fe;
     --color-accent: #16A99E;
+    --color-accent-border: #cad7d6;
     --color-accent-light: #0885CF;
     --color-accent-warm: #F88F24;
     --color-text: #2D3748;
