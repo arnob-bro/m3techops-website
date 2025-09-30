@@ -322,18 +322,18 @@ const ManageEmployee = () => {
     }
   };
 
-  const deleteEmployee = async (employee_id) => {
-    try {
-      // Delete from backend
-      await employeeApi.deleteEmployee(employee_id);
+  // const deleteEmployee = async (employee_id) => {
+  //   try {
+  //     // Delete from backend
+  //     await employeeApi.deleteEmployee(employee_id);
       
-      // Update local state
-      setEmployees(employees.filter(employee => employee.employee_id !== employee_id));
-    } catch (error) {
-      console.error('Error deleting employee:', error);
-      alert(error.message || 'Failed to delete employee');
-    }
-  };
+  //     // Update local state
+  //     setEmployees(employees.filter(employee => employee.employee_id !== employee_id));
+  //   } catch (error) {
+  //     console.error('Error deleting employee:', error);
+  //     alert(error.message || 'Failed to delete employee');
+  //   }
+  // };
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };

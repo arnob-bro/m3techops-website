@@ -120,7 +120,10 @@ const ManageContact = () => {
         <div className="filter-controls">
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => {
+              setCurrentPage(1);
+              setStatusFilter(e.target.value);
+            }}
           >
             <option value="">All Messages</option>
             <option value="Unread">Unread Only</option>

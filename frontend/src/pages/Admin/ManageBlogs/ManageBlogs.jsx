@@ -180,11 +180,6 @@ const ManageBlog = () => {
   //   // Here you would also delete the post from your backend
   // };
 
-  // const filteredPosts = blogPosts.filter(post => 
-  //   post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //   post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //   post.category.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
