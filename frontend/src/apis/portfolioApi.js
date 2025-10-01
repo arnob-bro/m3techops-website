@@ -48,6 +48,15 @@ export default class PortfolioApi {
     }
   }
 
+  async getActivePortfolios({ page, limit, category, active } = {}) {
+    try {
+      const response = await this.portfolioApi.get(`${this.baseURL}/active`);
+      return response.data;
+    } catch (err) {
+      throw err.response?.data || { error: "Failed to fetch portfolio items" };
+    }
+  }
+
   // Fetch a portfolio item by ID
   async getPortfolioById(portfolio_item_id) {
     try {

@@ -5,13 +5,32 @@ class PortfolioController {
         this.portfolioService = portfolioService;
 
         // Bind methods so 'this' works in routes
+        this.getActivePortfolios = this.getActivePortfolios.bind(this);
         this.getAllPortfolios = this.getAllPortfolios.bind(this);
         this.getPortfolioById = this.getPortfolioById.bind(this);
         this.createPortfolio = this.createPortfolio.bind(this);
         this.updatePortfolio = this.updatePortfolio.bind(this);
     }
 
-    
+    async getActivePortfolios(req, res) {
+        try {
+          const { page, limit, category, active } = req.query;
+          
+      
+          const payslips = await this.portfolioService.getActivePortfolios(
+            page,
+            limit,
+            category,
+            active
+          );
+      
+          res.status(200).json(payslips);
+        } catch (err) {
+          console.error("Error fetching portfolios:", err);
+          res.status(400).json({ error: err.message });
+        }
+    }
+
     async getAllPortfolios(req, res) {
         try {
             const portfolios = await this.portfolioService.getAll();

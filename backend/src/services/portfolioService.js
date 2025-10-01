@@ -16,6 +16,51 @@ class PortfolioService {
     }
   }
 
+  async getActivePortfolios(page = 1, limit = 10, category = "", active = true) {
+    try {
+      const offset = (page - 1) * limit;
+      const searchPattern = `%${category.trim()}%`;
+  
+      const result = await this.db.query(
+        `
+        SELECT *
+        FROM portfolio_items
+        WHERE ($1 = '' OR category ILIKE $2)
+          AND active = $3
+        ORDER BY created_at DESC
+        LIMIT $4 OFFSET $5
+        `,
+        [category, searchPattern, active, limit, offset]
+      );
+  
+      const countResult = await this.db.query(
+        `
+        SELECT COUNT(*) AS total
+        FROM portfolio_items
+        WHERE ($1 = '' OR category ILIKE $2)
+          AND active = $3
+        `,
+        [category, searchPattern, active]
+      );
+  
+      const total = parseInt(countResult.rows[0].total, 10);
+      return {
+        success: true,
+        portfolios: result.rows,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (err) {
+      console.error("Error in fetching active portfolios:", err.message);
+      throw new Error("Failed to fetch active portfolios");
+    }
+  }
+  
+
   // Get portfolio item by ID
   async getById(id) {
     try {
