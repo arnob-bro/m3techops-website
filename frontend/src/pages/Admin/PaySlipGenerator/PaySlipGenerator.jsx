@@ -123,6 +123,8 @@ const PaySlipGenerator = () => {
     }
   };
 
+  
+
   return (
     <div className="payslip-generator">
     <div className="app-container">
@@ -220,7 +222,7 @@ const PaySlipGenerator = () => {
             </div>
             
             <div className="form-group">
-              <label>Pay Date (DD-MM-YYYY)</label>
+              <label>Pay Date (YYYY-MM-DD)</label>
               <input
                 type="text"
                 name="pay_date"
@@ -420,6 +422,11 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
     });
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div ref={ref} className="payslip-container">
     <div className="payslip-header">
@@ -464,7 +471,7 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
         </div>
         <div className="info-item">
           <span className="info-label">C. Pay Date:</span>
-          <span className="info-value">{data.pay_date}</span>
+          <span className="info-value">{formatDate(data.pay_date)}</span>
         </div>
       </div>
       
