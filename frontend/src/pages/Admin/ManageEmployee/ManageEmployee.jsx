@@ -16,7 +16,7 @@ const employeeApi = new EmployeeApi();
 const roleApi = new RoleApi();
 
 const ManageEmployee = () => {
-  const [activeTab, setActiveTab] = useState("employees"); // 👈 NEW
+  const [activeTab, setActiveTab] = useState("employees"); // NEW 
   const [previewUrl, setPreviewUrl] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -316,7 +316,6 @@ const handleSubmit = async (e) => {
       case 'on_leave': return 'On Leave';
       case 'terminated': return 'Terminated';
       case 'probation': return 'Probation';
-      case 'inactive': return 'Inactive';
       default: return status;
     }
   };
@@ -368,7 +367,6 @@ const handleSubmit = async (e) => {
                   <option value="on_leave">On Leave</option>
                   <option value="terminated">Terminated</option>
                   <option value="probation">Probation</option>
-                  <option value="inactive">Inactive</option>
                 </select>
               </div>
               <button onClick={openAddModal} className="employee-btn-add">
@@ -655,7 +653,6 @@ const handleSubmit = async (e) => {
                         <option value="on_leave">On Leave</option>
                         <option value="terminated">Terminated</option>
                         <option value="probation">Probation</option>
-                        <option value="inactive">Inactive</option>
                       </select>
                     </div>
                     

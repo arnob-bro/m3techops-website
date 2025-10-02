@@ -10,7 +10,7 @@ INSERT INTO payslips (
  'Abdul Rahman', 'Software Engineer', 'EMP001', '2025-08-31',
  80000.00, 5000.00, 75000.00,
  'Bank Transfer', 'Abdul Rahman', 'Dutch-Bangla Bank', 'Banani Branch', '1234567890',
- NULL, 'Sumaiya Ahmed', 'Abdul Rahman', NULL, 'https://example.com/logo.png', 'August Salary', 'Paid',
+ NULL, 'Sumaiya Ahmed', 'Abdul Rahman', NULL, 'https://example.com/logo.png', 'August Salary', 'Pending',
  '2025-08-31 09:30:00', '2025-08-31 09:30:00'),
 
 -- Payslip 2
@@ -18,7 +18,7 @@ INSERT INTO payslips (
  'Fatema Khatun', 'UI/UX Designer', 'EMP002', '2025-09-05',
  65000.00, 3000.00, 62000.00,
  'Bkash', 'Fatema Khatun', NULL, NULL, NULL,
- 'TXN123456789', 'Sumaiya Ahmed', 'Fatema Khatun', NULL, 'https://example.com/logo.png', 'September Salary', 'Paid',
+ 'TXN123456789', 'Sumaiya Ahmed', 'Fatema Khatun', NULL, 'https://example.com/logo.png', 'September Salary', 'Pending',
  '2025-09-05 11:15:00', '2025-09-05 11:15:00'),
 
 -- Payslip 3
@@ -34,5 +34,5 @@ INSERT INTO payslips (
  'Sharmin Akter', 'Project Manager', 'EMP004', '2025-07-30',
  95000.00, 7000.00, 88000.00,
  'Bank Transfer', 'Sharmin Akter', 'BRAC Bank', 'Gulshan Branch', '9988776655',
- NULL, 'Sumaiya Ahmed', 'Sharmin Akter', NULL, 'https://example.com/logo.png', 'July Salary', 'Paid',
+ NULL, 'Sumaiya Ahmed', 'Sharmin Akter', NULL, 'https://example.com/logo.png', 'July Salary', 'Pending',
  '2025-07-30 10:05:00', '2025-07-30 10:05:00');

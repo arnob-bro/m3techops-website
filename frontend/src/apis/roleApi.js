@@ -9,7 +9,7 @@ export default class RoleApi {
   // Create a new role
   async createRole({ name, permissions }) {
     try {
-      const response = await this.roleApi.post(`${this.baseURL}/`, {
+      const response = await this.roleApi.post(`${this.baseURL}/create-role`, {
         name,
         permissions,
       });

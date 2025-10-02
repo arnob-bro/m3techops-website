@@ -77,26 +77,26 @@ CREATE TABLE categories (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 7. Projects (custom ID as VARCHAR)
-CREATE TABLE projects (
-    project_id VARCHAR(20) PRIMARY KEY, -- e.g., "PRJ001"
-    title VARCHAR(150) NOT NULL,
-    overview TEXT,
-    case_study TEXT,
-    technologies TEXT[] DEFAULT '{}',
-    image_url VARCHAR(255),
-    github_url VARCHAR(255),
-    live_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- -- 7. Projects (custom ID as VARCHAR)
+-- CREATE TABLE projects (
+--     project_id VARCHAR(20) PRIMARY KEY, -- e.g., "PRJ001"
+--     title VARCHAR(150) NOT NULL,
+--     overview TEXT,
+--     case_study TEXT,
+--     technologies TEXT[] DEFAULT '{}',
+--     image_url VARCHAR(255),
+--     github_url VARCHAR(255),
+--     live_url VARCHAR(255),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
 
--- 8. Project ↔ Categories
-CREATE TABLE project_categories (
-    project_id VARCHAR(20) NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE,
-    category_id BIGINT NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (project_id, category_id)
-);
+-- -- 8. Project ↔ Categories
+-- CREATE TABLE project_categories (
+--     project_id VARCHAR(20) NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE,
+--     category_id BIGINT NOT NULL REFERENCES categories(category_id) ON DELETE CASCADE,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     PRIMARY KEY (project_id, category_id)
+-- );
 
 
 
@@ -155,7 +155,7 @@ CREATE TABLE blogs (
 CREATE TABLE testimonials (
     testimonial_id BIGSERIAL PRIMARY KEY,
     client_name VARCHAR(100),
-    client_email VARCHAR(150) UNIQUE,
+    client_email VARCHAR(150),
     imageUrl TEXT,
     company_name VARCHAR(100),
     designation VARCHAR(100),
@@ -167,16 +167,16 @@ CREATE TABLE testimonials (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 12. Bookings
-CREATE TABLE bookings (
-    booking_id BIGSERIAL PRIMARY KEY,
-    user_id VARCHAR(20) REFERENCES users(user_id) ON DELETE CASCADE,
-    service_id BIGINT REFERENCES services(service_id) ON DELETE CASCADE,
-    booking_date DATE,
-    status VARCHAR(20) CHECK (status IN ('Pending','Accepted','Completed','Cancelled')) DEFAULT 'Pending',
-    note TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- -- 12. Bookings
+-- CREATE TABLE bookings (
+--     booking_id BIGSERIAL PRIMARY KEY,
+--     user_id VARCHAR(20) REFERENCES users(user_id) ON DELETE CASCADE,
+--     service_id BIGINT REFERENCES services(service_id) ON DELETE CASCADE,
+--     booking_date DATE,
+--     status VARCHAR(20) CHECK (status IN ('Pending','Accepted','Completed','Cancelled')) DEFAULT 'Pending',
+--     note TEXT,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
 
 -- 13. Pay Slips
 -- Salary Payments Table

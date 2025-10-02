@@ -106,7 +106,7 @@ class PayslipController {
 
           const updated = await this.payslipService.updatePayslipStatus(payslip_id, status);
           if (!updated) return res.status(404).json({ error: "Payslip not found" });
-          res.json(updated);
+          res.json({success: true, updated});
         } catch (err) {
           res.status(500).json({ error: "Failed to update payslip" });
         }

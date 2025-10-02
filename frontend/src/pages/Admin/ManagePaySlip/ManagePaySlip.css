@@ -322,6 +322,46 @@
     transform: translateY(-1px);
 }
 
+.MPS-mark-paid-btn {
+    background: teal;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.MPS-mark-paid-btn:hover {
+    background: var(--admin-pages-accent-light);
+    transform: translateY(-1px);
+}
+
+.MPS-mark-failed-btn {
+    background: maroon;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.MPS-mark-failed-btn:hover {
+    background: var(--admin-pages-accent-light);
+    transform: translateY(-1px);
+}
+
 .MPS-modal-body {
     padding: 0;
     overflow-y: auto;

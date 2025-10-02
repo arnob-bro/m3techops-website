@@ -42,7 +42,7 @@ VALUES
  '8 min read', 'Bob Smith', 'https://i.pravatar.cc/150?img=2', 'Backend Engineer', TRUE),
 
 -- 3
-('Flutter State Management', 'Mobile Development',
+('Flutter State Management', 'Mobile App Development',
  'A comprehensive guide to managing state in Flutter apps.',
  '<h2>Introduction</h2>
 <p>State management is crucial for building scalable mobile applications. Flutter offers multiple approaches like Provider, Riverpod, and Bloc.</p>
@@ -59,7 +59,7 @@ VALUES
  '9 min read', 'Charlie Kim', 'https://i.pravatar.cc/150?img=3', 'Mobile Developer', TRUE),
 
 -- 4
-('SwiftUI Animations', 'Mobile Development',
+('SwiftUI Animations', 'Mobile App Development',
  'Create smooth and interactive animations in SwiftUI.',
  '<h2>Introduction</h2>
 <p>Animations enhance the user experience by providing feedback and making apps more engaging. SwiftUI simplifies the creation of animations with declarative syntax.</p>
@@ -110,7 +110,7 @@ VALUES
  '10 min read', 'Fiona Davis', 'https://i.pravatar.cc/150?img=6', 'DevOps Engineer', TRUE),
 
 -- 7
-('AI in Finance', 'AI & Automation',
+('AI in Finance', 'AI & Machine Learning',
  'How AI is transforming financial services.',
  '<h2>Introduction</h2>
 <p>Artificial Intelligence is revolutionizing finance by automating tasks, improving decision-making, and enhancing security.</p>
@@ -127,7 +127,7 @@ VALUES
  '11 min read', 'George Miller', 'https://i.pravatar.cc/150?img=7', 'AI Researcher', TRUE),
 
 -- 8
-('Python Automation Techniques', 'AI & Automation',
+('Python Automation Techniques', 'AI & Machine Learning',
  'Leverage Python to automate tedious tasks.',
  '<h2>Introduction</h2>
 <p>Python is a versatile language for automating repetitive tasks, from data scraping to workflow automation.</p>
@@ -195,7 +195,7 @@ VALUES
  '9 min read', 'Kevin Adams', 'https://i.pravatar.cc/150?img=11', 'Blockchain Engineer', TRUE),
 
 -- 12
-('AR & VR in Mobile Development', 'Mobile Development',
+('AR & VR in Mobile Development', 'Mobile App Development',
  'Augmented and virtual reality trends in apps.',
  '<h2>Introduction</h2>
 <p>AR and VR technologies enhance mobile experiences, particularly in gaming, education, and e-commerce.</p>

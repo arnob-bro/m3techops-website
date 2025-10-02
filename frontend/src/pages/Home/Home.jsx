@@ -91,7 +91,6 @@ const Home = () => {
     };
   }, []);
 
-  // const services = [
   //   {
   //     id: 'web-development',
   //     icon: <FaCode size={36} />,

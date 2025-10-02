@@ -6,9 +6,11 @@ class TestimonialController {
     // Bind methods so 'this' works in routes
     this.initTestimonial = this.initTestimonial.bind(this);
     this.getTestimonials = this.getTestimonials.bind(this);
+    this.getAllActiveTestimonials = this.getAllActiveTestimonials.bind(this);
     this.getTestimonialFeedbackStatusByToken = this.getTestimonialFeedbackStatusByToken.bind(this);
     this.getTestimonialByToken = this.getTestimonialByToken.bind(this);
     this.submitTestimonial = this.submitTestimonial.bind(this);
+    this.updateActiveStatus = this.updateActiveStatus.bind(this);
   }
   
   async initTestimonial(req, res) {
@@ -40,6 +42,16 @@ class TestimonialController {
     } catch (err) {
         console.error("Error fetching testimonials:", err);
         res.status(500).json({ success: false, message: "Failed to fetch testimonials" });
+    }
+  }
+
+  async getAllActiveTestimonials(req, res) {
+    try {
+        const data = await this.testimonialService.getAllActiveTestimonials();
+        res.status(200).json(data);
+    } catch (err) {
+        console.error("Error fetching active testimonials:", err);
+        res.status(500).json({ success: false, message: "Failed to fetch active testimonials" });
     }
   }
 
@@ -136,6 +148,18 @@ class TestimonialController {
         success: false,
         message: "Failed to submit testimonial",
       });
+    }
+  }
+
+  async updateActiveStatus(req, res) {
+    try {
+      const { testimonial_id } = req.params;
+      const { active } = req.body;
+      const data = await this.testimonialService.updateActiveStatus({testimonial_id, active});
+      res.status(200).json({success: true, testimonial: data});
+    } catch (err) {
+      console.error("Error updating testimonial active status:", err);
+      res.status(500).json({ success: false, message: "Failed to update testimonial active status" });
     }
   }
   

@@ -21,6 +21,8 @@ export default function TestimonialManagement() {
   const [activeStatusFilter, setActiveStatusFilter] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [statusLoading, setStatusLoading] = useState(false);
+
 
   const fetchTestimonials = async () => {
     try {
@@ -46,6 +48,40 @@ export default function TestimonialManagement() {
   const handleChange = (e) =>{
     setForm({ ...form, [e.target.name]: e.target.value });
   }
+
+  const handleActiveStatus = async (testimonial_id, active) => {
+    setStatusLoading(true); // start loading
+    try {
+      // Optimistic UI update
+      setTestimonials(prev =>
+        prev.map(t =>
+          t.testimonial_id === testimonial_id ? { ...t, active } : t
+        )
+      );
+  
+      const res = await testimonialApi.updateActiveStatus(testimonial_id, active);
+  
+      if (res.success) {
+  
+        if (
+          selectedTestimonial &&
+          selectedTestimonial.testimonial_id === testimonial_id
+        ) {
+          setSelectedTestimonial({ ...selectedTestimonial, active });
+        }
+      } else {
+        setMessage("❌ Failed to update testimonial active status");
+        fetchTestimonials(); // rollback
+      }
+    } catch (err) {
+      console.error("Error updating testimonial active status:", err);
+      setMessage("❌ Something went wrong");
+      fetchTestimonials(); // rollback
+    } finally {
+      setStatusLoading(false); // stop loading
+    }
+  };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,7 +145,8 @@ export default function TestimonialManagement() {
             <th>Email</th>
             <th>Company</th>
             <th>Designation</th>
-            <th>Status</th>
+            <th>Feedback Status</th>
+            <th>Visibility</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -122,6 +159,7 @@ export default function TestimonialManagement() {
               <td>{t.company_name || "N/A"}</td>
               <td>{t.designation || "N/A"}</td>
               <td>{t.feedback ? "✅ Feedback Given" : "❌ Awaiting Feedback"}</td>
+              <td>{t.active ? "✅ Public" : "❌ Private"}</td>
               <td>
                 <button onClick={() => openViewModal(t)}>View</button>
               </td>
@@ -237,16 +275,30 @@ export default function TestimonialManagement() {
             
               <div>
                 <strong>Image:</strong><br/>
-                <img src={selectedTestimonial.imageurl || `https://randomuser.me/api/portraits/men/32.jpg`} alt="Client" style={{ width: "150px", borderRadius: "8px", marginTop: "5px" }} />
+                <img src={selectedTestimonial.imageurl || `https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png`} alt="Client" style={{ width: "150px", borderRadius: "8px", marginTop: "5px" }} />
               </div>
             
-            <p><strong>Active:</strong> {selectedTestimonial.active ? "✅ Visible" : "❌ Not Visible"}</p>
-            <p><strong>Feedback Taken:</strong> {selectedTestimonial.feedback_taken ? "✅ Feedback Given" : "❌ Awaiting Feedback"}</p>
+            <p><strong>Visibility:</strong> {selectedTestimonial.active ? "✅ Public" : "❌ Private"}</p>
+            <button 
+              onClick={() => handleActiveStatus(
+                selectedTestimonial.testimonial_id, 
+                !selectedTestimonial.active
+              )}
+              disabled={statusLoading}
+            >
+              {statusLoading 
+                ? "Updating..." 
+                : selectedTestimonial.active 
+                  ? "Make Private" 
+                  : "Make Public"}
+            </button>
+            <p><strong>Feedback Status:</strong> {selectedTestimonial.feedback_taken ? "✅ Feedback Given" : "❌ Awaiting Feedback"}</p>
             <p><strong>Created At:</strong> {new Date(selectedTestimonial.created_at).toLocaleString()}</p>
             <p><strong>Updated At:</strong> {new Date(selectedTestimonial.updated_at).toLocaleString()}</p>
             <div className="modal-actions">
               <button type="button" onClick={() => setViewModalOpen(false)}>Close</button>
             </div>
+            {message && <p className="message">{message}</p>}
           </div>
         </div>
       )}

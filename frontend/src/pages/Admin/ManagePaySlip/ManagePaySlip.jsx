@@ -18,26 +18,28 @@ const ManagePaySlip = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+
+  const fetchPaySlips = async () => {
+    try {
+      const result = await payslipApi.getPayslips({
+        page: page,
+        limit: 10, 
+        searchTerm: searchTerm ,
+        status: statusFilter
+      });
+      if(result.success){
+        const payslips = result.payslips;
+        setPaySlips(payslips);
+        setTotalPages(result.pagination.totalPages);
+      }
+      
+    } catch (error) {
+      console.error('Error fetching pay slips:', error);
+    }
+  };
   useEffect(() => {
     // Fetch pay slips from API
-    const fetchPaySlips = async () => {
-      try {
-        const result = await payslipApi.getPayslips({
-          page: page,
-          limit: 10, 
-          searchTerm: searchTerm ,
-          status: statusFilter
-        });
-        if(result.success){
-          const payslips = result.payslips;
-          setPaySlips(payslips);
-          setTotalPages(result.pagination.totalPages);
-        }
-        
-      } catch (error) {
-        console.error('Error fetching pay slips:', error);
-      }
-    };
+    
 
     fetchPaySlips();
   }, [page, searchTerm, statusFilter]);
@@ -53,6 +55,42 @@ const ManagePaySlip = () => {
       currency: 'USD'
     }).format(amount);
   };
+
+
+const [statusLoadingIds, setStatusLoadingIds] = useState([]); 
+
+const UpdateStatus = async (payslip_id, newStatus) => {
+  // mark as loading
+  setStatusLoadingIds(prev => [...prev, payslip_id]);
+
+  // Optimistic UI update
+  const originalPaySlips = [...paySlips];
+  setPaySlips(prev =>
+    prev.map(p =>
+      p.payslip_id === payslip_id ? { ...p, status: newStatus } : p
+    )
+  );
+
+  try {
+    const res = await payslipApi.updatePayslipStatus(payslip_id, newStatus);
+
+    if (res.success) {
+      // Update modal if open
+      if (selectedPaySlip && selectedPaySlip.payslip_id === payslip_id) {
+        setSelectedPaySlip({ ...selectedPaySlip, status: newStatus });
+      }
+    } else {
+      throw new Error("Failed to update status");
+    }
+  } catch (err) {
+    console.error("Error updating payslip status:", err);
+    setPaySlips(originalPaySlips); // rollback UI
+  } finally {
+    // remove from loading
+    setStatusLoadingIds(prev => prev.filter(id => id !== payslip_id));
+  }
+};
+
 
   const getStatusBadge = (status) => {
     const statusClasses = {
@@ -297,6 +335,25 @@ const ManagePaySlip = () => {
                     >
                       <FiDownload /> Download PDF
                     </button>
+                    {selectedPaySlip.status === "Pending" && (
+                      <button
+                        className="MPS-mark-paid-btn"
+                        onClick={() => UpdateStatus(selectedPaySlip.payslip_id, "Paid")}
+                        disabled={statusLoadingIds.includes(selectedPaySlip.payslip_id)}
+                      >
+                        {statusLoadingIds.includes(selectedPaySlip.payslip_id) ? "Updating..." : "Mark Paid"}
+                      </button>
+                    )}
+                    {selectedPaySlip.status === "Pending" && (
+                      <button
+                        className="MPS-mark-failed-btn"
+                        onClick={() => UpdateStatus(selectedPaySlip.payslip_id, "Failed")}
+                        disabled={statusLoadingIds.includes(selectedPaySlip.payslip_id)}
+                      >
+                        {statusLoadingIds.includes(selectedPaySlip.payslip_id) ? "Updating..." : "Mark Failed"}
+                      </button>
+                    )}
+
                     <button className="MPS-modal-close" onClick={closeModal}>
                       <FiX />
                     </button>

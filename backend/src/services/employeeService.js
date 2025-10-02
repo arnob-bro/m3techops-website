@@ -25,7 +25,7 @@ class EmployeeService {
   }
 
   validateStatus(status) {
-    const validStatuses = ['active', 'on_leave', 'terminated', 'probation', 'inactive'];
+    const validStatuses = ['active', 'on_leave', 'terminated', 'probation'];
     return validStatuses.includes(status);
   }
 

@@ -288,7 +288,7 @@ const ManageServices = () => {
 
             {/* Key Benefits */}
             <div className="form-group">
-              <label>Key Benefits</label>
+              <label>Key Benefits[ Do not add Full-Stop(.) into the field ]</label>
               {formData.key_benefits.map((item, index) => (
                 <div key={item.id} className="array-input-row">
                   <input
@@ -310,7 +310,7 @@ const ManageServices = () => {
 
             {/* Our Process */}
             <div className="form-group">
-              <label>Our Process</label>
+              <label>Our Process[ Do not add Full-Stop(.) into the field ]</label>
               {formData.our_process.map((item, index) => (
                 <div key={item.id} className="array-input-row">
                   <input
@@ -331,7 +331,7 @@ const ManageServices = () => {
             </div>
               {/* Technologies */}
             <div className="form-group">
-              <label>Technologies</label>
+              <label>Technologies[ Do not add Full-Stop(.) into the field ]</label>
               {formData.technologies.map((item, index) => (
                 <div key={item.id} className="array-input-row">
                   <input

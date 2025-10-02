@@ -168,7 +168,7 @@ class BlogController {
           }
       
           if (active !== undefined) {
-            updateData.active = !!active;
+            updateData.active = active;
           }
       
           // ✅ Handle Supabase uploads if new files provided

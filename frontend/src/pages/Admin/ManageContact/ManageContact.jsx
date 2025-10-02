@@ -60,17 +60,6 @@ const ManageContact = () => {
     setIsViewModalOpen(true);
   };
 
-  const deleteMessage = async (id) => {
-    if (window.confirm("Are you sure you want to delete this message?")) {
-      try {
-        await contactApi.deleteInquiry(id); // Call backend
-        fetchMessages(currentPage); // Refresh current page
-      } catch (err) {
-        console.error("Failed to delete message", err);
-      }
-    }
-  };
-
   const formatDate = (dateString) => {
     const options = {
       year: "numeric",
@@ -127,7 +116,6 @@ const ManageContact = () => {
           >
             <option value="">All Messages</option>
             <option value="Unread">Unread Only</option>
-            <option value="Read">Read Only</option>
             <option value="Replied">Replied Only</option>
           </select>
         </div>
@@ -186,9 +174,7 @@ const ManageContact = () => {
                   </td>
                   <td>{message.company || "-"}</td>
                   <td>
-                    {message.message.length > 100
-                      ? `${message.message.substring(0, 100)}...`
-                      : message.message}
+                    {message.message.substring(0, 40)}...
                   </td>
                   <td>
                     <FiClock /> {formatDate(message.created_at)}
@@ -200,10 +186,7 @@ const ManageContact = () => {
                         onClick={() => viewMessage(message)}
                         className="view-icon"
                       />
-                      <FiTrash2
-                        onClick={() => deleteMessage(message.inquiry_id)}
-                        className="delete-icon"
-                      />
+                      
                     </div>
                   </td>
                 </tr>

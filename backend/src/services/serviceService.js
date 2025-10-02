@@ -72,7 +72,7 @@ class ServiceService {
         // Update the inquiry
         const result = await this.db.query(
           `UPDATE services 
-           SET title = $1, short_desc = $2, key_benefits = $3::jsonb, our_process = $4::jsonb,technologies= $5::jsonb active = $6, icon = $7, updated_at = CURRENT_TIMESTAMP
+           SET title = $1, short_desc = $2, key_benefits = $3::jsonb, our_process = $4::jsonb,technologies= $5::jsonb, active = $6, icon = $7, updated_at = CURRENT_TIMESTAMP
            WHERE service_id = $8
            RETURNING *`,
           [ title,

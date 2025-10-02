@@ -5,7 +5,7 @@ VALUES
   'Custom websites built with modern technologies for performance and scalability.',
   '["Responsive design","SEO-friendly","Secure and scalable","User-focused UI/UX"]'::jsonb,
   '["Requirement analysis","UI/UX design","Frontend & backend development","Testing & deployment"]'::jsonb,
-  '["React", "Node.js", "Next.js", "PostgreSQL", "TailwindCSS"]'::jsonb,
+  '["React", "Nodejs", "Nextjs", "PostgreSQL", "TailwindCSS"]'::jsonb,
   true,
   'FaGlobe'
 ),

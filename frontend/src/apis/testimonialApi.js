@@ -59,5 +59,19 @@ export default class TestimonialApi {
   }
 
 
+  async updateActiveStatus(testimonial_id, active) {
+    try {
+      const response = await this.testimonialApi.patch(
+        `${this.baseURL}/${testimonial_id}`,
+        {active}
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+        throw err.response?.data || { error: "Failed to update testimonial active status" };
+    }
+  }
+
+
 
 }

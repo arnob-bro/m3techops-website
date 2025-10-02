@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { FaImage, FaCode, FaEdit, FaToggleOn, FaToggleOff, FaPlus, FaTrash, FaExternalLinkAlt } from 'react-icons/fa';
 import Modal from 'react-modal';
 import './ManagePortfolio.css';
+import ServiceApi from "../../../apis/serviceApi";
 import PortfolioApi from '../../../apis/portfolioApi';
+const serviceApi = new ServiceApi();
 const portfolioApi = new PortfolioApi();
 
 const ManagePortfolio = () => {
   const [portfolioItems, setPortfolioItems] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
@@ -24,8 +27,22 @@ const ManagePortfolio = () => {
   });
 
   useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const result = await serviceApi.getServices();
+        const AllServices = result.services;
+        setCategories(AllServices);
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        }
+    };
+    fetchServices();
+  }, []);
+
+  useEffect(() => {
     // Set up modal app element for react-modal
     Modal.setAppElement('#root');
+
     
     // Fetch portfolio items from API
     const fetchPortfolioItems = async () => {
@@ -269,18 +286,18 @@ const ManagePortfolio = () => {
               <div className="portfolio-form-group">
                 <label>Category</label>
                 <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  required
-                >
-                  <option value="">Select a category</option>
-                  <option value="Web Development">Web Development</option>
-                  <option value="Mobile Development">Mobile Development</option>
-                  <option value="Cloud Solutions">Cloud Solutions</option>
-                  <option value="AI Solutions">AI Solutions</option>
-                  <option value="Custom Software">Custom Software</option>
-                </select>
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">-- Select Category --</option>
+                      {categories.map((cat, idx) => (
+                        <option key={idx} value={cat.title}>
+                          {cat.title}
+                        </option>
+                      ))}
+                    </select>
               </div>
               
               <div className="portfolio-form-group">

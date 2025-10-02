@@ -8,9 +8,11 @@ function createTestimonialRouter(testimonialController) {
 
   router.post("/init", testimonialController.initTestimonial);
   router.get("/", testimonialController.getTestimonials);
+  router.get("/all-active", testimonialController.getAllActiveTestimonials);
   router.get("/feedback-status/:token", testimonialController.getTestimonialFeedbackStatusByToken);
   router.get("/:token", testimonialController.getTestimonialByToken);
   router.post("/submit/:token", upload.single("image"), testimonialController.submitTestimonial);
+  router.patch("/:testimonial_id", testimonialController.updateActiveStatus);
 
   return router;
 }

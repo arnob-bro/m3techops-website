@@ -124,6 +124,23 @@ class TestimonialService {
       };
     }
 
+    async getAllActiveTestimonials() {
+  
+      const testimonialsQuery = `
+        SELECT *
+        FROM testimonials
+        WHERE active = TRUE
+        ORDER BY created_at DESC
+      `;
+  
+      const testimonialsResult = await this.db.query(testimonialsQuery, []);
+  
+      return {
+          success: true,
+          testimonials: testimonialsResult.rows || []
+      };
+    }
+
     async getTestimonialByToken(token) {
       try {
       const result = await this.db.query(
@@ -200,6 +217,23 @@ class TestimonialService {
         throw new Error("Failed to submit testimonial");
       }
     }
+
+    async updateActiveStatus({ testimonial_id, active }) {
+      try {
+        const result = await this.db.query(
+          `UPDATE testimonials 
+           SET active = $1
+           WHERE testimonial_id = $2
+           RETURNING *`,   // good practice: return updated row
+          [active, testimonial_id]   // ✅ correct order
+        );
+        return result.rows[0] || null;
+      } catch (err) {
+        console.error("Error updating testimonial active status:", err);
+        throw new Error("Failed to update testimonial active status");
+      }
+    }
+    
   
   
     

@@ -250,25 +250,20 @@ const ManageNewsletter = () => {
     setIsNewsletterModalOpen(false);
   };
 
-  const deleteSubscriber = (id) => {
-    setSubscribers(subscribers.filter(subscriber => subscriber.id !== id));
-  };
-
-  const deleteNewsletter = (id) => {
-    setNewsletters(newsletters.filter(newsletter => newsletter.id !== id));
-  };
 
   const sendNewsletter = async (newsletter_id) => {
-    // setNewsletters(newsletters.map(newsletter => 
-    //   newsletter.id === id ? { 
-    //     ...newsletter, 
-    //     status: 'sent',
-    //     sentAt: new Date().toISOString().split('T')[0]
-    //   } : newsletter
-    // ));
+    setNewsletters(newsletters.map(newsletter => 
+      newsletter.newsletter_id === newsletter_id ? { 
+        ...newsletter, 
+        status: 'Sent',
+        sent_date: new Date().toISOString().split('T')[0]
+      } : newsletter
+    ));
 
     const result = await newsLetterApi.sendNewsletter(newsletter_id);
-    if(result.success) alert("Newsletter has been sent successfully");
+    if(result.success) {
+      alert("Newsletter has been sent successfully");
+    }
   };
 
   const filteredSubscribers = subscribers.filter(subscriber => {
@@ -643,11 +638,7 @@ const ManageNewsletter = () => {
                             aria-label="Send newsletter"
                           />
                         )}
-                        {/* <FaTrash 
-                          onClick={() => deleteNewsletter(newsletter.newsletter_id)} 
-                          className="delete-icon"
-                          aria-label="Delete newsletter"
-                        /> */}
+                        
                       </div>
                     </td>
                     </tr>
