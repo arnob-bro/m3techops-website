@@ -492,7 +492,7 @@ const ManageNewsletter = () => {
               <div className="newsletter-modal-form-container">
                 <form onSubmit={handleSubscriberSubmit}>
                   <div className="form-row">
-                    {/* <div className="form-group">
+                    {/* <div className="form-group-nl">
                       <label>Name (Optional)</label>
                       <input
                         type="text"
@@ -503,7 +503,7 @@ const ManageNewsletter = () => {
                       />
                     </div> */}
                     
-                    <div className="form-group">
+                    <div className="form-group-nl">
                       <label>Email Address *</label>
                       <input
                         type="email"
@@ -518,7 +518,7 @@ const ManageNewsletter = () => {
 
                   {currentSubscriber && (<div>
                     <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-nl">
                       <label>Subscription Date</label>
                       <input
                         type="date"
@@ -529,7 +529,7 @@ const ManageNewsletter = () => {
                       />
                     </div>
                     
-                    <div className="form-group">
+                    <div className="form-group-nl">
                       <label>Status</label>
                       <select
                         name="status"
@@ -730,7 +730,7 @@ const ManageNewsletter = () => {
               <div className="newsletter-modal-form-container">
                 <form onSubmit={handleNewsletterSubmit}>
                   <div className="form-row">
-                    <div className="form-group full-width">
+                    <div className="form-group-nl full-width">
                       <label>Subject *</label>
                       <input
                         type="text"
@@ -744,7 +744,7 @@ const ManageNewsletter = () => {
                   </div>
 
                   <div className="form-row">
-                    <div className="form-group full-width">
+                    <div className="form-group-nl full-width">
                       <label>
                         Content * 
                         <span className="content-help">
@@ -771,7 +771,7 @@ const ManageNewsletter = () => {
 
 
                   <div className="form-row">
-                    <div className="form-group">
+                    <div className="form-group-nl">
                       <label>Status</label>
                       <select
                         name="status"
@@ -794,7 +794,7 @@ const ManageNewsletter = () => {
 
                     
                     {/* {newsletterFormData.status === 'scheduled' && (
-                      <div className="form-group">
+                      <div className="form-group-nl">
                         <label>Schedule For</label>
                         <input
                           type="datetime-local"

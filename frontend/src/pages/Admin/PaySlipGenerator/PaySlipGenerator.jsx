@@ -551,10 +551,10 @@ const PaySlip = React.forwardRef(({ data }, ref) => {
       </div>
       
       <div className="footer-notes">
-        {data.note.split('\n').map((line, index) => (
-          <p key={index}>{line}</p>
-        ))}
-      </div>
+  {data.note.split('\n').map((line, index) => (
+    <p key={index} className="note-line">{line}</p>
+  ))}
+</div>
     </div>
   );
 });

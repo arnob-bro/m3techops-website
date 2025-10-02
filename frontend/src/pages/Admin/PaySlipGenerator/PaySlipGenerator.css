@@ -379,7 +379,57 @@
     /* Ensure it aligns right */
 }
 
+
+
+
+
+
+
+
 .payslip-generator .footer-notes {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: #777;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.8rem;
+    white-space: pre-line;
+    line-height: 1.4;
+    /* Add proper line height */
+}
+
+.payslip-generator .footer-notes p {
+    font-size: inherit;
+    color: #777;
+    line-height: 1.4;
+    /* Fix this line - remove line-height: 0% */
+    margin: 0.3rem 0;
+    /* Add proper margin between paragraphs */
+}
+
+.payslip-generator .footer-notes p:first-child {
+    margin-top: 0;
+}
+
+.payslip-generator .footer-notes p:last-child {
+    margin-bottom: 0;
+}
+
+
+.payslip-generator .note-line {
+    margin: 0.3rem 0;
+    min-height: 1.2em;
+}
+
+.payslip-generator .note-line:first-child {
+    margin-top: 0;
+}
+
+.payslip-generator .note-line:last-child {
+    margin-bottom: 0;
+}
+
+
+/* .payslip-generator .footer-notes {
     margin-top: 2rem;
     font-size: 0.8rem;
     color: #777;
@@ -392,7 +442,7 @@
     font-size: inherit;
     color: #777;
     line-height: 0%;
-}
+} */
 
 .payslip-generator .note-hint {
     font-size: 0.85rem;

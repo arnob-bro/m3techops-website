@@ -315,11 +315,11 @@
   }
   
   /* ===== Form Styles ===== */
-  .form-group {
+  .form-group-ms {
     margin-bottom: 24px;
   }
   
-  .form-group label {
+  .form-group-ms label {
     display: block;
     font-size: 14px;
     font-weight: 600;
@@ -328,8 +328,8 @@
     letter-spacing: -0.01em;
   }
   
-  .form-group input,
-  .form-group textarea {
+  .form-group-ms input,
+  .form-group-ms textarea {
     width: 100%;
     padding: 14px 16px;
     border: 1.5px solid var(--admin-pages-border);
@@ -343,15 +343,15 @@
     font-weight: 400;
   }
   
-  .form-group input:focus,
-  .form-group textarea:focus {
+  .form-group-ms input:focus,
+  .form-group-ms textarea:focus {
     outline: none;
     border-color: var(--admin-pages-accent);
     box-shadow: 0 0 0 3px rgba(28, 176, 162, 0.08);
     background: #ffffff;
   }
   
-  .form-group textarea {
+  .form-group-ms textarea {
     resize: vertical;
     min-height: 100px;
     line-height: 1.5;

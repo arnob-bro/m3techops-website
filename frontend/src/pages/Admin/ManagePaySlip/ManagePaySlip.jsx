@@ -489,11 +489,14 @@ const UpdateStatus = async (payslip_id, newStatus) => {
                       </div>
 
                       {/* Notes */}
-                      <div className="footer-notes">
-                        {selectedPaySlip.note && selectedPaySlip.note.split('\n').map((line, index) => (
-                          <p key={index}>{line}</p>
-                        ))}
-                      </div>
+                      {/* Notes */}
+<div className="footer-notes">
+  {selectedPaySlip.note && selectedPaySlip.note.split('\n').map((line, index) => (
+    <div key={index} className="note-line">
+      {line}
+    </div>
+  ))}
+</div>
                     </div>
                   </div>
                 </div>

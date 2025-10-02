@@ -245,7 +245,7 @@ const ManageServices = () => {
           </div>
           <form onSubmit={handleSubmit} className="modal-form-container">
 
-            <div className="form-group">
+            <div className="form-group-ms">
               <label>Service Title</label>
               <input
                 type="text"
@@ -257,7 +257,7 @@ const ManageServices = () => {
               />
             </div>
 
-            <div className="form-group">
+            <div className="form-group-ms">
               <label>Short Description</label>
               <textarea
                 name="short_desc"
@@ -270,7 +270,7 @@ const ManageServices = () => {
             </div>
 
             {/* Icon Selection */}
-            <div className="form-group">
+            <div className="form-group-ms">
               <label>Service Icon</label>
               <div className="icon-selection">
                 {availableIcons.map(iconKey => (
@@ -351,7 +351,7 @@ const ManageServices = () => {
               ))}
             </div>
 
-            <div className="form-group checkbox-group">
+            <div className="form-group-ms checkbox-group">
               <input
                 type="checkbox"
                 id="active"
