@@ -83,7 +83,6 @@ function App() {
       <Routes>
         {/* Public admin login (no navbar/footer) */}
         <Route path="/admin-login" element={<Login />} />
-        <Route path="/admin-change-password" element={<ChangePassword />} />
 
         {/* Admin routes protected by ProtectedRoute */}
         <Route
@@ -185,6 +184,7 @@ function App() {
         </Route>
         
         <Route path="/testimonial/:token" element={<SubmitTestimonial />} />
+        <Route path="/change-password" element={<ChangePassword />} />
 
         {/* Catch-all 404 route */}
         <Route path="*" element={<NotFound />} />
