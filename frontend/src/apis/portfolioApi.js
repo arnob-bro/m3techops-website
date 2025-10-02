@@ -48,9 +48,10 @@ export default class PortfolioApi {
     }
   }
 
-  async getActivePortfolios({ page, limit, category, active } = {}) {
+  async getActivePortfolios(params = {}) {
     try {
-      const response = await this.portfolioApi.get(`${this.baseURL}/active`);
+      const response = await this.portfolioApi.get(`${this.baseURL}/active`, {params});
+      console.log(response.data);
       return response.data;
     } catch (err) {
       throw err.response?.data || { error: "Failed to fetch portfolio items" };
