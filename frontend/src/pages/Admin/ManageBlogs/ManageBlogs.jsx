@@ -417,7 +417,7 @@ const ManageBlog = () => {
           <div className="blog-modal-form-container">
             <form onSubmit={handleSubmit}>
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Title</label>
                   <input
                     type="text"
@@ -429,7 +429,7 @@ const ManageBlog = () => {
                   />
                 </div>
                 
-                <div className="form-group">
+                <div className="form-group-bd">
                     <label>Category</label>
                     <select
                       name="category"
@@ -448,7 +448,7 @@ const ManageBlog = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Excerpt</label>
                   <textarea
                     name="excerpt"
@@ -462,7 +462,7 @@ const ManageBlog = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Content</label>
                   <textarea
                     name="content"
@@ -476,7 +476,7 @@ const ManageBlog = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Content Preview</label>
                   <div
                     style={{ border: '1px solid #ccc', padding: '1rem' }}
@@ -486,7 +486,7 @@ const ManageBlog = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Featured Image</label>
                   <input 
                     type="file" 
@@ -506,7 +506,7 @@ const ManageBlog = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Publish Date</label>
                   <input
                     type="date"
@@ -517,7 +517,7 @@ const ManageBlog = () => {
                   />
                 </div>
                 
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Read Time</label>
                   <input
                     type="text"
@@ -533,7 +533,7 @@ const ManageBlog = () => {
               <div className="form-section-title">Author Information</div>
               
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Author Name</label>
                   <input
                     type="text"
@@ -545,7 +545,7 @@ const ManageBlog = () => {
                   />
                 </div>
                 
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Author Role</label>
                   <input
                     type="text"
@@ -559,7 +559,7 @@ const ManageBlog = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group">
+                <div className="form-group-bd">
                   <label>Author Avatar</label>
                   <input 
                     type="file" 
