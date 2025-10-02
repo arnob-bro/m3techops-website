@@ -23,6 +23,7 @@ import SubmitTestimonial from "./pages/SubmitTestimonial/SubmitTestimonial";
 
 // Admin pages
 import Login from "./pages/Admin/LoginPage/Login";
+import ChangePassword from "./pages/Admin/LoginPage/ChangePassword";
 import Admin from "./pages/Admin/AdminPage/Admin";
 import ManageServices from "./pages/Admin/ManageServices/ManageServices";
 import ManagePortfolio from "./pages/Admin/ManagePortfolio/ManagePortfolio";
@@ -82,6 +83,7 @@ function App() {
       <Routes>
         {/* Public admin login (no navbar/footer) */}
         <Route path="/admin-login" element={<Login />} />
+        <Route path="/admin-change-password" element={<ChangePassword />} />
 
         {/* Admin routes protected by ProtectedRoute */}
         <Route
