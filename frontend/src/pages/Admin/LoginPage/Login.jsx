@@ -10,7 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login} = useUserStore();
+  const { login } = useUserStore();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -21,14 +21,35 @@ const Login = () => {
     try {
       console.log('Logging in with:', { email, password });
       const result = await login(email, password);
-      if(result.success){
+      
+      if (result && result.success) {
         navigate("/admin");
+      } else {
+        // Handle cases where login fails but doesn't throw an error
+        const errorMessage = result?.message || 'Invalid credentials. Please try again.';
+        setError(errorMessage);
       }
+      
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      // Display the actual error message from the API or a fallback
+      const errorMessage = err?.response?.data?.message || 
+                          err?.message || 
+                          'Invalid credentials. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Clear error when user starts typing
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (error) setError('');
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    if (error) setError('');
   };
 
   return (
@@ -74,7 +95,7 @@ const Login = () => {
               type="email"
               placeholder="Email Address"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               required
             />
           </div>
@@ -85,7 +106,7 @@ const Login = () => {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               required
             />
           </div>
@@ -103,9 +124,7 @@ const Login = () => {
           <button 
             type="submit" 
             className="login-button"
-            disabled={loading}
-            // onClick={handleSubmit}
-            // onSubmit={handleSubmit}
+            disabled={loading || !email || !password}
           >
             {loading ? (
               <span className="spinner"></span>
