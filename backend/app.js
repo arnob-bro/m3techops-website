@@ -50,12 +50,23 @@ const db = require("./src/config/database");
 const app = express();
 
 // Middlewares
-app.use(
-  cors({
-    origin: "http://localhost:5173", // frontend URL
-    credentials: true, 
-  })
-);
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://m3techops-website.vercel.app",
+  "https://www.m3techops.com/"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 
