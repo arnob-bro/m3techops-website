@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiLock } from 'react-icons/fi';
+import AuthApi from '../../../apis/authApi'; // adjust path
 import './Login.css';
+const authApi = new AuthApi();
 
 const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -10,7 +12,21 @@ const ChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [validToken, setValidToken] = useState(null); // null = checking, true/false after check
   const navigate = useNavigate();
+  const { token } = useParams(); // expects route like /change-password/:token
+
+  useEffect(() => {
+    const verify = async () => {
+      try {
+        await authApi.verifyNewPassToken(token);
+        setValidToken(true);
+      } catch (err) {
+        setValidToken(false);
+      }
+    };
+    verify();
+  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +34,6 @@ const ChangePassword = () => {
     setError('');
     setSuccess('');
 
-    // Validation
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match.');
       setLoading(false);
@@ -32,27 +47,51 @@ const ChangePassword = () => {
     }
 
     try {
-      // Simulate API call - replace with your actual password change logic
-      console.log('Changing password to:', newPassword);
-      
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // If successful
+      await authApi.changePasswordWithToken(token, newPassword);
+
       setSuccess('Password changed successfully!');
-      
-      // Redirect after success
-      setTimeout(() => {
-        navigate("/admin"); // or wherever you want to redirect
-      }, 2000);
-      
+      setTimeout(() => navigate('/admin-login'), 2000);
     } catch (err) {
-      setError('Failed to change password. Please try again.');
+      setError(err.error || 'Failed to change password. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Still checking token
+  if (validToken === null) {
+    return (
+      <div className="login-page">
+        <motion.div 
+          className="login-container"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <h2>Checking token...</h2>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Invalid token
+  if (validToken === false) {
+    return (
+      <div className="login-page">
+        <motion.div 
+          className="login-container"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <h2 style={{ color: 'red' }}>Invalid or expired token</h2>
+          <p><Link to="/admin-login">Back to Login</Link></p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Valid token → show form
   return (
     <div className="login-page">
       <motion.div 
@@ -64,14 +103,8 @@ const ChangePassword = () => {
         <div className="login-header">
           <motion.div 
             className="logo"
-            animate={{
-              scale: [1, 1.05, 1],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
             <span>M³</span>
           </motion.div>
@@ -132,16 +165,8 @@ const ChangePassword = () => {
             />
           </div>
 
-          <button 
-            type="submit" 
-            className="login-button"
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="spinner"></span>
-            ) : (
-              'Change Password'
-            )}
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? <span className="spinner"></span> : 'Change Password'}
           </button>
         </form>
 

@@ -184,7 +184,7 @@ function App() {
         </Route>
         
         <Route path="/testimonial/:token" element={<SubmitTestimonial />} />
-        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/change-password/:token" element={<ChangePassword />} />
 
         {/* Catch-all 404 route */}
         <Route path="*" element={<NotFound />} />

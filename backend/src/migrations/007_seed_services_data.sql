@@ -55,15 +55,6 @@ VALUES
   'FaCheckCircle'
 ),
 (
-  'Digital Marketing',
-  'Boost brand awareness and sales with tailored digital marketing strategies.',
-  '["Increased visibility","Targeted campaigns","Better ROI","Brand recognition"]'::jsonb,
-  '["Market research","Campaign planning","Content creation","Performance analysis"]'::jsonb,
-  '["Google Ads", "Facebook Ads", "SEO Tools", "Analytics", "Mailchimp"]'::jsonb,
-  true,
-  'FaBullhorn'
-),
-(
   'DevOps & Automation',
   'CI/CD pipelines and automation solutions to improve efficiency.',
   '["Faster deployments","Reduced downtime","Better collaboration","Improved scalability"]'::jsonb,
@@ -80,15 +71,6 @@ VALUES
   '["Python", "TensorFlow", "PyTorch", "scikit-learn", "Pandas"]'::jsonb,
   true,
   'FaBrain'
-),
-(
-  'Cybersecurity Services',
-  'Protect your business from digital threats with advanced security solutions.',
-  '["Enhanced data security","Risk management","Regulatory compliance","24/7 monitoring"]'::jsonb,
-  '["Security assessment","Implement firewalls & tools","Monitor threats","Regular audits"]'::jsonb,
-  '["Nmap", "Wireshark", "Metasploit", "Burp Suite", "Splunk"]'::jsonb,
-  true,
-  'FaLock'
 ),
 (
   'Custom Software',

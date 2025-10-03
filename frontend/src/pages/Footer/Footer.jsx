@@ -18,16 +18,16 @@ const Footer = () => {
       title: "Company",
       links: [
         { name: "About Us", path: "/about-us" },
-        { name: "Projects", path: "/projects" },
-        { name: "Insights", path: "/blog" },
-        { name: "Careers", path: "/careers" }
+        { name: "Portfolios", path: "/projects" },
+        { name: "Blogs", path: "/blog" }
+        // { name: "Careers", path: "/careers" }
       ]
     },
     {
       title: "Support",
       links: [
         { name: "Contact", path: "/contact" },
-        { name: "Help Center", path: "/help" },
+        // { name: "Help Center", path: "/help" },
         { name: "Privacy Policy", path: "/privacy" },
         { name: "Terms of Service", path: "/terms" }
       ]
@@ -65,15 +65,15 @@ const Footer = () => {
                 <a href="mailto:contact@m3techops.com">contact@m3techops.com</a>
               </div>
               <div className="footer-contact-item">
-  <FiPhone className="footer-contact-icon" />
-  <a href="tel:+8801332112077">+880 1332-112077</a>
-</div>
+                <FiPhone className="footer-contact-icon" />
+                <a href="tel:+8801332112077">+880 1332-112077</a>
+              </div>
               <div className="footer-contact-item">
                 <FiMapPin className="footer-contact-icon" />
                 <span>77/1, Siddeshwari Road
-Anarkali Super Market
-4th floor shop No.26/A
-Dhaka 1217</span>
+                  Anarkali Super Market
+                  4th floor shop No.26/A
+                  Dhaka 1217</span>
               </div>
             </div>
 

@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const {generateInquiryReplyTemplate} = require("../utils/generateInquiryReplyTemplate");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 class UserService {
   constructor(db) {
@@ -18,26 +19,57 @@ class UserService {
     });
   }
 
+  generateNewPassToken() {
+    return crypto.randomBytes(32).toString("hex"); // random string
+}
+
   // ----------Signup---------------
   async createUser(user_id, email, password, role) {
     try {
 
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
+      const token = this.generateNewPassToken();
+      const link = `${process.env.FRONTEND_URL}/change-password/${token}`;
 
       // Insert user
       const result = await this.db.query(
         `INSERT INTO users 
-        (user_id, email, password_hash, role)
-       VALUES ($1,$2,$3,$4)
+        (user_id, email, password_hash, role, new_pass_token)
+       VALUES ($1,$2,$3,$4,$5)
        RETURNING *`,
         [
             user_id,
             email,
             hashedPassword,
-            role  
+            role,
+            token  
         ]
       );
+
+      this.transporter.sendMail({
+        from: `"M3TechOps Team" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: `Set Your New Password & Verify Your Account`,
+        html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; background:#f9f9f9; color:#333;">
+              <h2 style="color:#0e0e53;">Welcome to M3TechOps!</h2>
+              <p>We noticed you need to set a new password to get started. Once you set your new password, your account will be <b>automatically verified</b>.</p>
+              
+              <a href="${link}" 
+                  style="display:inline-block; margin:15px 0; padding:12px 20px; background:#22577a; color:#fff; font-weight:bold; text-decoration:none; border-radius:8px;">
+                  Change Password
+              </a>
+      
+              <p>If the button doesn’t work, copy and paste this link into your browser:</p>
+              <p><a href="${link}" style="color:#ff8800;">${link}</a></p>
+      
+              <hr style="margin-top:20px; border:none; border-top:1px solid #ddd;" />
+              <p style="font-size:12px; color:#777;">If you did not request this change, please ignore this email.</p>
+            </div>
+        `,
+      });
+      
 
       return { success: true, message: "User creation successful." };
     } catch (err) {
@@ -77,6 +109,16 @@ class UserService {
     }
   }
 
+  async getUserByNewPassToken(token) {
+    try {
+      const result = await this.db.query(`SELECT * FROM users WHERE new_pass_token = $1`, [token]);
+      return result.rows[0] || null;
+    } catch (err) {
+      console.error("Error in getting user by id:", err.message);
+      throw new Error("Failed to get user by id");
+    }
+  }
+
 
   async updateUserEmail(user_id, email) {
     try {
@@ -89,7 +131,7 @@ class UserService {
   }
 
 
-  async changePassword(userId, oldPassword, newPassword) {
+  async changePassword(userId,newPassword) {
     // Fetch user by ID
     const userResult = await this.db.query(
       `SELECT * FROM users WHERE user_id = $1`,
@@ -98,16 +140,16 @@ class UserService {
     const user = userResult.rows[0];
     if (!user) throw new Error("User not found");
   
-    // Check old password
-    const match = await bcrypt.compare(oldPassword, user.password_hash);
-    if (!match) throw new Error("Old password is incorrect");
   
     // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
   
     // Update password
     const result = await this.db.query(
-      `UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2`,
+      `UPDATE users 
+      SET password_hash = $1, verified = true, new_pass_token = null, updated_at = CURRENT_TIMESTAMP 
+      WHERE user_id = $2
+      RETURNING user_id, email, updated_at;`,
       [hashedPassword, userId]
     );
   

@@ -18,6 +18,7 @@ INSERT INTO permissions (code, description) VALUES
 ('MANAGE_SCHEDULER', 'Access and manage scheduler'),
 ('MANAGE_EMPLOYEES', 'Create, edit, delete employee records'),
 ('MANAGE_NEWSLETTER', 'Manage newsletter subscriptions and send emails'),
+('MANAGE_TESTIMONIALS', 'Manage testimonials and testimonial initialization'),
 ('MANAGE_PRIVACY_POLICY', 'Edit the privacy policy page'),
 ('MANAGE_COOKIES_POLICY', 'Edit the cookies policy page'),
 ('MANAGE_TERMS_POLICY', 'Edit the terms of service page'),

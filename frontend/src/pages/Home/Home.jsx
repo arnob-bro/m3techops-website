@@ -15,12 +15,15 @@ import { OrbitControls, Sphere, MeshDistortMaterial } from '@react-three/drei';
 import { useSpring, animated } from '@react-spring/web';
 import ServiceApi from "../../apis/serviceApi";
 import PortfolioApi from '../../apis/portfolioApi';
+import TestimonialApi from '../../apis/testimonialApi';
+const testimonialApi = new TestimonialApi();
 const serviceApi = new ServiceApi();
 const portfolioApi = new PortfolioApi();
 
 const Home = () => {
   const [services, setServices] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
   const fetchedOnce = useRef(false);
 
   const iconMap = {
@@ -49,6 +52,16 @@ const Home = () => {
     }
   };
 
+  const fetchTestimonials = async () => {
+    try {
+      const result = await testimonialApi.getAllActiveTestimonials();
+      const AllTestimonials = result.testimonials;
+      setTestimonials(AllTestimonials);
+    } catch (error) {
+      console.error('Error fetching active testimonials:', error);
+    }
+  };
+
   const fetchProjects = async () => {
     try {
       const result = await portfolioApi.getPortfolios();
@@ -67,6 +80,7 @@ const Home = () => {
     if (!fetchedOnce.current) {
       fetchServices();
       fetchProjects();
+      fetchTestimonials();
       // fetchedOnce.current = true;
     }
   }, []); 
@@ -91,102 +105,40 @@ const Home = () => {
     };
   }, []);
 
-  //   {
-  //     id: 'web-development',
-  //     icon: <FaCode size={36} />,
-  //     title: "Web Development",
-  //     description: "Custom websites and web applications that drive engagement and conversions.",
-  //     features: ["Responsive Design", "SEO Optimized", "Fast Performance"]
-  //   },
-  //   {
-  //     id: 'mobile-development',
-  //     icon: <FaMobileAlt size={36} />,
-  //     title: "Mobile App Development",
-  //     description: "Native and cross-platform mobile solutions for iOS and Android.",
-  //     features: ["User-Centric Design", "Cross-Platform", "Secure"]
-  //   },
-  //   {
-  //     id: 'cloud-solutions',
-  //     icon: <FaCloud size={36} />,
-  //     title: "Cloud Solutions",
-  //     description: "Scalable cloud infrastructure and services for your business.",
-  //     features: ["AWS/Azure/GCP", "Cost Optimized", "High Availability"]
-  //   },
-  //   {
-  //     id: 'custom-software',
-  //     icon: <FaLaptopCode size={36} />,
-  //     title: "Custom Software",
-  //     description: "Tailored software solutions designed for your specific business needs.",
-  //     features: ["Bespoke Development", "Process Automation", "System Integration"]
-  //   },
-  //   {
-  //     id: 'ai-automation',
-  //     icon: <FaRobot size={36} />,
-  //     title: "AI & Automation",
-  //     description: "Intelligent automation solutions to streamline your operations.",
-  //     features: ["Machine Learning", "Process Automation", "Data Analysis"]
-  //   },
-  // ];
+  
 
-  // const projects = [
+  // const testimonials = [
   //   {
-  //     title: "E-commerce Platform",
-  //     category: "Web Development",
-  //     description: "A high-performance online store with custom checkout flow",
-  //     image: "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+  //     name: "Sarah Johnson",
+  //     role: "CEO, TechStart Inc.",
+  //     content: "M3 TECHOPS transformed our digital presence with their cutting-edge solutions.",
+  //     avatar: "https://randomuser.me/api/portraits/women/44.jpg"
   //   },
   //   {
-  //     title: "Health & Fitness App",
-  //     category: "Mobile Development",
-  //     description: "Personalized workout and nutrition tracking application",
-  //     image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+  //     name: "Michael Chen",
+  //     role: "CTO, InnovateX",
+  //     content: "The mobile app they developed has been a game-changer for our business.",
+  //     avatar: "https://randomuser.me/api/portraits/men/32.jpg"
   //   },
   //   {
-  //     title: "Enterprise Dashboard",
-  //     category: "Cloud Solutions",
-  //     description: "Real-time analytics dashboard for business intelligence",
-  //     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+  //     name: "David Rodriguez",
+  //     role: "Director, Global Solutions",
+  //     content: "Their cloud migration strategy saved us thousands in infrastructure costs.",
+  //     avatar: "https://randomuser.me/api/portraits/men/75.jpg"
   //   },
   //   {
-  //     title: "AI Chatbot",
-  //     category: "AI Solutions",
-  //     description: "Conversational AI assistant for customer support",
-  //     image: "https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+  //     name: "Emily Wilson",
+  //     role: "Product Manager, NexTech",
+  //     content: "The custom software solution perfectly fits our workflow needs.",
+  //     avatar: "https://randomuser.me/api/portraits/women/68.jpg"
+  //   },
+  //   {
+  //     name: "James Peterson",
+  //     role: "COO, DataSystems",
+  //     content: "Their AI implementation increased our operational efficiency by 40%.",
+  //     avatar: "https://randomuser.me/api/portraits/men/86.jpg"
   //   }
   // ];
-
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "CEO, TechStart Inc.",
-      content: "M3 TECHOPS transformed our digital presence with their cutting-edge solutions.",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg"
-    },
-    {
-      name: "Michael Chen",
-      role: "CTO, InnovateX",
-      content: "The mobile app they developed has been a game-changer for our business.",
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg"
-    },
-    {
-      name: "David Rodriguez",
-      role: "Director, Global Solutions",
-      content: "Their cloud migration strategy saved us thousands in infrastructure costs.",
-      avatar: "https://randomuser.me/api/portraits/men/75.jpg"
-    },
-    {
-      name: "Emily Wilson",
-      role: "Product Manager, NexTech",
-      content: "The custom software solution perfectly fits our workflow needs.",
-      avatar: "https://randomuser.me/api/portraits/women/68.jpg"
-    },
-    {
-      name: "James Peterson",
-      role: "COO, DataSystems",
-      content: "Their AI implementation increased our operational efficiency by 40%.",
-      avatar: "https://randomuser.me/api/portraits/men/86.jpg"
-    }
-  ];
 
   // Auto carousel state
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
@@ -736,18 +688,18 @@ useEffect(() => {
                   }}
                 >
                   <div className="testimonial-content">
-                    <p className="testimonial-text">{testimonial.content}</p>
+                    <p className="testimonial-text">{testimonial.feedback}</p>
                   </div>
                   <div className="testimonial-author">
                     <motion.img
-                      src={testimonial.avatar}
-                      alt={testimonial.name}
+                      src={testimonial.imageUrl || `https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png`}
+                      alt={testimonial.client_name}
                       className="testimonial-avatar"
                       whileHover={{ scale: 1.05 }}
                     />
                     <div className="testimonial-info">
-                      <h4 className="testimonial-name">{testimonial.name}</h4>
-                      <p className="testimonial-role">{testimonial.role}</p>
+                      <h4 className="testimonial-name">{testimonial.client_name}</h4>
+                      <p className="testimonial-role">{`${testimonial.designation}, ${testimonial.company_name}`}</p>
                     </div>
                   </div>
                 </motion.div>

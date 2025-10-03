@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   FiUsers, 
   FiFileText, 
   FiCalendar
 } from 'react-icons/fi';
 import './Dashboard.css';
+import EmployeeApi from '../../../apis/employeeApi';
+import PayslipApi from '../../../apis/payslipApi';
+import ServiceApi from '../../../apis/serviceApi';
+const employeeApi = new EmployeeApi();
+const payslipApi = new PayslipApi();
+const serviceApi = new ServiceApi();
 
 const Dashboard = () => {
+  
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalEmployees: 0,
-    totalPaySlips: 0,
-    pendingPaySlips: 0
+    totalPayslips: 0,
+    totalServices: 0
   });
 
   useEffect(() => {
@@ -18,13 +27,22 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         // Simulated data - replace with actual API calls
-        const mockStats = {
-          totalEmployees: 24,
-          totalPaySlips: 156,
-          pendingPaySlips: 8
+        
+
+        const employees = await employeeApi.getEmployees();
+        const totalEmployees = employees.pagination?.total;
+        const payslips = await payslipApi.getPayslips();
+        const totalPayslips = payslips.pagination?.total;
+        const services = await serviceApi.getServices();
+        const totalServices = services.services?.length;
+
+        const Stats = {
+          totalEmployees: totalEmployees || 0,
+          totalPayslips: totalPayslips || 0,
+          totalServices: totalServices || 0
         };
         
-        setStats(mockStats);
+        setStats(Stats);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       }
@@ -59,7 +77,7 @@ const Dashboard = () => {
           </div>
           <div className="DB-stat-content">
             <h3>Pay Slips Generated</h3>
-            <span className="DB-stat-value">{stats.totalPaySlips}</span>
+            <span className="DB-stat-value">{stats.totalPayslips}</span>
             <span className="DB-stat-label">All-time records</span>
           </div>
         </div>
@@ -69,8 +87,8 @@ const Dashboard = () => {
             <FiCalendar />
           </div>
           <div className="DB-stat-content">
-            <h3>Pending Pay Slips</h3>
-            <span className="DB-stat-value">{stats.pendingPaySlips}</span>
+            <h3>Total Services</h3>
+            <span className="DB-stat-value">{stats.totalServices}</span>
             <span className="DB-stat-label">Require attention</span>
           </div>
         </div>
@@ -80,17 +98,23 @@ const Dashboard = () => {
       <div className="DB-quick-actions">
         <h2>Quick Actions</h2>
         <div className="DB-action-buttons">
-          <button className="DB-action-btn primary">
+          <button className="DB-action-btn primary"
+          onClick={()=> {navigate("/admin/pay-slip-generator")}}
+          >
             <FiFileText />
             <span>Generate Pay Slip</span>
           </button>
-          <button className="DB-action-btn secondary">
+          <button className="DB-action-btn secondary"
+          onClick={()=> {navigate("/admin/employee-management")}}
+          >
             <FiUsers />
-            <span>Add Employee</span>
+            <span>See Employees</span>
           </button>
-          <button className="DB-action-btn secondary">
+          <button className="DB-action-btn secondary"
+          onClick={()=> {navigate("/admin/pay-slip-manager")}}
+          >
             <FiFileText />
-            <span>Process Payroll</span>
+            <span>See Payslips</span>
           </button>
         </div>
       </div>

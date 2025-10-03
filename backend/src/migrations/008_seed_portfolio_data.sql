@@ -33,26 +33,117 @@ VALUES
     'Reduced decision-making time by 40%, consolidated 5 tools into one platform, saved $250k/year.',
     '["AWS Lambda","React","D3.js","Python","Amazon QuickSight","GraphQL"]'::jsonb,
     false
-),
+);
+
+
+INSERT INTO portfolio_items
+(title, category, description, image, problem, solution, results, tech_stack, active)
+VALUES
+-- 1
+-- (
+--     'Smart Home Automation',
+--     'IoT Development',
+--     'IoT platform for controlling smart devices remotely.',
+--     'https://images.unsplash.com/photo-1557089708-7d5d6f3bfc4d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+--     'Client needed a secure way to control smart home devices from anywhere.',
+--     'Built an IoT hub with MQTT, Node.js backend, and Flutter mobile app.',
+--     '10,000+ connected devices, reduced power consumption by 25%.',
+--     '["Nodejs","Flutter","MQTT","AWS IoT","MongoDB"]'::jsonb,
+--     true
+-- ),
+-- 2
 (
-    'AI Chatbot System',
-    'AI Solutions',
-    'Customer service chatbot with natural language understanding.',
-    'https://images.unsplash.com/photo-1581090700227-1fbe50aef3d2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    'Company needed a scalable solution to handle customer queries automatically.',
-    'Built an NLP-powered chatbot using Python, TensorFlow, and deployed on AWS.',
-    'Reduced response time by 80%, improved customer satisfaction, handled 10k+ queries/day.',
-    '["Python","TensorFlow","AWS","NLTK","Flask"]'::jsonb,
+    'AI Resume Screener',
+    'AI/ML Development',
+    'An AI tool that screens resumes against job descriptions.',
+    'https://images.unsplash.com/photo-1505238680356-667803448bb6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    'HR team struggled with filtering 500+ resumes daily.',
+    'Implemented NLP-based resume parser with TensorFlow and Python backend.',
+    'Reduced screening time by 80%, improved hire quality score by 20%.',
+    '["Python","TensorFlow","NLP","FastAPI","PostgreSQL"]'::jsonb,
     true
 ),
+-- 3
 (
-    'Inventory Management System',
-    'Custom Software',
-    'A desktop/web app to manage inventory for medium-sized businesses.',
-    'https://images.unsplash.com/photo-1581091012184-9174b1b08df6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-    'Clients struggled with manual tracking of stock, leading to errors and losses.',
-    'Developed a web app using Laravel, MySQL, and Vue.js with barcode scanning support.',
-    'Reduced stock errors by 90%, improved reporting efficiency, and saved 15 hours/week per employee.',
-    '["Laravel","Vue.js","MySQL","JavaScript","Bootstrap"]'::jsonb,
+    'Food Delivery App',
+    'Mobile Development',
+    'On-demand food ordering and delivery application.',
+    'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    'Restaurant chain needed mobile presence with real-time delivery tracking.',
+    'Developed cross-platform React Native app with socket-based order tracking.',
+    '50k+ downloads, 4.7 rating, increased online sales by 200%.',
+    '["React Native","Nodejs","Express","Socketio","Firebase"]'::jsonb,
+    true
+),
+-- 4
+-- (
+--     'Online Learning Platform',
+--     'Web Development',
+--     'A scalable e-learning platform with live classes and exams.',
+--     'https://images.unsplash.com/photo-1584697964154-3c57c0e4b2d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+--     'Education startup needed to deliver video courses and assessments online.',
+--     'Built platform using Next.js, Node.js, and integrated WebRTC for live classes.',
+--     '100k+ active learners, 40% completion rate improvement.',
+--     '["Nextjs","Nodejs","WebRTC","MongoDB","Redis"]'::jsonb,
+--     true
+-- ),
+-- -- 5
+-- (
+--     'Logistics Tracking System',
+--     'Cloud Solutions',
+--     'GPS-based real-time logistics tracking system.',
+--     'https://images.unsplash.com/photo-1556997685-309f5d716f9a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+--     'Logistics company needed accurate fleet tracking and route optimization.',
+--     'Developed cloud-based tracking using AWS + Mapbox APIs.',
+--     'Improved delivery accuracy by 35%, reduced fuel cost by 15%.',
+--     '["AWS","Mapbox","Nodejs","React","PostgreSQL"]'::jsonb,
+--     true
+-- ),
+-- 6
+-- (
+--     'Crypto Wallet App',
+--     'Blockchain Development',
+--     'Secure mobile wallet for storing and transferring cryptocurrencies.',
+--     'https://images.unsplash.com/photo-1621502501051-7f6e243e9c64?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+--     'Users needed a simple but secure crypto wallet for Bitcoin & Ethereum.',
+--     'Developed React Native wallet app with blockchain integration.',
+--     '5k+ daily active users, handled $10M+ transactions safely.',
+--     '["React Native","Ethereum","Bitcoin API","Nodejs","MongoDB"]'::jsonb,
+--     true
+-- ),
+-- 7
+-- (
+--     'Hospital Management System',
+--     'Enterprise Software',
+--     'End-to-end hospital management with scheduling and billing.',
+--     'https://images.unsplash.com/photo-1580281657529-47c6a1af0b3b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+--     'Hospital required centralized system for patient and staff management.',
+--     'Built enterprise web app with Angular frontend and Java backend.',
+--     'Reduced administrative workload by 50%, improved patient satisfaction scores.',
+--     '["Angular","Java Spring Boot","MySQL","Redis","Docker"]'::jsonb,
+--     true
+-- ),
+-- 8
+(
+    'Travel Booking Portal',
+    'Web Development',
+    'Online platform for booking flights, hotels, and packages.',
+    'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    'Client needed integrated system for online travel booking.',
+    'Created scalable portal using React, Node.js, and third-party APIs.',
+    'Processed 1M+ bookings, increased customer retention by 30%.',
+    '["React","Nodejs","Express","GraphQL","PostgreSQL"]'::jsonb,
     true
 );
+-- 9
+-- (
+--     'E-Voting System',
+--     'Blockchain Development',
+--     'Blockchain-based secure voting platform.',
+--     'https://images.unsplash.com/photo-1616353074974-77bb8d8f1db6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+--     'Organization needed transparent and tamper-proof voting mechanism.',
+--     'Built blockchain-powered voting app with smart contracts.',
+--     'Ensured 100% secure, immutable, and auditable elections.',
+--     '["Solidity","Ethereum","React","Nodejs","IPFS"]'::jsonb,
+--     true
+-- );

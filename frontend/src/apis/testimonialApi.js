@@ -25,6 +25,16 @@ export default class TestimonialApi {
     }
   }
 
+  async getAllActiveTestimonials() {
+    try {
+      const response = await this.testimonialApi.get(`${this.baseURL}/all-active`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { error: "Failed to fetch all active Stestimonials" };
+    }
+  }
+
   async getTestimonialByToken(token) {
     try {
       const response = await this.testimonialApi.get(`${this.baseURL}/${token}`);

@@ -104,8 +104,8 @@ const Projects = () => {
     try {
 
       const result = await portfolioApi.getActivePortfolios({
-        page:1,
-        limit:10,
+        page: page,
+        limit:9,
         category: filter,
         active: true
       });
@@ -126,9 +126,13 @@ const Projects = () => {
     }
   };
 
+  useEffect(()=>{
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     fetchPortfolioItems();
-  }, [filter]);
+  }, [filter, page]);
 
   useEffect(() => {
     fetchPortfolioCategories();
@@ -252,7 +256,11 @@ const Projects = () => {
                   </div>
                 </motion.div>
               ))}
-              {totalPages > 1 && (
+              
+            </motion.div>
+            
+          )}
+          {totalPages > 1 && (
                 <div className="pagination">
                 
                 <button
@@ -306,8 +314,6 @@ const Projects = () => {
               </div>
           
           
-          )}
-            </motion.div>
           )}
         </div>
       </div>

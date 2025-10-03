@@ -196,7 +196,7 @@ const ManageEmployee = () => {
       phone: employee.phone,
       position: employee.position,
       role_id: employee.role_id,
-      hire_date: new Date(employee.hire_date).toISOString().split('T')[0],
+      hire_date: employee.hire_date,
       address: employee.address,
       city: employee.city,
       country: employee.country,
@@ -659,9 +659,9 @@ const handleSubmit = async (e) => {
                     <div className="form-group-me">
                       <label>Hire Date</label>
                       <input
-                        type="date"
+                        type="text"
                         name="hire_date"
-                        value={formData.hire_date}
+                        value={formatDate(formData.hire_date)}
                         onChange={handleInputChange}
                         disabled
                       />

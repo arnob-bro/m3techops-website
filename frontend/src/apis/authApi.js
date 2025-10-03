@@ -42,12 +42,26 @@ export default class AuthApi {
     }
   }
 
-  async changePassword(oldPassword, newPassword) {
+  async verifyNewPassToken(token) {
     try {
-      const response = await this.authApi.get(`${this.baseURL}/change-password`, { oldPassword, newPassword });
-      return response.data;
+      const response = await this.authApi.get(`${this.baseURL}/change-password/${token}`);
+      return response.data; // { success: true/false, message: "..." }
     } catch (err) {
-      throw err.response?.data || { error: "password change failed" };
+      throw err.response?.data || { error: "Token verification failed" };
+    }
+  }
+
+  /**
+   * Change password using reset token
+   */
+  async changePasswordWithToken(token, newPassword) {
+    try {
+      const response = await this.authApi.post(`${this.baseURL}/change-password/${token}`, {
+        new_password: newPassword,
+      });
+      return response.data; // { success: true, message: "...", user: {...} }
+    } catch (err) {
+      throw err.response?.data || { error: "Password change failed" };
     }
   }
 
