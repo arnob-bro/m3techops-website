@@ -1,5 +1,8 @@
 import axios from "axios";
 import useUserStore from "../stores/userStore";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const api = axios.create({
   baseURL: process.env.BACKEND_URL,
