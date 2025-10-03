@@ -2,7 +2,7 @@ import axios from "axios";
 import useUserStore from "../stores/userStore";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: process.env.BACKEND_URL,
   withCredentials: true, // 👈 send cookies
 });
 
