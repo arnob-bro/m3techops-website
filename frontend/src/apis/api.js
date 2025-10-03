@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const api = axios.create({
-  baseURL: process.env.BACKEND_URL,
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true, // 👈 send cookies
 });
 
