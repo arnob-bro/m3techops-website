@@ -1,6 +1,5 @@
 import axios from "axios";
 import useUserStore from "../stores/userStore";
-import dotenv from "dotenv";
 
 dotenv.config();
 
