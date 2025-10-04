@@ -36,10 +36,10 @@ const AboutUs = () => {
   const teamMembers = [
     {
       id: 1,
-      name: "Alex Johnson",
-      role: "CEO & Founder",
-      bio: "With over 15 years of experience in the tech industry, Alex founded M³ TECHOPS to bridge the gap between innovative ideas and practical digital solutions.",
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
+      name: "Sumaiya Ahmmed Mumu",
+      role: "CEO",
+      bio: `A young, visionary entrepreneur and CEO driven by innovation and impact. Passionate about technology, leadership, and creative problem-solving, she’s dedicated to building solutions that push boundaries and inspire change.`,
+      image: "https://mgegbwnkaosqeclicptx.supabase.co/storage/v1/object/public/profile_pics/profile_pic_1759613228824_demo.png",
       social: {
         linkedin: "#",
         twitter: "#"
@@ -47,10 +47,10 @@ const AboutUs = () => {
     },
     {
       id: 2,
-      name: "Sarah Chen",
-      role: "CTO",
-      bio: "Sarah leads our technical team with expertise in cloud architecture and scalable systems. She's passionate about building robust solutions that stand the test of time.",
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
+      name: "Monem Shahriar Khan",
+      role: "Social Media Manager",
+      bio: `A young and passionate Social Media Manager with a creative eye for digital storytelling. He specializes in building online presence, growing engagement, and turning ideas into impactful social campaigns that connect with audiences.`,
+      image: "https://mgegbwnkaosqeclicptx.supabase.co/storage/v1/object/public/profile_pics/profile_pic_1759613228824_demo.png",
       social: {
         linkedin: "#",
         twitter: "#"
@@ -60,7 +60,7 @@ const AboutUs = () => {
       id: 3,
       name: "Abdul Mohaimen Khan Arnob",
       role: "Developer",
-      bio: "Arnob specializes in backend technologies ensuring our solutions are functional and secured to use.",
+      bio: `Arnob specializes in backend technologies ensuring our solutions are functional and secured to use.`,
       image: "https://mgegbwnkaosqeclicptx.supabase.co/storage/v1/object/public/profile_pics/profile_pic_1759599281403_354892894_1032342991473266_4186622419931413154_n.jpg",
       social: {
         linkedin: "#",
