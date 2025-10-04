@@ -1,7 +1,7 @@
 import api from "./api"; // adjust path
 
 export default class BlogApi {
-  constructor(baseURL = "http://localhost:5000") {
+  constructor(baseURL = import.meta.env.VITE_API_URL) {
     this.blogApi = api; // reuse existing axios instance
     this.baseURL = baseURL + "/blog"; // matches createBlogRouter
   }

@@ -1,7 +1,7 @@
 import api from "./api"; // adjust path
 
 export default class ContactApi {
-  constructor(baseURL = "http://localhost:5000") {
+  constructor(baseURL = import.meta.env.VITE_API_URL) {
     this.contactApi = api; // reuse existing axios instance
     this.baseURL = baseURL+"/inquiry";
   }

@@ -1,7 +1,7 @@
 import api from "./api"; // adjust path
 
 export default class RoleApi {
-  constructor(baseURL = "http://localhost:5000") {
+  constructor(baseURL = import.meta.env.VITE_API_URL) {
     this.roleApi = api; // reuse existing axios instance
     this.baseURL = baseURL + "/role";
   }

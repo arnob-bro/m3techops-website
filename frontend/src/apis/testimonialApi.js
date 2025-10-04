@@ -1,7 +1,7 @@
 import api from "./api"; // adjust path
 
 export default class TestimonialApi {
-  constructor(baseURL = "http://localhost:5000") {
+  constructor(baseURL = import.meta.env.VITE_API_URL) {
     this.testimonialApi = api; // reuse existing axios instance
     this.baseURL = baseURL+"/testimonial";
   }

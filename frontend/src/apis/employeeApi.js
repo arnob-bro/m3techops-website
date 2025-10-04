@@ -1,7 +1,7 @@
 import api from "./api";
 
 export default class EmployeeApi {
-  constructor(baseURL = "http://localhost:5000") {
+  constructor(baseURL = import.meta.env.VITE_API_URL) {
     this.employeeApi = api;
     this.baseURL = baseURL + "/employee";
   }

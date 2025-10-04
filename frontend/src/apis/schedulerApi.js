@@ -1,7 +1,7 @@
 import api from "./api";
 
 export default class SchedulerApi {
-    constructor(baseURL = "http://localhost:5000") {
+    constructor(baseURL = import.meta.env.VITE_API_URL) {
         this.schedulerApi = api;
         this.baseURL = baseURL + "/scheduler";
     }

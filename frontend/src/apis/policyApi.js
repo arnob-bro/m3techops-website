@@ -1,7 +1,7 @@
 import api from "./api"; // adjust path
 
 export default class PolicyApi {
-  constructor(baseURL = "http://localhost:5000") {
+  constructor(baseURL = import.meta.env.VITE_API_URL) {
     this.policyApi = api; // reuse existing axios instance
     this.baseURL = baseURL+"/policy";
   }
