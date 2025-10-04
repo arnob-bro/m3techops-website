@@ -3,25 +3,41 @@ import { Link } from 'react-router-dom';
 import './Footer.css';
 import { FiTwitter, FiGithub, FiLinkedin, FiMail, FiPhone, FiMapPin, FiFacebook } from 'react-icons/fi';
 import NewsLetterApi from '../../apis/newsLetterApi';
+import ServiceApi from '../../apis/serviceApi';
 import { useState } from 'react';
 const newsLetterApi = new NewsLetterApi();
+const serviceApi = new ServiceApi();
 
 
 const Footer = () => {
   const [email, setEmail] = useState();
+  const [fetchedServices, setFetchedServices] = useState([]);
   const handleSubmitSubscription = async () => {
     const res = await newsLetterApi.subscribe(email);
     setEmail("");
+  }
+  const fetchServices = async () => {
+    const res = await serviceApi.getServices();
+    const services = res.services || [];
+
+      // Transform services into { name, link }
+      const transformed = services.map(service => ({
+        name: service.title,
+        path: `/services/${service.service_id}`
+      }));
+      setFetchedServices(transformed);
+
   }
   const footerLinks = [
     {
       title: "Services",
       links: [
-        { name: "Web Development", path: "/services/web-development" },
-        { name: "Mobile Apps", path: "/services/mobile-development" },
-        { name: "Cloud Solutions", path: "/services/cloud-solutions" },
-        { name: "AI & Automation", path: "/services/ai-automation" }
+        { name: "Web Development", path: "/services/1" },
+        { name: "Mobile Apps", path: "/services/2" },
+        { name: "Cloud Solutions", path: "/services/3" },
+        { name: "AI & ML", path: "/services/8" }
       ]
+      // links: fetchedServices
     },
     {
       title: "Company",
