@@ -44,50 +44,7 @@ const ServiceDetails = () => {
     message: ''
   });
 
-  const services = {
-    'web-development': {
-      id: 'web-development',
-      icon: <FaCode size={50} />,
-      title: "Web Development",
-      description: "We create stunning, high-performance websites and web applications tailored to your business needs. Our solutions are built with the latest technologies to ensure scalability, security, and exceptional user experiences.",
-      benefits: [
-        "Responsive design for all devices",
-        "SEO optimized for better visibility",
-        "Fast loading performance",
-        "Secure and scalable architecture",
-        "Custom CMS solutions"
-      ],
-      process: [
-        "Requirement Analysis",
-        "UI/UX Design",
-        "Development",
-        "Testing & QA",
-        "Deployment & Maintenance"
-      ],
-      technologies: ["React", "Next.js", "Node.js", "GraphQL", "MongoDB"]
-    },
-    'mobile-development': {
-      id: 'mobile-development',
-      icon: <FaMobileAlt size={50} />,
-      title: "Mobile App Development",
-      description: "We build native and cross-platform mobile applications that deliver seamless user experiences across iOS and Android platforms. Our apps are designed for performance, engagement, and business growth.",
-      benefits: [
-        "Native and cross-platform solutions",
-        "Intuitive user interfaces",
-        "Offline functionality",
-        "Push notifications",
-        "Secure data handling"
-      ],
-      process: [
-        "Concept Development",
-        "Prototyping",
-        "App Development",
-        "Testing & Optimization",
-        "App Store Deployment"
-      ],
-      technologies: ["React Native", "Flutter", "Swift", "Kotlin", "Firebase"]
-    }
-  };
+  
 
   const countries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", 
     "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", 
@@ -115,6 +72,12 @@ const ServiceDetails = () => {
       "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", 
       "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe", "Other"];
 
+
+  useEffect(() => {
+    // Scroll to top on component mount
+    window.scrollTo(0, 0);
+        
+  }, []);
 
   const fetchService = async () => {
     const result = await serviceApi.getServiceById(service_id);
