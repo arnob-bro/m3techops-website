@@ -58,21 +58,10 @@ const AboutUs = () => {
     },
     {
       id: 3,
-      name: "Michael Rodriguez",
-      role: "Lead Developer",
-      bio: "Michael specializes in frontend technologies and user experience design, ensuring our solutions are not just functional but delightful to use.",
-      image: "https://randomuser.me/api/portraits/men/75.jpg",
-      social: {
-        linkedin: "#",
-        twitter: "#"
-      }
-    },
-    {
-      id: 4,
-      name: "Emily Wilson",
-      role: "UX/UI Designer",
-      bio: "Emily transforms complex requirements into intuitive interfaces that users love. Her design thinking approach drives our product development.",
-      image: "https://randomuser.me/api/portraits/women/65.jpg",
+      name: "Abdul Mohaimen Khan Arnob",
+      role: "Developer",
+      bio: "Arnob specializes in backend technologies ensuring our solutions are functional and secured to use.",
+      image: "https://mgegbwnkaosqeclicptx.supabase.co/storage/v1/object/public/profile_pics/profile_pic_1759599281403_354892894_1032342991473266_4186622419931413154_n.jpg",
       social: {
         linkedin: "#",
         twitter: "#"
@@ -95,17 +84,12 @@ const AboutUs = () => {
       title: "Excellence",
       description: "We strive for perfection in everything we deliver.",
       icon: <FiAward />
-    },
-    {
-      title: "Collaboration",
-      description: "Great ideas come from teamwork and shared vision.",
-      icon: <FiUsers />
     }
   ];
 
   const reasons = [
-    "15+ years of combined industry experience",
-    "Proven track record with 100+ successful projects",
+    "12+ years of combined industry experience",
+    "Proven track record with 25+ successful projects",
     "Custom solutions tailored to your specific needs",
     "Cutting-edge technology stack",
     "Transparent communication at every stage",
@@ -134,7 +118,7 @@ const AboutUs = () => {
             <div className="hero-badge-AU">
               <span>Our Story</span>
             </div>
-            <h1>About M³ TECHOPS</h1>
+            <h1>About m³ TECHOPS</h1>
             <p>We're a team of passionate technologists dedicated to transforming businesses through innovative digital solutions.</p>
             
           </motion.div>

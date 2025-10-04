@@ -460,7 +460,7 @@ useEffect(() => {
                     ease: "easeInOut"
                   }}
                 >
-                  M<span style={{ fontSize: '0.6em', verticalAlign: 'super' }}>3</span>
+                  m<span style={{ fontSize: '0.6em', verticalAlign: 'super' }}>3</span>
                 </motion.div>
 
                 <div className="floating-particles">
