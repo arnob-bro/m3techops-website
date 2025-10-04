@@ -53,7 +53,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "https://m3techops-website.vercel.app",
-  "https://www.m3techops.com/"
+  "https://www.m3techops.com"
 ];
 
 app.use(cors({
