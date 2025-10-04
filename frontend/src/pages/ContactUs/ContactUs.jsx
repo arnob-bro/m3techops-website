@@ -87,7 +87,7 @@ const ContactUs = () => {
   const contactInfo = {
     address: "77/1, Siddeshwari Road, Anarkali Super Market, 4th floor shop No.26/A, Dhaka 1217",
     phone: "+8801332112077",
-    email: "info@m3techops.com",
+    email: "contact@m3techops.com",
     encodedAddress: encodeURIComponent("77/1, Siddeshwari Road, Anarkali Super Market, 4th floor shop No.26/A, Dhaka 1217"),
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.598417814126!2d90.39931407485104!3d23.798506478632255!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c70c78f7e3a7%3A0xbd2b8e81b12f8b3e!2sSiddeshwari%20Road%2C%20Dhaka%201217!5e0!3m2!1sen!2sbd!4v1690000000000!5m2!1sen!2sbd"
   };

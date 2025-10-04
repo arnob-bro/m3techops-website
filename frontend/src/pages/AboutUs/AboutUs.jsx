@@ -255,7 +255,7 @@ const AboutUs = () => {
               viewport={{ once: true }}
             >
               <div className="section-header-AU">
-                <h2>Why Choose M³ TECHOPS?</h2>
+                <h2>Why Choose m³ TECHOPS?</h2>
                 <p>We combine technical expertise with business acumen to deliver solutions that not only work flawlessly but also drive real business results.</p>
               </div>
               
