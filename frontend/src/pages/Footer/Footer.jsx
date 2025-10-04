@@ -2,8 +2,17 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './Footer.css';
 import { FiTwitter, FiGithub, FiLinkedin, FiMail, FiPhone, FiMapPin, FiFacebook } from 'react-icons/fi';
+import NewsLetterApi from '../../apis/newsLetterApi';
+import { useState } from 'react';
+const newsLetterApi = new NewsLetterApi();
+
 
 const Footer = () => {
+  const [email, setEmail] = useState();
+  const handleSubmitSubscription = async () => {
+    const res = await newsLetterApi.subscribe(email);
+    setEmail("");
+  }
   const footerLinks = [
     {
       title: "Services",
@@ -135,10 +144,15 @@ const Footer = () => {
             <div className="footer-newsletter-form">
               <input 
                 type="email" 
+                name="email"
+                value={email}
+                onChange={(e)=>{setEmail(e.target.value)}}
                 placeholder="Enter your email"
                 className="footer-newsletter-input"
               />
-              <button className="footer-newsletter-btn">
+              <button className="footer-newsletter-btn"
+              onClick={handleSubmitSubscription}
+              >
                 Subscribe
               </button>
             </div>

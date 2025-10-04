@@ -232,6 +232,7 @@ const Navbar = () => {
                   ref={dropdownRef}
                   onMouseEnter={() => setServicesDropdownOpen(true)}
                   onMouseLeave={() => setServicesDropdownOpen(false)}
+                  
                 >
                   <div 
                     className={`navbar-link dropdown-trigger ${isActiveLink('/services') ? 'active' : ''}`}
@@ -286,7 +287,11 @@ const Navbar = () => {
                                     key={i}
                                     to={`/services/${service.service_id}`}
                                     className={`dropdown-item ${isActiveLink(`/services/${service.service_id}`) ? 'active' : ''}`}
-                                    onClick={closeAllMenus}
+                                    onClick={(e)=>{
+                                      if(!atTop) e.preventDefault();
+                                      else{closeAllMenus}
+                                      
+                                    }}
                                   >
                                     {service.title}
                                   </Link>
@@ -303,6 +308,9 @@ const Navbar = () => {
                 <Link 
                   to={link.path} 
                   className={`navbar-link ${isActiveLink(link.path) ? 'active' : ''}`}
+                  onClick={(e)=>{
+                    if(!atTop) e.preventDefault();
+                  }}
                 >
                   {link.name}
                 </Link>
