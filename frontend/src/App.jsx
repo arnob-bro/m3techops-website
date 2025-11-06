@@ -22,6 +22,7 @@ import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import SubmitTestimonial from "./pages/SubmitTestimonial/SubmitTestimonial";
 
 
+
 // Admin pages
 import Login from "./pages/Admin/LoginPage/Login";
 import ChangePassword from "./pages/Admin/LoginPage/ChangePassword";
@@ -111,7 +112,7 @@ function App() {
             </ProtectedRoute>
             } />
             <Route path="manage-career" element={
-            <ProtectedRoute requiredPermission="MANAGE_BLOG">
+            <ProtectedRoute requiredPermission="MANAGE_CAREER">
               <ManageCareer />
             </ProtectedRoute>
             } />
@@ -170,6 +171,7 @@ function App() {
               <Dashboard />
             </ProtectedRoute>
             } />
+            
 
         </Route>
 

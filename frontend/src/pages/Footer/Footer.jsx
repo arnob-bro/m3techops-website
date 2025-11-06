@@ -44,8 +44,8 @@ const Footer = () => {
       links: [
         { name: "About Us", path: "/about-us" },
         { name: "Portfolios", path: "/projects" },
-        { name: "Blogs", path: "/blog" }
-        // { name: "Careers", path: "/careers" }
+        { name: "Blogs", path: "/blog" },
+        { name: "Career", path: "/career" }
       ]
     },
     {
