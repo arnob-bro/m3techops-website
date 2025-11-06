@@ -150,9 +150,21 @@
     background: var(--admin-pages-hover);
 }
 
-.career-table tr.inactive {
-    opacity: 0.7;
-    background: var(--admin-pages-inactive);
+/* Status-specific row styles */
+.career-table tr.status-draft {
+    background: rgba(245, 158, 11, 0.03);
+}
+
+.career-table tr.status-open {
+    background: rgba(16, 185, 129, 0.03);
+}
+
+.career-table tr.status-cancelled {
+    background: rgba(239, 68, 68, 0.03);
+}
+
+.career-table tr.status-closed {
+    background: rgba(100, 116, 139, 0.03);
 }
 
 /* Table Cell Styles */
@@ -191,6 +203,10 @@
     color: var(--admin-pages-error);
 }
 
+.deadline-cell.ongoing {
+    color: var(--admin-pages-success);
+}
+
 .expired-badge {
     display: block;
     background: rgba(239, 68, 68, 0.1);
@@ -201,6 +217,18 @@
     font-weight: 500;
     margin-top: 4px;
     border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.ongoing-badge {
+    display: block;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--admin-pages-success);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 4px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .vacancies-badge {
@@ -214,33 +242,37 @@
     display: inline-block;
 }
 
-/* Status Button */
-.status-btn {
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 14px;
+/* Status Badges */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    border: none;
+    display: inline-block;
 }
 
-.status-btn svg {
-    font-size: 18px;
-    margin-right: 4px;
+.status-badge-draft {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-.status-btn.active {
+.status-badge-active {
     background: rgba(16, 185, 129, 0.1);
-    color: var(--admin-pages-success);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-.status-btn.inactive {
-    background: rgba(239, 68, 68, 0.05);
-    color: var(--admin-pages-error);
+.status-badge-cancelled {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-badge-inactive {
+    background: rgba(100, 116, 139, 0.1);
+    color: #64748b;
+    border: 1px solid rgba(100, 116, 139, 0.3);
 }
 
 /* Action Buttons */
@@ -419,6 +451,22 @@
     line-height: 1.5;
 }
 
+/* Status Select Styles */
+.status-select {
+    cursor: pointer;
+}
+
+.deadline-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 8px;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
 /* Requirements Section */
 .requirements-container {
     margin-bottom: 24px;
@@ -491,32 +539,6 @@
     margin: 32px 0 16px 0;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--admin-pages-border-light);
-}
-
-.form-checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    background: rgba(28, 176, 162, 0.04);
-    border: 1px solid rgba(28, 176, 162, 0.15);
-    border-radius: 12px;
-    margin-top: 4px;
-    margin-bottom: 24px;
-}
-
-.form-checkbox-group input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    accent-color: var(--admin-pages-accent);
-}
-
-.form-checkbox-group label {
-    margin-bottom: 0;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--admin-pages-text-primary);
 }
 
 /* Form Actions */
@@ -729,44 +751,4 @@
         padding: 6px 12px;
         font-size: 13px;
     }
-}
-
-
-/* Add to existing CSS */
-
-/* Deadline Status Styles */
-.deadline-cell.ongoing {
-    color: var(--admin-pages-success);
-}
-
-.ongoing-badge {
-    display: block;
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--admin-pages-success);
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    margin-top: 4px;
-    border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-.deadline-warning {
-    background: rgba(245, 158, 11, 0.1);
-    color: #f59e0b;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    margin-top: 8px;
-    border: 1px solid rgba(245, 158, 11, 0.2);
-}
-
-/* Modal form improvements */
-.form-group-bd input[type="date"] {
-    font-family: inherit;
-}
-
-.form-group-bd input[type="date"]:focus {
-    background: #ffffff;
 }

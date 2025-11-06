@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCalendar, FiUsers, FiX, FiMail, FiAward, FiTrendingUp, FiHeart } from 'react-icons/fi';
+import { FiCalendar, FiUsers, FiX, FiMail, FiAward, FiTrendingUp, FiHeart, FiClock } from 'react-icons/fi';
 import './Career.css';
 
 // Sample job data - replace with API call later
@@ -8,7 +8,8 @@ const jobPostings = [
   {
     job_id: 1,
     title: "Senior Full Stack Developer",
-    deadline: "2024-12-31",
+    posted_date: "2025-11-06", // Changed to 2025
+    deadline: "2025-12-31",
     vacancies: 2,
     description: "We are looking for an experienced Full Stack Developer to join our growing team. You will be responsible for developing and maintaining web applications using modern technologies.",
     requirements: [
@@ -22,6 +23,7 @@ const jobPostings = [
   {
     job_id: 2,
     title: "UI/UX Designer",
+    posted_date: "2025-01-10", // Changed to 2025
     deadline: "2024-12-25",
     vacancies: 1,
     description: "Join our creative team as a UI/UX Designer. You'll be creating beautiful and intuitive interfaces for our clients' digital products.",
@@ -36,6 +38,7 @@ const jobPostings = [
   {
     job_id: 3,
     title: "DevOps Engineer",
+    posted_date: "2025-01-20", // Changed to 2025
     deadline: "2025-01-15",
     vacancies: 1,
     description: "We need a skilled DevOps Engineer to optimize our development pipeline and manage cloud infrastructure.",
@@ -50,6 +53,7 @@ const jobPostings = [
   {
     job_id: 4,
     title: "Mobile App Developer",
+    posted_date: "2025-01-18", // Changed to 2025
     deadline: "2025-01-10",
     vacancies: 2,
     description: "Looking for talented Mobile App Developers to build cutting-edge iOS and Android applications.",
@@ -213,6 +217,10 @@ const Career = () => {
                   
                   <div className="CR-job-meta">
                     <div className="CR-meta-item">
+                      <FiClock />
+                      <span>Posted: {new Date(job.posted_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                    </div>
+                    <div className="CR-meta-item">
                       <FiCalendar />
                       <span>Apply by: {new Date(job.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                     </div>
@@ -270,6 +278,10 @@ const Career = () => {
                   <h2>{selectedJob.title}</h2>
                   
                   <div className="CR-modal-meta">
+                    <div className="CR-meta-item">
+                      <FiClock />
+                      <span>Posted: {new Date(selectedJob.posted_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                    </div>
                     <div className="CR-meta-item">
                       <FiCalendar />
                       <span>Apply by: {new Date(selectedJob.deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
