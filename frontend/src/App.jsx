@@ -19,6 +19,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy/CookiePolicy";
 import TermsOfService from "./pages/TermsOfService/TermsOfService";
 import SubmitTestimonial from "./pages/SubmitTestimonial/SubmitTestimonial";
+import Career from "./pages/Career/Career";
 
 
 // Admin pages
@@ -39,6 +40,7 @@ import ManageTermsOfService from "./pages/Admin/ManageTermsOfService/ManageTerms
 import ManagePaySlip from "./pages/Admin/ManagePaySlip/ManagePaySlip";
 import ManageTestimonials from "./pages/Admin/ManageTestimonials/ManageTestimonials";
 import Dashboard from "./pages/Admin/Dashboard/Dashboard";
+import ManageCareer from "./pages/Admin/ManageCareer/ManageCareer";
 
 
 // Components
@@ -163,6 +165,14 @@ function App() {
               <Dashboard />
             </ProtectedRoute>
             } />
+            <Route
+          path="manage-career"
+          element={
+            <ProtectedRoute >
+              <ManageCareer />
+            </ProtectedRoute>
+          }
+        ></Route>
 
         </Route>
 
@@ -180,6 +190,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/cookies" element={<CookiePolicy />} />
+          <Route path="/career" element={<Career/>} />
 
         </Route>
         

@@ -52,7 +52,8 @@ const Admin = () => {
       'newsletter-management': 'newsletter',
       'policy-management': 'policy',
       'scheduler': 'scheduler',
-      'testimonials': 'testimonials-management'
+      'testimonials': 'testimonials-management',
+      'manage-career': 'career'
     };
     
     return routeMapping[lastSegment] || lastSegment || 'dashboard';
@@ -106,7 +107,7 @@ const Admin = () => {
     { id: 'payslip-manager', icon: <FiDollarSign />, label: 'Pay Slip Manager', path: '/admin/pay-slip-manager', requiredPermission: 'MANAGE_PAYSLIP' },
 
     { id: 'employees', icon: <FiUsers />, label: 'Employee Management', path: '/admin/employee-management', requiredPermission: 'MANAGE_EMPLOYEES' },
-
+    { id: 'career', icon: <FiBriefcase />, label: 'Career Management', path: '/admin/manage-career', requiredPermission: 'MANAGE_CAREER' },
     { id: 'testimonials', icon: <FiMessageCircle />, label: 'Testimonial Management', path: '/admin/testimonials-management', requiredPermission: 'MANAGE_EMPLOYEES' },
 
     { id: 'newsletter', icon: <FiBook />, label: 'Newsletter Management', path: '/admin/newsletter-management', requiredPermission: 'MANAGE_NEWSLETTER' },
