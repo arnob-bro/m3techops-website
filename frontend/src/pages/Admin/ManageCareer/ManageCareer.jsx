@@ -12,12 +12,7 @@ const MOCK_JOBS = [
     posted_date: "2025-10-15",
     deadline: "2025-11-30",
     vacancies: 2,
-    description: "We are looking for an experienced frontend developer with expertise in React and modern web technologies.",
-    requirements: [
-      "5+ years of React experience",
-      "Strong TypeScript skills",
-      "Experience with state management"
-    ],
+    description: "We are looking for an experienced frontend developer with expertise in React and modern web technologies.<br><br><strong>Requirements:</strong><ul><li>5+ years of React experience</li><li>Strong TypeScript skills</li><li>Experience with state management</li></ul>",
     status: "Open"
   },
   {
@@ -26,12 +21,7 @@ const MOCK_JOBS = [
     posted_date: "2025-09-10",
     deadline: "2025-10-15",
     vacancies: 1,
-    description: "Creative designer needed to lead our design initiatives and create exceptional user experiences.",
-    requirements: [
-      "3+ years of UI/UX design",
-      "Figma proficiency",
-      "Portfolio required"
-    ],
+    description: "Creative designer needed to lead our design initiatives and create exceptional user experiences.<br><br><strong>Requirements:</strong><ul><li>3+ years of UI/UX design</li><li>Figma proficiency</li><li>Portfolio required</li></ul>",
     status: "Closed"
   },
   {
@@ -40,12 +30,7 @@ const MOCK_JOBS = [
     posted_date: "2025-11-01",
     deadline: "2025-12-15",
     vacancies: 3,
-    description: "Join our backend team to build scalable and efficient server-side applications.",
-    requirements: [
-      "Node.js experience",
-      "Database design skills",
-      "API development"
-    ],
+    description: "Join our backend team to build scalable and efficient server-side applications.<br><br><strong>Requirements:</strong><ul><li>Node.js experience</li><li>Database design skills</li><li>API development</li></ul>",
     status: "Draft"
   },
   {
@@ -54,12 +39,7 @@ const MOCK_JOBS = [
     posted_date: "2025-08-20",
     deadline: "2025-09-20",
     vacancies: 1,
-    description: "Looking for a DevOps engineer to manage our cloud infrastructure and CI/CD pipelines.",
-    requirements: [
-      "AWS/Azure experience",
-      "Docker and Kubernetes",
-      "CI/CD pipeline setup"
-    ],
+    description: "Looking for a DevOps engineer to manage our cloud infrastructure and CI/CD pipelines.<br><br><strong>Requirements:</strong><ul><li>AWS/Azure experience</li><li>Docker and Kubernetes</li><li>CI/CD pipeline setup</li></ul>",
     status: "Cancelled"
   },
   {
@@ -68,12 +48,7 @@ const MOCK_JOBS = [
     posted_date: "2025-10-20",
     deadline: "2025-11-25",
     vacancies: 1,
-    description: "Strategic product manager to drive product vision and coordinate cross-functional teams.",
-    requirements: [
-      "5+ years product management",
-      "Agile methodology",
-      "Stakeholder management"
-    ],
+    description: "Strategic product manager to drive product vision and coordinate cross-functional teams.<br><br><strong>Requirements:</strong><ul><li>5+ years product management</li><li>Agile methodology</li><li>Stakeholder management</li></ul>",
     status: "Open"
   }
 ];
@@ -90,7 +65,6 @@ const ManageCareer = () => {
     deadline: "",
     vacancies: 1,
     description: "",
-    requirements: [""],
     status: "Draft"
   });
   const [page, setPage] = useState(1);
@@ -142,32 +116,6 @@ const ManageCareer = () => {
     }));
   };
 
-  const handleRequirementChange = (index, value) => {
-    const newRequirements = [...formData.requirements];
-    newRequirements[index] = value;
-    setFormData(prev => ({
-      ...prev,
-      requirements: newRequirements
-    }));
-  };
-
-  const addRequirement = () => {
-    setFormData(prev => ({
-      ...prev,
-      requirements: [...prev.requirements, ""]
-    }));
-  };
-
-  const removeRequirement = (index) => {
-    if (formData.requirements.length > 1) {
-      const newRequirements = formData.requirements.filter((_, i) => i !== index);
-      setFormData(prev => ({
-        ...prev,
-        requirements: newRequirements
-      }));
-    }
-  };
-
   const openEditModal = (job) => {
     setCurrentJob(job);
     setFormData({
@@ -176,7 +124,6 @@ const ManageCareer = () => {
       deadline: job.deadline,
       vacancies: job.vacancies,
       description: job.description,
-      requirements: [...job.requirements],
       status: job.status
     });
     setIsModalOpen(true);
@@ -190,7 +137,6 @@ const ManageCareer = () => {
       deadline: "",
       vacancies: 1,
       description: "",
-      requirements: [""],
       status: "Draft"
     });
     setIsModalOpen(true);
@@ -199,19 +145,12 @@ const ManageCareer = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const filteredRequirements = formData.requirements.filter(req => req.trim() !== "");
-
-    const submitData = {
-      ...formData,
-      requirements: filteredRequirements
-    };
-
     if (currentJob) {
       // Update existing job
       setJobPostings(prev =>
         prev.map(job =>
           job.job_id === currentJob.job_id
-            ? { ...job, ...submitData }
+            ? { ...job, ...formData }
             : job
         )
       );
@@ -219,7 +158,7 @@ const ManageCareer = () => {
       // Add new job
       const newJob = {
         job_id: Math.max(...jobPostings.map(j => j.job_id), 0) + 1,
-        ...submitData
+        ...formData
       };
       setJobPostings(prev => [...prev, newJob]);
     }
@@ -242,6 +181,11 @@ const ManageCareer = () => {
     deadlineDate.setHours(0, 0, 0, 0);
 
     return deadlineDate < today;
+  };
+
+  // Function to render HTML description safely
+  const renderDescription = (description) => {
+    return { __html: description };
   };
 
   const DeadlineStatus = ({ deadline }) => {
@@ -320,7 +264,10 @@ const ManageCareer = () => {
                     <div className="job-title-cell">
                       <div>
                         <h4>{job.title}</h4>
-                        <p className="job-description">{job.description}</p>
+                        <div 
+                          className="job-description"
+                          dangerouslySetInnerHTML={renderDescription(job.description)}
+                        />
                       </div>
                     </div>
                   </td>
@@ -495,16 +442,26 @@ const ManageCareer = () => {
               </div>
 
               <div className="form-row">
-                <div className="form-group-bd">
-                  <label>Job Description</label>
+                <div className="form-group-bd full-width">
+                  <label>Job Description (HTML supported)</label>
                   <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    placeholder="Detailed job description"
+                    placeholder="Enter detailed job description. You can use HTML tags for formatting. Example: &lt;strong&gt;Bold text&lt;/strong&gt;, &lt;ul&gt;&lt;li&gt;List item&lt;/li&gt;&lt;/ul&gt;, &lt;br&gt; for line breaks"
                     required
-                    rows="4"
+                    rows="8"
+                    className="html-textarea"
                   />
+                  <div className="html-tips">
+                    <strong>HTML Tips:</strong>
+                    <ul>
+                      <li>Use <code>&lt;br&gt;</code> for line breaks</li>
+                      <li>Use <code>&lt;strong&gt;</code> for bold text</li>
+                      <li>Use <code>&lt;ul&gt;&lt;li&gt;item&lt;/li&gt;&lt;/ul&gt;</code> for lists</li>
+                      <li>Use <code>&lt;p&gt;</code> for paragraphs</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
 
@@ -523,39 +480,6 @@ const ManageCareer = () => {
                     <option value="Cancelled">Cancelled</option>
                   </select>
                 </div>
-              </div>
-
-              <div className="form-section-title">Job Requirements</div>
-
-              <div className="requirements-container">
-                {formData.requirements.map((requirement, index) => (
-                  <div key={index} className="requirement-item">
-                    <input
-                      type="text"
-                      value={requirement}
-                      onChange={(e) => handleRequirementChange(index, e.target.value)}
-                      placeholder={`Requirement ${index + 1}`}
-                      className="requirement-input"
-                    />
-                    {formData.requirements.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeRequirement(index)}
-                        className="remove-requirement-btn"
-                        aria-label="Remove requirement"
-                      >
-                        &times;
-                      </button>
-                    )}
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={addRequirement}
-                  className="add-requirement-btn"
-                >
-                  + Add Requirement
-                </button>
               </div>
 
               <div className="form-actions">

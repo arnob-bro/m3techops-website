@@ -569,3 +569,162 @@
         backdrop-filter: none;
     }
 }
+
+
+/* Career.css - Additional styles for fixes */
+
+.CR-error-message {
+    background: #fee;
+    border: 1px solid #fcc;
+    color: #c33;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.CR-no-jobs {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #666;
+}
+
+.CR-no-jobs h3 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.CR-deadline-expired {
+    background: #ff4757;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.CR-job-description-preview {
+    margin: 1rem 0;
+    line-height: 1.5;
+    color: #555;
+}
+
+.CR-description-text {
+    max-height: 4.5em;
+    overflow: hidden;
+}
+
+.CR-btn-expired {
+    background: #95a5a6 !important;
+    cursor: not-allowed !important;
+}
+
+.CR-btn-expired:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.CR-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.CR-modal-expired-badge {
+    background: #ff4757;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.CR-modal-description {
+    line-height: 1.6;
+}
+
+.CR-modal-description h1,
+.CR-modal-description h2,
+.CR-modal-description h3,
+.CR-modal-description h4 {
+    margin: 1.5rem 0 0.5rem 0;
+    color: #2c3e50;
+}
+
+.CR-modal-description strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.CR-modal-description ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.CR-modal-description li {
+    margin: 0.5rem 0;
+    line-height: 1.5;
+}
+
+.CR-modal-description p {
+    margin: 1rem 0;
+}
+
+.CR-application-note {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    margin-top: 1rem !important;
+}
+
+.CR-deadline-notice {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+/* Job card improvements */
+.CR-job-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.CR-job-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    height: 180px;
+    border-radius: 12px;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .CR-modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .CR-modal-expired-badge {
+        align-self: flex-start;
+    }
+}
