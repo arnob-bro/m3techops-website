@@ -31,7 +31,7 @@ db.on('remove', (client) => {
 db.testConnection = async () => {
   let client;
   try {
-      client = await pool.connect();
+      client = await db.connect();
       const result = await client.query('SELECT NOW() as current_time, version() as db_version');
       console.log('✅ Database connected successfully');
       console.log('📊 Database time:', result.rows[0].current_time);
