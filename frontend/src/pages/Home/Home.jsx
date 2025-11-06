@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './Home.css';
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 import { FiArrowRight, FiCheck, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FaCode, FaMobileAlt, FaCloud, FaRobot, 
@@ -78,9 +80,11 @@ const Home = () => {
 
   useEffect(() => {
     if (!fetchedOnce.current) {
+      NProgress.start();
       fetchServices();
       fetchProjects();
       fetchTestimonials();
+      NProgress.done();
       // fetchedOnce.current = true;
     }
   }, []); 

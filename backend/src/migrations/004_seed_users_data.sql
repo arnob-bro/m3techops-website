@@ -11,7 +11,7 @@
 --   ('U009', 'ian@example.com', crypt('123456', gen_salt('bf')), 'employee'),
 --   ('U010', 'julia@example.com', crypt('123456', gen_salt('bf')), 'employee');
 INSERT INTO users (user_id, email, password_hash, role, verified) VALUES
-('E-003', 'arnob@m3techops.com', crypt('123456', gen_salt('bf')), 'employee', true);
+('E-003', 'arnob@m3techops.com', crypt('arnob064', gen_salt('bf')), 'employee', true);
 -- ('EMP002', 'sarah.johnson@example.com', crypt('123456', gen_salt('bf')), 'employee'),
 -- ('EMP003', 'michael.chen@example.com', crypt('123456', gen_salt('bf')), 'employee'),
 -- ('EMP004', 'emma.williams@example.com', crypt('123456', gen_salt('bf')), 'employee'),
