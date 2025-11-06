@@ -4,11 +4,10 @@ import './Admin.css';
 import { 
   FiMenu, FiX, FiHome, FiSettings, FiFileText, FiBriefcase, 
   FiMail, FiDollarSign, FiCalendar, FiUsers, FiBook, FiPieChart,
-  FiChevronDown, FiChevronRight, FiPlusCircle, FiLogOut,FiMessageCircle
+  FiChevronDown, FiChevronRight, FiPlusCircle, FiLogOut, FiMessageCircle,
+  FiUserPlus // Added this icon for Career management
 } from 'react-icons/fi';
 import useUserStore from "../../../stores/userStore";
-
-
 
 const Admin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -45,6 +44,7 @@ const Admin = () => {
       'manage-services': 'services',
       'manage-portfolio': 'portfolio',
       'manage-blog': 'blog',
+      'manage-career': 'career', // Fixed this mapping
       'manage-messages': 'messages',
       'pay-slip-generator': 'create-payslip',
       'pay-slip-manager': 'payslip-manager',
@@ -52,7 +52,7 @@ const Admin = () => {
       'newsletter-management': 'newsletter',
       'policy-management': 'policy',
       'scheduler': 'scheduler',
-      'testimonials': 'testimonials-management'
+      'testimonials-management': 'testimonials'
     };
     
     return routeMapping[lastSegment] || lastSegment || 'dashboard';
@@ -101,14 +101,12 @@ const Admin = () => {
     { id: 'services', icon: <FiSettings />, label: 'Manage Services', path: '/admin/manage-services', requiredPermission: 'MANAGE_SERVICES' },
     { id: 'portfolio', icon: <FiBriefcase />, label: 'Portfolio Items', path: '/admin/manage-portfolio', requiredPermission: 'MANAGE_PORTFOLIO' },
     { id: 'blog', icon: <FiFileText />, label: 'Blog Posts', path: '/admin/manage-blog', requiredPermission: 'MANAGE_BLOG' },
+    { id: 'career', icon: <FiUserPlus />, label: 'Manage Career', path: '/admin/manage-career', requiredPermission: 'MANAGE_CAREER' }, // Fixed: changed id to 'career' and added proper permission
     { id: 'messages', icon: <FiMail />, label: 'Contact Messages', path: '/admin/manage-messages', requiredPermission: 'MANAGE_MESSAGES' },
     { id: 'create-payslip', icon: <FiPlusCircle />, label: 'Create Pay-slip', path: '/admin/pay-slip-generator', requiredPermission: 'GENERATE_PAYSLIP' },
     { id: 'payslip-manager', icon: <FiDollarSign />, label: 'Pay Slip Manager', path: '/admin/pay-slip-manager', requiredPermission: 'MANAGE_PAYSLIP' },
-
     { id: 'employees', icon: <FiUsers />, label: 'Employee Management', path: '/admin/employee-management', requiredPermission: 'MANAGE_EMPLOYEES' },
-
-    { id: 'testimonials', icon: <FiMessageCircle />, label: 'Testimonial Management', path: '/admin/testimonials-management', requiredPermission: 'MANAGE_EMPLOYEES' },
-
+    { id: 'testimonials', icon: <FiMessageCircle />, label: 'Testimonial Management', path: '/admin/testimonials-management', requiredPermission: 'MANAGE_TESTIMONIALS' }, // Fixed permission
     { id: 'newsletter', icon: <FiBook />, label: 'Newsletter Management', path: '/admin/newsletter-management', requiredPermission: 'MANAGE_NEWSLETTER' },
     { 
       id: 'policy', 
@@ -133,8 +131,6 @@ const Admin = () => {
     return permissions[permissionCodes.indexOf(item.requiredPermission)];
   });
   
-  
-
   const isPolicySubItemActive = navItems
     .find(item => item.id === 'policy')?.subItems
     ?.some(subItem => activeTab === subItem.id);

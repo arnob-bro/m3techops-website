@@ -10,6 +10,7 @@ import ServiceDetails from "./pages/ServiceDetails/ServiceDetails";
 import Projects from "./pages/Portfolios/Portfolios";
 import ProjectDetails from "./pages/ProjectDetails/ProjectDetails";
 import Blog from "./pages/Blog/Blog";
+import Career from "./pages/Career/Career";
 import BlogDetails from "./pages/BlogDetails/BlogDetails";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import AboutUs from "./pages/AboutUs/AboutUs";
@@ -28,6 +29,7 @@ import Admin from "./pages/Admin/AdminPage/Admin";
 import ManageServices from "./pages/Admin/ManageServices/ManageServices";
 import ManagePortfolio from "./pages/Admin/ManagePortfolio/ManagePortfolio";
 import ManageBlog from "./pages/Admin/ManageBlogs/ManageBlogs";
+import ManageCareer from "./pages/Admin/ManageCareer/ManageCareer";
 import PaySlipGenerator from "./pages/Admin/PaySlipGenerator/PaySlipGenerator";
 import ManageContact from "./pages/Admin/ManageContact/ManageContact";
 import Scheduler from "./pages/Admin/Scheduler/Scheduler";
@@ -108,6 +110,11 @@ function App() {
               <ManageBlog />
             </ProtectedRoute>
             } />
+            <Route path="manage-career" element={
+            <ProtectedRoute requiredPermission="MANAGE_BLOG">
+              <ManageCareer />
+            </ProtectedRoute>
+            } />
           <Route path="pay-slip-generator" element={
             <ProtectedRoute requiredPermission="GENERATE_PAYSLIP">
               <PaySlipGenerator />
@@ -174,6 +181,7 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:portfolio_item_id" element={<ProjectDetails />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/career" element={<Career />} />
           <Route path="/blog/:blog_id" element={<BlogDetails />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
