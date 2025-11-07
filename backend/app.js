@@ -14,6 +14,7 @@ const createEmployeeRouter = require("./src/routes/employeeRoutes");
 const createPayslipRouter = require("./src/routes/payslipRoutes");
 const createSchedulerRouter = require("./src/routes/schedulerRoutes");
 const createTestimonialRouter = require("./src/routes/testimonialRoutes");
+const createCareerRouter = require("./src/routes/careerRoutes");
 
 const AuthController = require("./src/controllers/authController");
 const InquiryController = require("./src/controllers/inquiryController");
@@ -27,6 +28,7 @@ const EmployeeController = require("./src/controllers/employeeController");
 const PayslipController = require("./src/controllers/payslipController");
 const SchedulerController = require("./src/controllers/schedulerController");
 const TestimonialController = require("./src/controllers/testimonialController");
+const CareerController = require("./src/controllers/careerController");
 
 const UserService = require("./src/services/userService");
 const InquiryService = require("./src/services/inquiryService");
@@ -40,6 +42,7 @@ const EmployeeService = require("./src/services/employeeService");
 const PayslipService = require("./src/services/payslipService");
 const SchedulerService = require("./src/services/schedulerService");
 const TestimonialService = require("./src/services/testimonialService");
+const CareerService = require("./src/services/careerService");
 
 
 const db = require("./src/config/database");
@@ -88,6 +91,7 @@ const employeeService = new EmployeeService(db, userService, roleService);
 const payslipService = new PayslipService(db);
 const schedulerService = new SchedulerService(db);
 const testimonialService = new TestimonialService(db);
+const careerService = new CareerService(db);
 
 const authController = new AuthController(userService);
 const inquiryController = new InquiryController(inquiryService);
@@ -101,6 +105,7 @@ const employeeController = new EmployeeController(employeeService);
 const payslipController = new PayslipController(payslipService);
 const schedulerController = new SchedulerController(schedulerService);
 const testimonialController = new TestimonialController(testimonialService);
+const careerController = new CareerController(careerService);
 
 const authRouter = createAuthRouter(authController);
 const inquiryRouter = createInquiryRouter(inquiryController);
@@ -114,6 +119,7 @@ const employeeRouter = createEmployeeRouter(employeeController);
 const payslipRouter = createPayslipRouter(payslipController);
 const schedulerRouter = createSchedulerRouter(schedulerController);
 const testimonialRouter = createTestimonialRouter(testimonialController);
+const careerRouter = createCareerRouter(careerController);
 
 
 
@@ -130,5 +136,6 @@ app.use("/employee", employeeRouter);
 app.use("/payslip", payslipRouter);
 app.use("/scheduler", schedulerRouter);
 app.use("/testimonial", testimonialRouter);
+app.use("/career", careerRouter);
 
 module.exports = app;

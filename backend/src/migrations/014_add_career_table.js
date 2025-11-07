@@ -5,7 +5,7 @@ const db = require("../config/database");
 // SQL (included directly in JS)
 const sql = `
 CREATE TABLE IF NOT EXISTS careers (
-  id SERIAL PRIMARY KEY,
+  career_id SERIAL PRIMARY KEY,
   title VARCHAR(200) NOT NULL,
   vacancies INTEGER NOT NULL,
   description TEXT NOT NULL,

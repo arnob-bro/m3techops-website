@@ -3,10 +3,10 @@ const express = require("express");
 function createCareerRouter(careerController) {
   const router = express.Router();
 
-    router.get('/', careerController.getAllCareers);
+    router.get('/', careerController.getCareers);
     router.post('/',careerController.createCareer);
-    router.put('/:career_id', careerController.updateCareer);
-    router.delete('/:career_id', careerController.deleteCareer);
+    // router.put('/:career_id', careerController.updateCareer);
+    // router.delete('/:career_id', careerController.deleteCareer);
 
   return router;
 }
