@@ -47,4 +47,32 @@ export default class CareerApi {
     }
   }
 
+
+  async updateCareer(career_id, {
+    title,
+    vacancies,
+    description,
+    send_to,
+    status,
+    deadline,
+    posted_date
+  }) {
+    try {
+      const response = await this.careerApi.put(`${this.baseURL}/${career_id}`, {
+        title,
+        vacancies,
+        description,
+        send_to,
+        status,
+        deadline,
+        posted_date
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      throw err.response?.data || { error: "Failed to update career" };
+    }
+  }
+  
+
 }
