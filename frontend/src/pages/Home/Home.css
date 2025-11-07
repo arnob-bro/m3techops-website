@@ -101,19 +101,20 @@
   margin-top: 2rem;
 }
 
-.btn-primary {
+/* .btn-primary {
   background: linear-gradient(135deg,
       var(--color-accent),
       var(--color-accent-light));
   color: white;
   cursor: pointer;
-  /* Ensure buttons have pointer cursor */
-}
+  
+} */
 
-.btn-primary:hover {
+/* .btn-primary:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 20px rgba(var(--color-accent-rgb), 0.3);
-}
+  
+} */
 
 .btn-outline {
   background: transparent;

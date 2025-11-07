@@ -121,10 +121,18 @@ const ManageCareer = () => {
 
   const openEditModal = (job) => {
     setCurrentJob(job);
+    
+    // Format dates for the date input fields (YYYY-MM-DD)
+    const formatDateForInput = (dateString) => {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    };
+  
     setFormData({
       title: job.title,
-      posted_date: job.posted_date,
-      deadline: job.deadline,
+      posted_date: formatDateForInput(job.posted_date),
+      deadline: formatDateForInput(job.deadline),
       vacancies: job.vacancies,
       description: job.description,
       status: job.status,

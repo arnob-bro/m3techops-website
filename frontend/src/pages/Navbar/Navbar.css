@@ -204,6 +204,7 @@
 .navbar-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(var(--color-accent-rgb), 0.4);
+  color: rgb(3, 75, 77);
 }
 
 /* NEW HAMBURGER STYLES */
@@ -344,6 +345,7 @@
 .sidebar-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(var(--color-accent-rgb), 0.4);
+  color: rgb(3, 75, 77);
 }
 
 /* Overlay for when sidebar is open */
