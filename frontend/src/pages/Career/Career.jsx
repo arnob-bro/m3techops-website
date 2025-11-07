@@ -1,87 +1,147 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiCalendar, FiUsers, FiX, FiMail, FiAward, FiTrendingUp, FiHeart, FiClock } from 'react-icons/fi';
+import { FiCalendar, FiUsers, FiMail, FiAward, FiTrendingUp, FiHeart, FiClock } from 'react-icons/fi';
 import './Career.css';
 
-// Sample job data - replace with API call later
-const jobPostings = [
-  {
-    job_id: 1,
-    title: "Senior Full Stack Developer",
-    posted_date: "2025-11-06", // Changed to 2025
-    deadline: "2025-12-31",
-    vacancies: 2,
-    description: "We are looking for an experienced Full Stack Developer to join our growing team. You will be responsible for developing and maintaining web applications using modern technologies.",
-    requirements: [
-      "5+ years of experience in web development",
-      "Strong proficiency in React, Node.js, and MongoDB",
-      "Experience with RESTful APIs and microservices",
-      "Knowledge of cloud platforms (AWS/Azure)",
-      "Excellent problem-solving skills"
-    ]
-  },
-  {
-    job_id: 2,
-    title: "UI/UX Designer",
-    posted_date: "2025-01-10", // Changed to 2025
-    deadline: "2024-12-25",
-    vacancies: 1,
-    description: "Join our creative team as a UI/UX Designer. You'll be creating beautiful and intuitive interfaces for our clients' digital products.",
-    requirements: [
-      "3+ years of UI/UX design experience",
-      "Proficiency in Figma, Adobe XD, or Sketch",
-      "Strong portfolio showcasing web and mobile designs",
-      "Understanding of design systems and component libraries",
-      "Excellent communication skills"
-    ]
-  },
-  {
-    job_id: 3,
-    title: "DevOps Engineer",
-    posted_date: "2025-01-20", // Changed to 2025
-    deadline: "2025-01-15",
-    vacancies: 1,
-    description: "We need a skilled DevOps Engineer to optimize our development pipeline and manage cloud infrastructure.",
-    requirements: [
-      "4+ years of DevOps experience",
-      "Expertise in Docker, Kubernetes, and CI/CD",
-      "Experience with AWS or Azure cloud services",
-      "Knowledge of infrastructure as code (Terraform/CloudFormation)",
-      "Strong scripting skills (Python, Bash)"
-    ]
-  },
-  {
-    job_id: 4,
-    title: "Mobile App Developer",
-    posted_date: "2025-01-18", // Changed to 2025
-    deadline: "2025-01-10",
-    vacancies: 2,
-    description: "Looking for talented Mobile App Developers to build cutting-edge iOS and Android applications.",
-    requirements: [
-      "3+ years of mobile development experience",
-      "Proficiency in React Native or Flutter",
-      "Experience with native iOS/Android development",
-      "Knowledge of mobile app deployment processes",
-      "Portfolio of published applications"
-    ]
-  }
-];
-
 const Career = () => {
-  const [jobs, setJobs] = useState(jobPostings);
+  const [jobs, setJobs] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
+    fetchJobs();
   }, []);
+
+  const fetchJobs = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // In a real app, this would be an API call
+      // For now, using mock data that matches admin structure
+      const mockJobs = [
+        {
+          job_id: 1,
+          title: "Senior Frontend Developer",
+          posted_date: "2025-10-15",
+          deadline: "2025-11-30",
+          vacancies: 2,
+          description: "We are looking for an experienced frontend developer with expertise in React and modern web technologies.<br><br><strong>Requirements:</strong><ul><li>5+ years of React experience</li><li>Strong TypeScript skills</li><li>Experience with state management</li></ul>",
+          status: "Open"
+        },
+        {
+          job_id: 2,
+          title: "UX/UI Designer",
+          posted_date: "2025-09-10",
+          deadline: "2025-10-15",
+          vacancies: 1,
+          description: "Creative designer needed to lead our design initiatives and create exceptional user experiences.<br><br><strong>Requirements:</strong><ul><li>3+ years of UI/UX design</li><li>Figma proficiency</li><li>Portfolio required</li></ul>",
+          status: "Closed"
+        },
+        {
+          job_id: 3,
+          title: "Backend Engineer",
+          posted_date: "2025-11-01",
+          deadline: "2025-12-15",
+          vacancies: 3,
+          description: "Join our backend team to build scalable and efficient server-side applications.<br><br><strong>Requirements:</strong><ul><li>Node.js experience</li><li>Database design skills</li><li>API development</li></ul>",
+          status: "Open"
+        },
+        {
+          job_id: 5,
+          title: "Product Manager",
+          posted_date: "2025-10-20",
+          deadline: "2025-11-25",
+          vacancies: 1,
+          description: "Strategic product manager to drive product vision and coordinate cross-functional teams.<br><br><strong>Requirements:</strong><ul><li>5+ years product management</li><li>Agile methodology</li><li>Stakeholder management</li></ul>",
+          status: "Open"
+        }
+      ];
+
+      // Filter only open jobs and check if deadline hasn't passed
+      const currentDate = new Date();
+      const openJobs = mockJobs.filter(job => {
+        if (job.status !== "Open") return false;
+        
+        const deadlineDate = new Date(job.deadline);
+        return deadlineDate >= currentDate;
+      });
+
+      setJobs(openJobs);
+      setFilteredJobs(openJobs);
+      
+    } catch (err) {
+      setError('Failed to load job postings. Please try again later.');
+      console.error('Error fetching jobs:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const isDeadlinePassed = (deadline) => {
+    if (!deadline) return true;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const deadlineDate = new Date(deadline);
+    deadlineDate.setHours(0, 0, 0, 0);
+    return deadlineDate < today;
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  // Function to safely render HTML description
+  const renderHTML = (htmlString) => {
+    return { __html: htmlString };
+  };
+
+  // Extract requirements from HTML description for modal display
+  const extractRequirementsFromDescription = (description) => {
+    const requirements = [];
+    
+    // Try to extract list items from the HTML
+    const listMatch = description.match(/<ul>(.*?)<\/ul>/s);
+    if (listMatch) {
+      const listContent = listMatch[1];
+      const liMatches = listContent.match(/<li>(.*?)<\/li>/g);
+      if (liMatches) {
+        liMatches.forEach(li => {
+          const text = li.replace(/<li>|<\/li>/g, '').trim();
+          if (text) requirements.push(text);
+        });
+      }
+    }
+    
+    // If no list found, try to extract from the description text
+    if (requirements.length === 0) {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = description;
+      const textContent = tempDiv.textContent || '';
+      
+      // Look for requirements section in text
+      const requirementsIndex = textContent.toLowerCase().indexOf('requirements:');
+      if (requirementsIndex !== -1) {
+        const requirementsText = textContent.slice(requirementsIndex + 12);
+        const lines = requirementsText.split('\n').filter(line => line.trim());
+        lines.slice(0, 5).forEach(line => {
+          const cleanLine = line.replace(/^[-•*]\s*/, '').trim();
+          if (cleanLine) requirements.push(cleanLine);
+        });
+      }
+    }
+    
+    return requirements.length > 0 ? requirements : [
+      "Strong problem-solving skills",
+      "Excellent communication abilities",
+      "Relevant experience in the field",
+      "Passion for innovation and learning"
+    ];
+  };
 
   const openModal = (job) => {
     setSelectedJob(job);
@@ -183,6 +243,16 @@ const Career = () => {
             Open Positions
           </motion.h2>
 
+          {error && (
+            <motion.div 
+              className="CR-error-message"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              {error}
+            </motion.div>
+          )}
+
           {isLoading ? (
             <div className="CR-jobs-loading">
               {[...Array(3)].map((_, index) => (
@@ -195,14 +265,14 @@ const Career = () => {
                 ></motion.div>
               ))}
             </div>
-          ) : (
+          ) : filteredJobs.length > 0 ? (
             <motion.div
               className="CR-jobs-list"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              {jobs.map((job, index) => (
+              {filteredJobs.map((job, index) => (
                 <motion.div
                   key={job.job_id}
                   className="CR-job-card"
@@ -213,16 +283,19 @@ const Career = () => {
                 >
                   <div className="CR-job-header">
                     <h3>{job.title}</h3>
+                    {isDeadlinePassed(job.deadline) && (
+                      <span className="CR-deadline-expired">Expired</span>
+                    )}
                   </div>
                   
                   <div className="CR-job-meta">
                     <div className="CR-meta-item">
                       <FiClock />
-                      <span>Posted: {new Date(job.posted_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                      <span>Posted: {formatDate(job.posted_date)}</span>
                     </div>
                     <div className="CR-meta-item">
                       <FiCalendar />
-                      <span>Apply by: {new Date(job.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                      <span>Apply by: {formatDate(job.deadline)}</span>
                     </div>
                     <div className="CR-meta-item">
                       <FiUsers />
@@ -230,19 +303,42 @@ const Career = () => {
                     </div>
                   </div>
 
+                  <div className="CR-job-description-preview">
+                    <div 
+                      className="CR-description-text"
+                      dangerouslySetInnerHTML={renderHTML(
+                        job.description.replace(/<[^>]*>/g, '').substring(0, 150) + '...'
+                      )}
+                    />
+                  </div>
+
                   <button 
-                    className="CR-see-more-btn"
+                    className={`CR-see-more-btn ${isDeadlinePassed(job.deadline) ? 'CR-btn-expired' : ''}`}
                     onClick={() => openModal(job)}
+                    disabled={isDeadlinePassed(job.deadline)}
                   >
-                    See More
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    {isDeadlinePassed(job.deadline) ? 'Application Closed' : 'See More'}
+                    {!isDeadlinePassed(job.deadline) && (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )}
                   </button>
                 </motion.div>
               ))}
             </motion.div>
+          ) : (
+            !error && (
+              <motion.div 
+                className="CR-no-jobs"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <h3>No Open Positions Available</h3>
+                <p>We don't have any open positions at the moment. Please check back later!</p>
+              </motion.div>
+            )
           )}
         </div>
       </section>
@@ -271,20 +367,25 @@ const Career = () => {
                 }}
               >
                 <button className="CR-modal-close" onClick={closeModal}>
-                  𐤕
+                  ×
                 </button>
 
                 <div className="CR-modal-content">
-                  <h2>{selectedJob.title}</h2>
+                  <div className="CR-modal-header">
+                    <h2>{selectedJob.title}</h2>
+                    {isDeadlinePassed(selectedJob.deadline) && (
+                      <span className="CR-modal-expired-badge">Application Closed</span>
+                    )}
+                  </div>
                   
                   <div className="CR-modal-meta">
                     <div className="CR-meta-item">
                       <FiClock />
-                      <span>Posted: {new Date(selectedJob.posted_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                      <span>Posted: {formatDate(selectedJob.posted_date)}</span>
                     </div>
                     <div className="CR-meta-item">
                       <FiCalendar />
-                      <span>Apply by: {new Date(selectedJob.deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                      <span>Apply by: {formatDate(selectedJob.deadline)}</span>
                     </div>
                     <div className="CR-meta-item">
                       <FiUsers />
@@ -293,27 +394,31 @@ const Career = () => {
                   </div>
 
                   <div className="CR-modal-section">
-                    <h3>Description</h3>
-                    <p>{selectedJob.description}</p>
+                    <h3>Job Description</h3>
+                    <div 
+                      className="CR-modal-description"
+                      dangerouslySetInnerHTML={renderHTML(selectedJob.description)}
+                    />
                   </div>
 
                   <div className="CR-modal-section">
-                    <h3>Requirements</h3>
-                    <ul className="CR-requirements-list">
-                      {selectedJob.requirements.map((req, index) => (
-                        <li key={index}>{req}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="CR-modal-section CR-apply-section">
                     <h3>How to Apply</h3>
                     <p>Send your CV and cover letter to:</p>
                     <a href="mailto:career@m3techops.com" className="CR-email-link">
                       <FiMail />
                       career@m3techops.com
                     </a>
+                    <p className="CR-application-note">
+                      Please mention the job title "<strong>{selectedJob.title}</strong>" in your email subject.
+                    </p>
                   </div>
+
+                  {isDeadlinePassed(selectedJob.deadline) && (
+                    <div className="CR-deadline-notice">
+                      <FiClock />
+                      <p>The application deadline for this position has passed.</p>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </div>
