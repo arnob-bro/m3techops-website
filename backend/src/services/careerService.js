@@ -41,30 +41,34 @@ class CareerService {
 
       
 
-      return { success: true, message: "career creation successful." };
+      return { success: true, message: "career creation successful.", "data":career };
     } catch (err) {
       console.error("Error in making this career:", err.message);
       throw new Error("Failed to make this career");
     }
   }
 
-  async getCareers( page , limit , status ) {
+  async getCareers(page, limit, status) {
     try {
       const offset = (page - 1) * limit;
-
-
-      console.log("into the service");
-      // Fetch paginated results
-      const result = await this.db.query(
-        `SELECT * FROM careers WHERE status=$1 ORDER BY posted_date DESC LIMIT $2 OFFSET $3`,
-        [status, limit, offset]
-      );
+      let query = `SELECT * FROM careers`;
+      let countQuery = `SELECT COUNT(*) FROM careers`;
+      let params = [];
+      let countParams = [];
   
-      // Get total count for pagination
-      const countResult = await this.db.query(
-        `SELECT COUNT(*) FROM careers WHERE status=$1`,
-        [status]
-      );
+      if (status) {
+        query += ` WHERE status = $1`;
+        countQuery += ` WHERE status = $1`;
+        params.push(status);
+        countParams.push(status);
+      }
+  
+      query += ` ORDER BY posted_date DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+      params.push(limit, offset);
+  
+      const result = await this.db.query(query, params);
+      const countResult = await this.db.query(countQuery, countParams);
+  
       const total = parseInt(countResult.rows[0].count, 10);
       const totalPages = Math.ceil(total / limit);
   
@@ -72,7 +76,7 @@ class CareerService {
         success: true,
         careers: result.rows,
         pagination: {
-          page: page,
+          page,
           limit,
           total,
           totalPages
@@ -83,6 +87,55 @@ class CareerService {
       throw new Error("Failed to fetch careers");
     }
   }
+  
+
+  async updateCareer(careerData) {
+    try {
+      const {
+        career_id,
+        title,
+        vacancies,
+        description,
+        send_to,
+        status,
+        deadline,
+        posted_date
+      } = careerData;
+  
+      console.log("into the service");
+  
+      const result = await this.db.query(
+        `UPDATE careers
+         SET title = $1,
+             vacancies = $2,
+             description = $3,
+             send_to = $4,
+             status = $5,
+             deadline = $6,
+             posted_date = $7
+         WHERE career_id = $8
+         RETURNING career_id, title, vacancies, description, send_to, status, deadline, posted_date`,
+        [
+          title,
+          vacancies,
+          description,
+          send_to,
+          status,
+          deadline,
+          posted_date,
+          career_id // <--- must be last
+        ]
+      );
+  
+      const career = result.rows[0];
+  
+      return { success: true, message: "Career updated successfully", "data":career };
+    } catch (err) {
+      console.error("Error updating career:", err.message);
+      throw new Error("Failed to update career");
+    }
+  }
+  
   
 
 }

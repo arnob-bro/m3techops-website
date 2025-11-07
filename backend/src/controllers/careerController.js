@@ -5,7 +5,7 @@ class CareerController {
       // Bind methods so 'this' works in routes
       this.getCareers = this.getCareers.bind(this);
       this.createCareer = this.createCareer.bind(this);
-      // this.updateCareer = this.updateCareer.bind(this);
+      this.updateCareer = this.updateCareer.bind(this);
       // this.deleteCareer = this.deleteCareer.bind(this);
     }
   
@@ -40,11 +40,12 @@ class CareerController {
 
 
   
-        res.status(201).json(career);
+        res.status(201).json({career});
       } catch (err) {
         res.status(400).json({ error: err.message });
       }
     }
+
 
     async getCareers(req, res) {
       try {
@@ -60,6 +61,47 @@ class CareerController {
         res.status(200).json(careers);
       } catch (err) {
         console.error("Error fetching careers:", err);
+        res.status(400).json({ error: err.message });
+      }
+    }
+
+
+    async updateCareer(req, res) {
+      try {
+        const {
+          title,
+          vacancies,
+          description,
+          send_to,
+          status,
+          deadline,
+          posted_date
+        } = req.body;
+
+        const { career_id } = req.params;
+  
+        // REQUIRED FIELDS
+        if (!title || !vacancies || !description || !send_to || !deadline) {
+          return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        console.log("into the controller");
+        // then Service ke pass korbo
+        const career = await this.careerService.updateCareer({
+          career_id,
+          title,
+          vacancies,
+          description,
+          send_to,
+          status,
+          deadline,
+          posted_date
+        });
+
+
+  
+        res.status(201).json(career);
+      } catch (err) {
         res.status(400).json({ error: err.message });
       }
     }

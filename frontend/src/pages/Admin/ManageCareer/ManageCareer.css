@@ -646,6 +646,8 @@
     color: var(--admin-pages-text-muted);
 }
 
+
+
 /* ===== Animations ===== */
 @keyframes career-fadeInOverlay {
     from {

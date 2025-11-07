@@ -5,7 +5,7 @@ function createCareerRouter(careerController) {
 
     router.get('/', careerController.getCareers);
     router.post('/',careerController.createCareer);
-    // router.put('/:career_id', careerController.updateCareer);
+    router.put('/:career_id', careerController.updateCareer);
     // router.delete('/:career_id', careerController.deleteCareer);
 
   return router;

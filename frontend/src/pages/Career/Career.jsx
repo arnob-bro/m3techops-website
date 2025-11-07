@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiCalendar, FiUsers, FiMail, FiAward, FiTrendingUp, FiHeart, FiClock } from 'react-icons/fi';
+import CareerApi from '../../apis/careerApi';
+const careerApi = new CareerApi();
 import './Career.css';
 
 const Career = () => {
@@ -19,7 +21,12 @@ const Career = () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
+      const result = await careerApi.getCareers({
+        "page": 1,
+        "limit": 10,
+        "status": "Open"
+      });
       // In a real app, this would be an API call
       // For now, using mock data that matches admin structure
       const mockJobs = [
@@ -70,8 +77,8 @@ const Career = () => {
         return deadlineDate >= currentDate;
       });
 
-      setJobs(openJobs);
-      setFilteredJobs(openJobs);
+      setJobs(result.careers);
+      // setFilteredJobs(openJobs);
       
     } catch (err) {
       setError('Failed to load job postings. Please try again later.');
@@ -265,16 +272,16 @@ const Career = () => {
                 ></motion.div>
               ))}
             </div>
-          ) : filteredJobs.length > 0 ? (
+          ) : jobs.length > 0 ? (
             <motion.div
               className="CR-jobs-list"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              {filteredJobs.map((job, index) => (
+              {jobs.map((job, index) => (
                 <motion.div
-                  key={job.job_id}
+                  key={job.career_id}
                   className="CR-job-card"
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { FaEdit, FaPlus, FaSearch } from 'react-icons/fa';
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import Modal from 'react-modal';
+import CareerApi from '../../../apis/careerApi';
+const careerApi = new CareerApi();
 import './ManageCareer.css';
 
 // Mock data
@@ -54,47 +56,48 @@ const MOCK_JOBS = [
 ];
 
 const ManageCareer = () => {
-  const [jobPostings, setJobPostings] = useState(MOCK_JOBS);
-  const [filteredJobs, setFilteredJobs] = useState(MOCK_JOBS);
+  const [jobPostings, setJobPostings] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentJob, setCurrentJob] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  // const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     title: "",
     posted_date: "",
     deadline: "",
     vacancies: 1,
     description: "",
-    status: "Draft"
+    status: "Draft",
+    send_to: "career@m3techops.com"
   });
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState('');
   const limit = 10;
 
-  const totalPages = Math.ceil(filteredJobs.length / limit);
-  const paginatedJobs = filteredJobs.slice((page - 1) * limit, page * limit);
 
   useEffect(() => {
     Modal.setAppElement('#root');
   }, []);
 
   useEffect(() => {
-    // Filter jobs based on search and status
-    let filtered = jobPostings;
-
-    if (searchTerm) {
-      filtered = filtered.filter(job =>
-        job.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (statusFilter) {
-      filtered = filtered.filter(job => job.status === statusFilter);
-    }
-
-    setFilteredJobs(filtered);
-    setPage(1);
-  }, [searchTerm, statusFilter, jobPostings]);
+    const fetchCareers = async () => {
+      try {
+        const result = await careerApi.getCareers({
+          page,
+          limit,
+          status: statusFilter
+        });
+  
+        setJobPostings(result.careers || []);
+        setTotalPages(result.pagination?.totalPages || 1);
+      } catch (err) {
+        console.error("Failed to load careers:", err);
+      }
+    };
+  
+    fetchCareers();
+  }, [statusFilter, page]);
+  
 
   useEffect(() => {
     if (isModalOpen) {
@@ -124,7 +127,8 @@ const ManageCareer = () => {
       deadline: job.deadline,
       vacancies: job.vacancies,
       description: job.description,
-      status: job.status
+      status: job.status,
+      send_to: job.send_to
     });
     setIsModalOpen(true);
   };
@@ -137,30 +141,41 @@ const ManageCareer = () => {
       deadline: "",
       vacancies: 1,
       description: "",
-      status: "Draft"
+      status: "Draft",
+      send_to: "career@m3techops.com"
     });
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (currentJob) {
       // Update existing job
+      // setJobPostings(prev =>
+      //   prev.map(job =>
+      //     job.career_id === currentJob.career_id
+      //       ? { ...job, ...formData }
+      //       : job
+      //   )
+      // );
+      const result = await careerApi.updateCareer(currentJob.career_id, {formData});
+      
       setJobPostings(prev =>
         prev.map(job =>
-          job.job_id === currentJob.job_id
-            ? { ...job, ...formData }
+          job.career_id === currentJob.career_id
+            ? { ...job, ...result.career.data }
             : job
         )
       );
     } else {
       // Add new job
       const newJob = {
-        job_id: Math.max(...jobPostings.map(j => j.job_id), 0) + 1,
-        ...formData
+        formData
       };
-      setJobPostings(prev => [...prev, newJob]);
+      // setJobPostings(prev => [...prev, newJob]);
+      const result = await careerApi.createCareer(formData);
+      setJobPostings(prev => [...prev, result.career.data]);
     }
 
     setIsModalOpen(false);
@@ -183,10 +198,6 @@ const ManageCareer = () => {
     return deadlineDate < today;
   };
 
-  // Function to render HTML description safely
-  const renderDescription = (description) => {
-    return { __html: description };
-  };
 
   const DeadlineStatus = ({ deadline }) => {
     const [isExpired, setIsExpired] = useState(isDeadlinePassed(deadline));
@@ -216,7 +227,7 @@ const ManageCareer = () => {
       <div className="career-header">
         <h2>Manage Job Postings</h2>
         <div className="career-header-actions">
-          <div className="career-search">
+          {/* <div className="career-search">
             <input
               type="text"
               placeholder="Search jobs by title..."
@@ -224,11 +235,14 @@ const ManageCareer = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <FaSearch className="search-icon" />
-          </div>
+          </div> */}
           <div className="career-filters">
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => {
+                setStatusFilter(e.target.value)
+                setPage(1);
+              }}
             >
               <option value="">All Status</option>
               <option value="Draft">Draft</option>
@@ -257,17 +271,13 @@ const ManageCareer = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedJobs.length > 0 ? (
-              paginatedJobs.map(job => (
-                <tr key={job.job_id} className={getStatusClass(job.status)}>
+            {jobPostings.length > 0 ? (
+              jobPostings.map(job => (
+                <tr key={job.career_id} className={getStatusClass(job.status)}>
                   <td>
                     <div className="job-title-cell">
                       <div>
                         <h4>{job.title}</h4>
-                        <div 
-                          className="job-description"
-                          dangerouslySetInnerHTML={renderDescription(job.description)}
-                        />
                       </div>
                     </div>
                   </td>
@@ -448,12 +458,22 @@ const ManageCareer = () => {
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    placeholder="Enter detailed job description. You can use HTML tags for formatting. Example: &lt;strong&gt;Bold text&lt;/strong&gt;, &lt;ul&gt;&lt;li&gt;List item&lt;/li&gt;&lt;/ul&gt;, &lt;br&gt; for line breaks"
+                    placeholder="Enter detailed job description..."
                     required
                     rows="8"
                     className="html-textarea"
                   />
+
+                  <div className="description-preview-container">
+                    <label className="preview-label">Live Preview</label>
+                    <div
+                      className="description-preview"
+                      dangerouslySetInnerHTML={{ __html: formData.description || "<i>Start typing to preview...</i>" }}
+                    />
+                  </div>
+
                   <div className="html-tips">
+
                     <strong>HTML Tips:</strong>
                     <ul>
                       <li>Use <code>&lt;br&gt;</code> for line breaks</li>
