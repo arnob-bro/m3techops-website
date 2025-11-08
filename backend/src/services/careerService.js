@@ -18,7 +18,7 @@ class CareerService {
       } = careerData;
 
 
-      console.log("into the service");
+      // console.log("into the service");
 
       // Insert user
       const result = await this.db.query(
@@ -41,7 +41,7 @@ class CareerService {
 
       
 
-      return { success: true, message: "career creation successful.", "data":career };
+      return { success: true, message: "career creation successful.", data :career };
     } catch (err) {
       console.error("Error in making this career:", err.message);
       throw new Error("Failed to make this career");
@@ -102,7 +102,7 @@ class CareerService {
         posted_date
       } = careerData;
   
-      console.log("into the service");
+      // console.log("into the service");
   
       const result = await this.db.query(
         `UPDATE careers
@@ -128,8 +128,9 @@ class CareerService {
       );
   
       const career = result.rows[0];
+      // console.log(career);
   
-      return { success: true, message: "Career updated successfully", "data":career };
+      return { success: true, message: "Career updated successfully", data: career };
     } catch (err) {
       console.error("Error updating career:", err.message);
       throw new Error("Failed to update career");

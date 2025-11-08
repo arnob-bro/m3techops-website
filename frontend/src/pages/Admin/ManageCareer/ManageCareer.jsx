@@ -167,12 +167,13 @@ const ManageCareer = () => {
       //       : job
       //   )
       // );
-      const result = await careerApi.updateCareer(currentJob.career_id, {formData});
+      console.log(formData);
+      const result = await careerApi.updateCareer(currentJob.career_id, formData);
       
       setJobPostings(prev =>
         prev.map(job =>
           job.career_id === currentJob.career_id
-            ? { ...job, ...result.career.data }
+            ? { ...job, ...result.data }
             : job
         )
       );
@@ -183,7 +184,7 @@ const ManageCareer = () => {
       };
       // setJobPostings(prev => [...prev, newJob]);
       const result = await careerApi.createCareer(formData);
-      setJobPostings(prev => [...prev, result.career.data]);
+      setJobPostings(prev => [...prev, result.data]);
     }
 
     setIsModalOpen(false);
