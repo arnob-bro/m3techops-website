@@ -26,7 +26,7 @@ class CareerController {
           return res.status(400).json({ error: "Missing required fields" });
         }
 
-        console.log("into the controller");
+        // console.log("into the controller");
         // then Service ke pass korbo
         const career = await this.careerService.createCareer({
           title,
@@ -81,11 +81,25 @@ class CareerController {
         const { career_id } = req.params;
   
         // REQUIRED FIELDS
-        if (!title || !vacancies || !description || !send_to || !deadline) {
-          return res.status(400).json({ error: "Missing required fields" });
+        if (!vacancies) {
+          return res.status(400).json({ error: "Missing vacancies field" });
+        }
+        if (!title) {
+          return res.status(400).json({ error: "Missing title field" });
+        }
+        
+        if (!description) {
+          return res.status(400).json({ error: "Missing description field" });
+        }
+        if (!send_to) {
+          return res.status(400).json({ error: "Missing send_to field" });
+        }
+        if (!deadline) {
+          return res.status(400).json({ error: "Missing deadline field" });
         }
 
-        console.log("into the controller");
+
+        // console.log("into the controller");
         // then Service ke pass korbo
         const career = await this.careerService.updateCareer({
           career_id,

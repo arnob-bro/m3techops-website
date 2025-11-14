@@ -306,6 +306,8 @@ section {
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(var(--color-accent-rgb), 0.4);
+  color: rgb(3, 75, 77);
+  
 }
 
 .btn-outline {

@@ -121,10 +121,18 @@ const ManageCareer = () => {
 
   const openEditModal = (job) => {
     setCurrentJob(job);
+    
+    // Format dates for the date input fields (YYYY-MM-DD)
+    const formatDateForInput = (dateString) => {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    };
+  
     setFormData({
       title: job.title,
-      posted_date: job.posted_date,
-      deadline: job.deadline,
+      posted_date: formatDateForInput(job.posted_date),
+      deadline: formatDateForInput(job.deadline),
       vacancies: job.vacancies,
       description: job.description,
       status: job.status,
@@ -159,12 +167,13 @@ const ManageCareer = () => {
       //       : job
       //   )
       // );
-      const result = await careerApi.updateCareer(currentJob.career_id, {formData});
+      console.log(formData);
+      const result = await careerApi.updateCareer(currentJob.career_id, formData);
       
       setJobPostings(prev =>
         prev.map(job =>
           job.career_id === currentJob.career_id
-            ? { ...job, ...result.career.data }
+            ? { ...job, ...result.data }
             : job
         )
       );
@@ -175,7 +184,7 @@ const ManageCareer = () => {
       };
       // setJobPostings(prev => [...prev, newJob]);
       const result = await careerApi.createCareer(formData);
-      setJobPostings(prev => [...prev, result.career.data]);
+      setJobPostings(prev => [...prev, result.data]);
     }
 
     setIsModalOpen(false);
