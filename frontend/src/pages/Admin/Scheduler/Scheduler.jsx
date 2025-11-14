@@ -481,9 +481,9 @@ const Scheduler = () => {
       }
 
       // Adjust for timezone offset
-      const timezoneOffset = startDateTime.getTimezoneOffset() * 60000;
-      const startISODate = new Date(startDateTime.getTime() - timezoneOffset).toISOString();
-      const endISODate = new Date(endDateTime.getTime() - timezoneOffset).toISOString();
+      const startISODate = startDateTime.toISOString();
+      const endISODate = endDateTime.toISOString();
+
 
       if (startDateTime >= endDateTime) {
         setError('End time must be after start time');
